@@ -1,21 +1,20 @@
-import { createWebHistory, createRouter, RouteRecordRaw } from "vue-router";
+import { createWebHistory, createRouter, RouteRecordRaw } from 'vue-router'
 
 const routes: RouteRecordRaw[] = [
-  {
-    path: "/",
-    component: () => import("@comps/layout/silder-layout"),
-    children: [
-      {
-        path: "table",
-
-        component: () => import("@comps/table"),
-      },
-    ],
-  },
-];
+    {
+        path: '/',
+        component: () => import('../page/home/index.vue'),
+        children: [
+            {
+                path: 'table',
+                component: () => import('@comps/table'),
+            },
+        ],
+    },
+]
 const router = createRouter({
-  history: createWebHistory(),
-  routes,
-});
+    history: createWebHistory(),
+    routes,
+})
 
-export default router;
+export default router

@@ -1,18 +1,18 @@
-import { App, defineComponent } from "vue";
+import { App, defineComponent } from 'vue'
 
 const Comp = defineComponent({
-  name: "DSilderLayout",
+    name: 'DSilderLayout',
 
-  setup(props, {}) {
-    return () => (
-      <div>
-        <router-view></router-view>
-      </div>
-    );
-  },
-});
+    setup(props, {}) {
+        return () => (
+            <div>
+                <router-view></router-view>
+            </div>
+        )
+    },
+})
 
 Comp.install = (app: App) => {
-  app.component(Comp?.name!, Comp);
-};
-export default Comp;
+    app.component(Comp?.name!, Comp)
+}
+export default Comp
