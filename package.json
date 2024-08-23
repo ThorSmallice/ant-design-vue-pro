@@ -1,12 +1,38 @@
 {
   "name": "@dbthor/ant-design-pro-vue",
-  "version": "1.0.0",
+  "type": "module",
+  "private": false,
+  "version": "0.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "vite",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files": [
+    "dist"
+  ],
   "keywords": [],
   "author": "dbthor",
-  "license": "ISC"
+  "license": "ISC",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.12",
+    "@vitejs/plugin-vue": "^5.1.1",
+    "@vitejs/plugin-vue-jsx": "^4.0.0",
+    "ant-design-vue": "4.x",
+    "path": "^0.12.7",
+    "typescript": "^5.5.4",
+    "vite": "^5.3.5",
+    "vite-plugin-compression2": "^1.1.3",
+    "vite-plugin-dts": "4.0.0-beta.1",
+    "vue": "^3.4.34",
+    "vue-router": "4"
+  },
+  "peerDependencies": {
+    "ant-design-vue": "4.x",
+    "vue": "^3.4.34"
+  }
 }
