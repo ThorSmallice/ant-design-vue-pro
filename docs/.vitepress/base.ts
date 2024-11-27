@@ -1,8 +1,8 @@
-import { defineConfig } from 'vitepress'
-import { search as zhSearch } from './zh'
-import { resolve } from 'path'
 import vueJsx from '@vitejs/plugin-vue-jsx'
-
+import { resolve } from 'path'
+import { defineConfig } from 'vitepress'
+import pkg from '../../package.json'
+import { search as zhSearch } from './zh'
 export const base = defineConfig({
     title: 'Ant-Design-Pro-Vue',
     description: 'Antd增强版',
@@ -18,10 +18,7 @@ export const base = defineConfig({
         plugins: [vueJsx({})],
         resolve: {
             alias: {
-                '@dbthor/ant-design-pro-vue': resolve(
-                    __dirname,
-                    '../../src/components/components.ts'
-                ),
+                [pkg.name]: resolve(__dirname, '../../src/components/components.ts'),
                 '@src': resolve(__dirname, '../../src'),
                 '@comps': resolve(__dirname, '../../src/components'),
                 '@hooks': resolve(__dirname, '../../src/hooks'),
@@ -30,7 +27,7 @@ export const base = defineConfig({
         },
         server: {
             host: '0.0.0.0',
-            port: 13800,
+            port: 13801,
         },
     },
 

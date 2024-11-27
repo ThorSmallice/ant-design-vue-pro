@@ -7,6 +7,7 @@ import {
   shallowRef,
   watch
 } from "./chunk-X54IR6VG.js";
+import "./chunk-PZ5AY32C.js";
 
 // node_modules/.pnpm/vitepress@1.5.0_@algolia+client-search@5.15.0_@types+node@20.17.8_async-validator@4.2.5_postc_ty4qjyek5ert5r5c4tguzi23cq/node_modules/vitepress/dist/client/theme-default/index.js
 import "D:/project/ant-design-pro-vue/node_modules/.pnpm/vitepress@1.5.0_@algolia+client-search@5.15.0_@types+node@20.17.8_async-validator@4.2.5_postc_ty4qjyek5ert5r5c4tguzi23cq/node_modules/vitepress/dist/client/theme-default/styles/fonts.css";

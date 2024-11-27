@@ -1,4 +1,5 @@
 {
+    "$schema": "https://schemastore.azurewebsites.net/schemas/json/tsconfig.json",
     "compilerOptions": {
         "isolatedModules": true,
         "target": "ESNext",
@@ -18,7 +19,8 @@
         "paths": {
             "@src/*": ["src/*"],
             "@comps/*": ["src/components/*"],
-            "@dbthor/ant-design-pro-vue": ["src/components/components.ts"],
+            "@config/*": ["src/config/*"],
+            "@dbthor/ant-design-vue-pro": ["src/components/components.ts"],
             "@examples/*": ["docs/examples/*"]
         }
     },

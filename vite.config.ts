@@ -4,6 +4,8 @@ import compression from 'vite-plugin-compression2'
 import Vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import dts from 'vite-plugin-dts'
+import pkg from './package.json'
+console.log(pkg)
 // import writeRoutes from './script/write-route'
 // import writeComps from './script/write-exports'
 // writeComps()
@@ -42,7 +44,8 @@ export default defineConfig({
             '@src': resolve(__dirname, './src'),
             '@comps': resolve(__dirname, './src/components'),
             '@hooks': resolve(__dirname, './src/hooks'),
-            '@dbthor/ant-design-pro-vue': resolve(__dirname, './src/components/components.ts'),
+            '@config': resolve(__dirname, './src/config'),
+            [pkg.name]: resolve(__dirname, './src/components/components.ts'),
         },
     },
 })

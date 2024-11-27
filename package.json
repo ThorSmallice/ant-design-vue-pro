@@ -1,5 +1,5 @@
 {
-    "name": "@dbthor/ant-design-pro-vue",
+    "name": "@dbthor/ant-design-vue-pro",
     "type": "module",
     "private": false,
     "version": "0.0.0",
@@ -27,6 +27,7 @@
         "@vitejs/plugin-vue-jsx": "^4.1.0",
         "ant-design-vue": "~4.2.6",
         "autoprefixer": "^10.4.20",
+        "axios": "^1.7.8",
         "path": "^0.12.7",
         "postcss": "^8.4.49",
         "tailwindcss": "^3.4.15",
