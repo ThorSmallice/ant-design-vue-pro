@@ -1,31 +1,36 @@
 {
-  "compilerOptions": {
-    "isolatedModules": true,
-    "target": "ESNext",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "moduleResolution": "node",
-    "strict": true,
-     "jsx": "preserve",
-    "jsxImportSource": "vue",
-    "sourceMap": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "lib": ["ESNext", "DOM"],
-    "skipLibCheck": true, 
-    "baseUrl": "./",
-    "types":["vite/client","node"],
-    "paths": {
-      "@src/*": ["src/*"],
-      "@comps/*": ["src/components/*"]
-    }
-  },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "*.d.ts"
-  ],
-  "exclude": ["node_modules"]
+    "compilerOptions": {
+        "isolatedModules": true,
+        "target": "ESNext",
+        "useDefineForClassFields": true,
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "strict": true,
+        "jsx": "preserve",
+        "jsxImportSource": "vue",
+        "sourceMap": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "lib": ["ESNext", "DOM"],
+        "skipLibCheck": true,
+        "baseUrl": "./",
+        "types": ["vite/client", "node"],
+        "paths": {
+            "@src/*": ["src/*"],
+            "@comps/*": ["src/components/*"],
+            "@dbthor/ant-design-pro-vue": ["src/components/components.ts"],
+            "@examples/*": ["docs/examples/*"]
+        }
+    },
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.d.ts",
+        "src/**/*.tsx",
+        "src/**/*.vue",
+        "*.d.ts",
+        "docs/**/*.md",
+        "docs/**/*.vue",
+        "docs/**/*.ts"
+    ],
+    "exclude": ["node_modules"]
 }

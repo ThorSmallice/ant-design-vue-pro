@@ -1,13 +1,21 @@
+import { Layout, Menu, Slider } from 'ant-design-vue'
+import { Content } from 'ant-design-vue/es/layout/layout'
 import { App, defineComponent } from 'vue'
 
+const { Sider } = Layout
 const Comp = defineComponent({
     name: 'DSilderLayout',
 
     setup(props, {}) {
         return () => (
-            <div>
-                <router-view></router-view>
-            </div>
+            <Layout class="w-full h-full overflow-hidden">
+                <Sider class="bg-black" width={200}>
+                    <Menu></Menu>
+                </Sider>
+                <Content class="bg-gray-500">
+                    <router-view></router-view>
+                </Content>
+            </Layout>
         )
     },
 })

@@ -1,3 +1,3 @@
-import { install } from "./components";
+import { install } from './components'
 
-export default install;
+export default install

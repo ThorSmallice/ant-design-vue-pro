@@ -6,4 +6,4 @@
 import SilderLayout from '@comps/layout/silder-layout'
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped></style>

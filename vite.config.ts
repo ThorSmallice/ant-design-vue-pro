@@ -42,6 +42,7 @@ export default defineConfig({
             '@src': resolve(__dirname, './src'),
             '@comps': resolve(__dirname, './src/components'),
             '@hooks': resolve(__dirname, './src/hooks'),
+            '@dbthor/ant-design-pro-vue': resolve(__dirname, './src/components/components.ts'),
         },
     },
 })
