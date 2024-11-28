@@ -1,22 +1,8 @@
-import { TableProps as ATableProps } from 'ant-design-vue'
-
-import { AxiosRequestConfig } from 'axios'
-export interface TablePropsApiResult {
-    code: number
+import { App } from 'vue'
+import Table from './table'
+export type * from './index.type'
+Table.install = (app: App) => {
+    app?.component?.(Table?.name!, Table)
+    return app
 }
-
-export type TablePropsApi = (
-    params?: AxiosRequestConfig['params'],
-    config?: AxiosRequestConfig
-) => Promise<any>
-
-export interface TableProps extends Omit<ATableProps, 'columns'> {
-    apis?: Partial<{
-        list: TablePropsApi
-        create: TablePropsApi
-        update: TablePropsApi
-        delete: TablePropsApi
-        export: TablePropsApi
-        import: TablePropsApi
-    }>
-}
+export default Table

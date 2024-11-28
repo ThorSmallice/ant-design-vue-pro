@@ -1,12 +1,14 @@
-import type { App, Component, DefineComponent } from 'vue'
 import * as components from '@comps/components'
+import type { App } from 'vue'
+export * from '@comps/components'
 
 export const install = (app: App) => {
     Object.keys(components).forEach((key) => {
-        const component = (components as Record<string, Component>)[key] as DefineComponent
-        app.component(component?.name!, component)
+        const component = components[key]
+        if (component.install) {
+            app.use(component)
+        }
     })
-
     return app
 }
 export default {

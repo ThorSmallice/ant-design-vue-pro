@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.d-table {
+    @apply w-full flex flex-col relative bg-white;
+
+    .d-table-pagination-wrap {
+        @apply flex w-full items-center justify-end my-4;
+        .ant-pagination {
+            @apply m-0;
+            li {
+                @apply mt-0;
+            }
+            .ant-pagination-prev,
+            .ant-pagination-next {
+                .ant-pagination-item-link {
+                    @apply flex items-center justify-center;
+                }
+            }
+            .ant-pagination-jump-prev,
+            .ant-pagination-jump-next {
+                .ant-pagination-item-link {
+                    .ant-pagination-item-container {
+                        @apply flex items-center justify-center h-full;
+                    }
+                }
+            }
+        }
+    }
+}

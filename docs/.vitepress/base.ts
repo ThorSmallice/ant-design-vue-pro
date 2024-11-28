@@ -3,6 +3,7 @@ import { resolve } from 'path'
 import { defineConfig } from 'vitepress'
 import pkg from '../../package.json'
 import { search as zhSearch } from './zh'
+import '../styles/reset.css'
 export const base = defineConfig({
     title: 'Ant-Design-Pro-Vue',
     description: 'Antd增强版',
@@ -10,7 +11,7 @@ export const base = defineConfig({
     lastUpdated: true,
     cleanUrls: true,
     metaChunk: true,
-    base: '/docs/',
+    base: '/docs',
     rewrites: {
         'zh/:rest*': ':rest*',
     },
@@ -18,10 +19,11 @@ export const base = defineConfig({
         plugins: [vueJsx({})],
         resolve: {
             alias: {
-                [pkg.name]: resolve(__dirname, '../../src/components/components.ts'),
+                [pkg.name]: resolve(__dirname, '../../src/main.ts'),
                 '@src': resolve(__dirname, '../../src'),
                 '@comps': resolve(__dirname, '../../src/components'),
                 '@hooks': resolve(__dirname, '../../src/hooks'),
+                '@config': resolve(__dirname, '../../src/config'),
                 '@examples': resolve(__dirname, '../examples'),
             },
         },

@@ -1,15 +1,10 @@
-import { defineConfig } from 'vite'
-import { resolve } from 'path'
-import compression from 'vite-plugin-compression2'
 import Vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
+import { resolve } from 'path'
+import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 import pkg from './package.json'
-console.log(pkg)
-// import writeRoutes from './script/write-route'
-// import writeComps from './script/write-exports'
-// writeComps()
-// writeRoutes()
+
 export default defineConfig({
     plugins: [
         Vue(),
@@ -23,7 +18,6 @@ export default defineConfig({
     build: {
         lib: {
             entry: resolve(__dirname, 'src/main.ts'),
-            // fileName: (format) => `maptalks-react.${format}.js`,
         },
         rollupOptions: {
             plugins: [],
@@ -45,7 +39,9 @@ export default defineConfig({
             '@comps': resolve(__dirname, './src/components'),
             '@hooks': resolve(__dirname, './src/hooks'),
             '@config': resolve(__dirname, './src/config'),
-            [pkg.name]: resolve(__dirname, './src/components/components.ts'),
+            '@tools': resolve(__dirname, './src/tools'),
+            '@examples': resolve(__dirname, './docs/examples'),
+            [pkg.name]: resolve(__dirname, './src/main.ts'),
         },
     },
 })

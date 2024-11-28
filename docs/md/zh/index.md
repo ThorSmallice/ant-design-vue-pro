@@ -11,7 +11,7 @@ hero:
           link: /documents/install
         - theme: alt
           text: 组件
-          link: /components/table
+          link: /components/Table
 
 features:
     - title: Feature A
