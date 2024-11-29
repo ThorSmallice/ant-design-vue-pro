@@ -3,7 +3,6 @@ import { resolve } from 'path'
 import { defineConfig } from 'vitepress'
 import pkg from '../../package.json'
 import { search as zhSearch } from './zh'
-import '../styles/reset.css'
 export const base = defineConfig({
     title: 'Ant-Design-Pro-Vue',
     description: 'Antd增强版',
@@ -30,6 +29,13 @@ export const base = defineConfig({
         server: {
             host: '0.0.0.0',
             port: 13801,
+            proxy: {
+                '/api': {
+                    target: 'http://116.177.41.89:8888',
+                    changeOrigin: true,
+                    rewrite: (path) => path.replace(/^\/api/, '/hnz/admin-api'),
+                },
+            },
         },
     },
 

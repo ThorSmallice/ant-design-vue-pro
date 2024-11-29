@@ -1,10 +1,21 @@
 import config from '@config/index'
-import { arrayType, booleanType, objectType } from '@src/tools/type'
-import { TableProps as ATableProps, TableColumnProps as ATableColumnProps } from 'ant-design-vue'
+import { arrayType, booleanType, functionType, objectType } from '@src/tools/type'
+import {
+    TableProps as ATableProps,
+    TableColumnProps as ATableColumnProps,
+    PaginationProps,
+    FormItemProps,
+} from 'ant-design-vue'
 
-import { AxiosRequestConfig } from 'axios'
-export interface TablePropsApiResult {
-    code: number
+import { AxiosRequestConfig, AxiosResponse } from 'axios'
+
+type TableFieldNames = string | string[]
+
+export interface TableSourceResult {
+    total: number
+    list: any[] | null
+    page?: number | string
+    pageSize?: number | string
 }
 
 export type TablePropsApi = (
@@ -12,9 +23,17 @@ export type TablePropsApi = (
     config?: AxiosRequestConfig
 ) => Promise<any>
 
+export type requestParams = {
+    [key: string]: any
+}
+export type requestParamsFormatter = (params: requestParams) => requestParams
+
 export interface TableColumnsProps extends ATableColumnProps {}
 
+export interface TableFilterFormItemProps extends FormItemProps {}
+
 export interface TableProps extends Omit<ATableProps, 'columns'> {
+    full?: boolean
     apis?: Partial<{
         list: TablePropsApi
         details: TablePropsApi
@@ -28,12 +47,21 @@ export interface TableProps extends Omit<ATableProps, 'columns'> {
     fieldsNames?: Partial<{
         page: string //  apis.list 请求参数中的 当前页的field
         pageSize: string //  apis.list 请求参数中的 每页数据量的field
-        list: string //  apis.list 返回值中获取数据集合的field
-        total: string //  apis.list 返回值中获取数据总数的field
+        list: TableFieldNames //  apis.list 返回值中获取数据集合的field
+        total: TableFieldNames //  apis.list 返回值中获取数据总数的field
     }>
     ownPagin?: boolean
+    ownPaginProps?: PaginationProps
     showOwnPagination?: boolean
-    full?: boolean
+    params?: {
+        [key: string]: any
+    }
+    requestParamsFormatter: requestParamsFormatter
+    onSourceSuccess: (res: AxiosResponse) => Promise<TableSourceResult>
+    onSourceError: (err: Error) => void
+
+    ownFilterForm?: boolean
+    filterFormItem?: TableFilterFormItemProps[]
 }
 
 export const tableProps = () => ({
@@ -41,6 +69,13 @@ export const tableProps = () => ({
     apis: objectType<TableProps['apis']>(),
     columns: arrayType<TableProps['columns']>([]),
     ownPagin: booleanType(true),
+    ownPaginProps: objectType<TableProps['ownPaginProps']>(),
     showOwnPagination: booleanType(true),
     full: booleanType(false),
+    params: objectType<TableProps['params']>(),
+    requestParamsFormatter: functionType<TableProps['requestParamsFormatter']>(),
+    onSourceSuccess: functionType<TableProps['onSourceSuccess']>(),
+    onSourceError: functionType<TableProps['onSourceError']>(),
+    ownFilterForm: booleanType(true),
+    filterFormItem: arrayType<TableProps['filterFormItem']>(),
 })

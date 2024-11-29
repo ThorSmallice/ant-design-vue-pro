@@ -1,13 +1,13 @@
 import { Pagination } from 'ant-design-vue'
 
-export default ({ pagination, total }) => {
-    console.log(pagination)
+export default ({ pagination, total, props }) => {
     return () => (
         <Pagination
             v-model:current={pagination.page}
-            pageSize={pagination.pageSize}
+            v-model:pageSize={pagination.pageSize}
             total={total.value}
             show-quick-jumper
+            {...props}
         ></Pagination>
     )
 }

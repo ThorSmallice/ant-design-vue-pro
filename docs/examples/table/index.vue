@@ -1,6 +1,9 @@
 <template>
     <div style="width: 100%; height: 500px">
         <Table
+            full
+            ref="tableRef"
+            :params="params"
             :columns="columns"
             :apis="{
                 list: listApi,
@@ -11,6 +14,8 @@
                 export: exportApi,
                 import: importApi,
             }"
+            :onSourceSuccess="onSourceSuccess"
+            :filterFormItem="filterFormItem"
         ></Table>
     </div>
 </template>
@@ -18,8 +23,38 @@
 <script setup lang="ts">
 import { Table, TableProps } from '@dbthor/ant-design-vue-pro'
 import axios from 'axios'
-import { reactive } from 'vue'
+import { computed, reactive, ref } from 'vue'
+// TableConfig.fieldsNames.default.list = ['data', 'data', 'list']
+// TableConfig.fieldsNames.default.total = ['data', 'data', 'total']
+const tableRef = ref()
 
+const filterFormItem = computed(() => {
+    return [
+        {
+            label: '城市名称',
+            name: 'cityName',
+        },
+        {
+            label: '农作物名称',
+            name: 'name',
+        },
+    ]
+})
+
+axios.defaults.baseURL = '/api'
+axios.defaults.headers = {
+    Authorization: 'Bearer 1b5b0d733bcd4e458f4fd2cb4fb9c110',
+} as any
+
+const onSourceSuccess: TableProps['onSourceSuccess'] = async (res) => {
+    return {
+        total: res?.data?.data?.total,
+        list: res?.data?.data?.list,
+    }
+}
+const params = reactive({
+    cityName: '',
+})
 const columns = reactive<TableProps['columns']>([
     {
         title: 'id',
@@ -31,7 +66,7 @@ const columns = reactive<TableProps['columns']>([
     },
     {
         title: '城市名称',
-        dataIndex: 'cityId',
+        dataIndex: 'cityName',
         width: 150,
         // formItemProps: {
         //     controlType: 'Select',
@@ -96,7 +131,7 @@ const columns = reactive<TableProps['columns']>([
     },
 ])
 const listApi = async (params?: any, config?: any) =>
-    await axios.get('/api/hnz/base/crop/page', { params, ...config })
+    await axios.get('/hnz/base/crop/page', { params, ...config })
 const detailsApi = async (params?: any, config?: any) =>
     await axios.get('/hnz/base/crop/get', { params, ...config })
 const createApi = async (params?: any, config?: any) =>
