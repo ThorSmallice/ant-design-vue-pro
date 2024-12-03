@@ -3,7 +3,6 @@
         <Table
             full
             ref="tableRef"
-            :params="params"
             :columns="columns"
             :apis="{
                 list: listApi,
@@ -15,20 +14,23 @@
                 import: importApi,
             }"
             :onSourceSuccess="onSourceSuccess"
-            :filterFormItem="filterFormItem"
+            :queryFormItem="queryFormItem"
         ></Table>
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="tsx">
 import { Table, TableProps } from '@dbthor/ant-design-vue-pro'
+import { ControlMapType } from '@src/components/table/control'
+import { TableQueryFormItemProps } from '@src/components/table/useQueryForm'
 import axios from 'axios'
-import { computed, reactive, ref } from 'vue'
+import { Input } from 'ant-design-vue'
+import { computed, Reactive, reactive, ref, h } from 'vue'
 // TableConfig.fieldsNames.default.list = ['data', 'data', 'list']
 // TableConfig.fieldsNames.default.total = ['data', 'data', 'total']
 const tableRef = ref()
 
-const filterFormItem = computed(() => {
+const queryFormItem = computed((): TableQueryFormItemProps[] => {
     return [
         {
             label: '城市名称',
@@ -37,6 +39,10 @@ const filterFormItem = computed(() => {
         {
             label: '农作物名称',
             name: 'name',
+        },
+        {
+            label: '自定义控件',
+            name: 'custom',
         },
     ]
 })
@@ -52,13 +58,12 @@ const onSourceSuccess: TableProps['onSourceSuccess'] = async (res) => {
         list: res?.data?.data?.list,
     }
 }
-const params = reactive({
-    cityName: '',
-})
+
 const columns = reactive<TableProps['columns']>([
     {
         title: 'id',
         dataIndex: 'id',
+        width: 80,
         // hidden: true,
         // formItemProps: {
         //     hidden: true,

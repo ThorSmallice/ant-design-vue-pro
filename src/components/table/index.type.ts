@@ -5,9 +5,13 @@ import {
     TableColumnProps as ATableColumnProps,
     PaginationProps,
     FormItemProps,
+    FormProps,
 } from 'ant-design-vue'
 
 import { AxiosRequestConfig, AxiosResponse } from 'axios'
+import { validateOptions } from 'ant-design-vue/es/form/useForm'
+import { RuleObject } from 'ant-design-vue/es/form'
+import { TableQueryFormItemProps, TableQueryFormProps } from './useQueryForm'
 
 type TableFieldNames = string | string[]
 
@@ -28,10 +32,6 @@ export type requestParams = {
 }
 export type requestParamsFormatter = (params: requestParams) => requestParams
 
-export interface TableColumnsProps extends ATableColumnProps {}
-
-export interface TableFilterFormItemProps extends FormItemProps {}
-
 export interface TableProps extends Omit<ATableProps, 'columns'> {
     full?: boolean
     apis?: Partial<{
@@ -43,7 +43,7 @@ export interface TableProps extends Omit<ATableProps, 'columns'> {
         export: TablePropsApi
         import: TablePropsApi
     }>
-    columns?: TableColumnsProps[]
+    columns?: any[]
     fieldsNames?: Partial<{
         page: string //  apis.list 请求参数中的 当前页的field
         pageSize: string //  apis.list 请求参数中的 每页数据量的field
@@ -60,8 +60,14 @@ export interface TableProps extends Omit<ATableProps, 'columns'> {
     onSourceSuccess: (res: AxiosResponse) => Promise<TableSourceResult>
     onSourceError: (err: Error) => void
 
-    ownFilterForm?: boolean
-    filterFormItem?: TableFilterFormItemProps[]
+    ownQueryForm?: boolean
+    queryFormProps?: FormProps
+    queryFormRules?: RuleObject[]
+    queryUseFormOptions?: TableQueryFormProps['useFormOptions']
+    queryFormItem?: TableQueryFormItemProps[]
+    queryFormRowProps?: TableQueryFormProps['queryFormRowProps']
+    queryFormColProps?: TableQueryFormProps['queryFormColProps']
+    queryFormFlexProps?: TableQueryFormProps['queryFormFlexProps']
 }
 
 export const tableProps = () => ({
@@ -76,6 +82,12 @@ export const tableProps = () => ({
     requestParamsFormatter: functionType<TableProps['requestParamsFormatter']>(),
     onSourceSuccess: functionType<TableProps['onSourceSuccess']>(),
     onSourceError: functionType<TableProps['onSourceError']>(),
-    ownFilterForm: booleanType(true),
-    filterFormItem: arrayType<TableProps['filterFormItem']>(),
+    ownQueryForm: booleanType(true),
+    queryFormProps: objectType<TableProps['queryFormProps']>(),
+    queryFormRules: arrayType<TableProps['queryFormRules']>(),
+    queryUseFormOptions: objectType<TableProps['queryUseFormOptions']>(),
+    queryFormItem: arrayType<TableProps['queryFormItem']>(),
+    queryFormRowProps: objectType<TableProps['queryFormRowProps']>(),
+    queryFormColProps: objectType<TableProps['queryFormColProps']>(),
+    queryFormFlexProps: objectType<TableProps['queryFormFlexProps']>(),
 })

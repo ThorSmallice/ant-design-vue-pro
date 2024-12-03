@@ -4,9 +4,9 @@ import { computed, defineComponent } from 'vue'
 import { tableProps } from './index.type'
 import useColumns from './useColumns'
 import useDataSource from './useDataSource'
+import useQueryForm from './useQueryForm'
 import usePagination from './usePagination'
 import useParams from './useParams'
-import useFilterForm from './useFilterForm'
 export default defineComponent({
     name: 'DTable',
 
@@ -16,15 +16,30 @@ export default defineComponent({
         const { resColumns } = useColumns({
             columns: props.columns,
         })
-        const { pagination } = useParams()
+
+        const { QueryForm, QueryFormInstance, queryFormParams } = useQueryForm({
+            filterFormItem: props?.queryFormItem,
+            formProps: props?.queryFormProps,
+            rules: props?.queryFormRules,
+            useFormOptions: props?.queryUseFormOptions,
+            queryFormRowProps: props?.queryFormRowProps,
+            queryFormColProps: props?.queryFormColProps,
+            queryFormFlexProps: props?.queryFormFlexProps,
+        })
+
+        const { pagination, resultParams } = useParams({
+            params: props?.params,
+            ownPagin: props?.ownPagin,
+            requestParamsFormatter: props?.requestParamsFormatter,
+            fieldsNames: props?.fieldsNames,
+            queryFormParams,
+        })
 
         const { source, loading, total, updateSource } = useDataSource({
             api: props?.apis?.list,
-            ownPagin: props?.ownPagin,
             fieldsNames: props?.fieldsNames,
-            pagination,
-            params: props?.params,
-            requestParamsFormatter: props?.requestParamsFormatter,
+
+            params: resultParams,
             onSourceSuccess: props?.onSourceSuccess,
             onSourceError: props?.onSourceError,
             emit,
@@ -37,26 +52,31 @@ export default defineComponent({
         })
 
         const RenderPagination = computed(() => {
-            return props.ownPagin && props.showOwnPagination ? (
+            return props?.ownPagin && props?.showOwnPagination ? (
                 <div class={['d-table-pagination-wrap']}>
                     <Pagination></Pagination>
                 </div>
             ) : null
         })
 
-        const {} = useFilterForm({
-            filterFormItem: props?.filterFormItem,
+        const RenderQueryForm = computed(() => {
+            return props?.ownQueryForm ? (
+                <div class={['d-table-query-form']}>
+                    <QueryForm></QueryForm>
+                </div>
+            ) : null
         })
 
         expose({
             Pagination,
             updateSource,
+            QueryForm,
+            QueryFormInstance,
         })
 
         return () => (
             <div class={['d-table', props?.full ? 'd-table-full' : null]}>
-                {}
-                <div class={['d-table-control-wrap']}></div>
+                {RenderQueryForm.value}
                 <div class={['d-table-wrap']}>
                     <ATable
                         pagination={false}

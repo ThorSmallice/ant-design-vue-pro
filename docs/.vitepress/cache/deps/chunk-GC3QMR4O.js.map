@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../../node_modules/.pnpm/es-toolkit@1.27.0/node_modules/es-toolkit/dist/predicate/isBoolean.mjs", "../../../../node_modules/.pnpm/es-toolkit@1.27.0/node_modules/es-toolkit/dist/predicate/isError.mjs", "../../../../node_modules/.pnpm/es-toolkit@1.27.0/node_modules/es-toolkit/dist/predicate/isString.mjs", "../../../../node_modules/.pnpm/es-toolkit@1.27.0/node_modules/es-toolkit/dist/predicate/isSymbol.mjs"],
+  "sourcesContent": ["function isBoolean(x) {\n    return typeof x === 'boolean';\n}\n\nexport { isBoolean };\n", "function isError(value) {\n    return value instanceof Error;\n}\n\nexport { isError };\n", "function isString(value) {\n    return typeof value === 'string';\n}\n\nexport { isString };\n", "function isSymbol(value) {\n    return typeof value === 'symbol';\n}\n\nexport { isSymbol };\n"],
+  "mappings": ";AAAA,SAAS,UAAU,GAAG;AAClB,SAAO,OAAO,MAAM;AACxB;;;ACFA,SAAS,QAAQ,OAAO;AACpB,SAAO,iBAAiB;AAC5B;;;ACFA,SAAS,SAAS,OAAO;AACrB,SAAO,OAAO,UAAU;AAC5B;;;ACFA,SAAS,SAAS,OAAO;AACrB,SAAO,OAAO,UAAU;AAC5B;",
+  "names": []
+}

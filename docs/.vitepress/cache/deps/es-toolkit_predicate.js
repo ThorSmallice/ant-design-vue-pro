@@ -1,4 +1,10 @@
 import {
+  isBoolean,
+  isError,
+  isString,
+  isSymbol
+} from "./chunk-GC3QMR4O.js";
+import {
   isArrayBuffer,
   isBlob,
   isDate,
@@ -22,28 +28,8 @@ import {
   isUndefined,
   isWeakMap,
   isWeakSet
-} from "./chunk-PWMIMNLE.js";
+} from "./chunk-Z3SB3XGQ.js";
 import "./chunk-G3PMV62Z.js";
-
-// node_modules/.pnpm/es-toolkit@1.27.0/node_modules/es-toolkit/dist/predicate/isBoolean.mjs
-function isBoolean(x) {
-  return typeof x === "boolean";
-}
-
-// node_modules/.pnpm/es-toolkit@1.27.0/node_modules/es-toolkit/dist/predicate/isError.mjs
-function isError(value) {
-  return value instanceof Error;
-}
-
-// node_modules/.pnpm/es-toolkit@1.27.0/node_modules/es-toolkit/dist/predicate/isString.mjs
-function isString(value) {
-  return typeof value === "string";
-}
-
-// node_modules/.pnpm/es-toolkit@1.27.0/node_modules/es-toolkit/dist/predicate/isSymbol.mjs
-function isSymbol(value) {
-  return typeof value === "symbol";
-}
 export {
   isArrayBuffer,
   isBlob,

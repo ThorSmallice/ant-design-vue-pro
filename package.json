@@ -22,14 +22,18 @@
         "registry": "https://registry.npmjs.org/"
     },
     "devDependencies": {
+        "@ant-design/icons-vue": "^7.0.1",
         "@types/node": "^20.17.8",
+        "@types/qs": "^6.9.17",
         "@vitejs/plugin-vue": "^5.2.0",
         "@vitejs/plugin-vue-jsx": "^4.1.0",
         "ant-design-vue": "~4.2.6",
         "autoprefixer": "^10.4.20",
         "axios": "^1.7.8",
+        "dayjs": "^1.11.13",
         "path": "^0.12.7",
         "postcss": "^8.4.49",
+        "qs": "^6.13.1",
         "tailwindcss": "^3.4.15",
         "typescript": "^5.7.2",
         "vite": "^5.4.11",
@@ -42,6 +46,8 @@
     },
     "peerDependencies": {
         "ant-design-vue": "4.x",
+        "dayjs": "^1.11.13",
+        "qs": "^6.13.1",
         "vue": "^3.5.12"
     },
     "dependencies": {
