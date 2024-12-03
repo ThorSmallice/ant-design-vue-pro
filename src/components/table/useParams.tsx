@@ -23,7 +23,7 @@ export default ({ params, queryFormParams, ownPagin, fieldsNames, requestParamsF
               }
             : {}
 
-        const queryFormParamsRaw = unref({ ...queryFormParams })
+        const queryFormParamsRaw = unref({ ...queryFormParams.values })
 
         for (let k in queryFormParamsRaw) {
             if (dayjs.isDayjs(queryFormParamsRaw[k])) {
@@ -42,7 +42,6 @@ export default ({ params, queryFormParams, ownPagin, fieldsNames, requestParamsF
             ...params,
             ...paginParams,
         })
-        console.log('🚀 ~ resultParams ~ requestParams:', requestParams)
 
         return isFunction(requestParamsFormatter)
             ? requestParamsFormatter?.(requestParams)

@@ -17,8 +17,7 @@
 :::
 
 <script lang="ts" setup>
-import { ref,h } from 'vue'
-
+import { ref,h } from 'vue' 
 import Table from '@examples/table/index.vue'
 import {Modal,Button} from 'ant-design-vue'
 import { FullscreenOutlined } from '@ant-design/icons-vue';

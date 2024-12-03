@@ -1,18 +1,25 @@
 import initDefaultProps from '@src/tools'
-import { Table as ATable } from 'ant-design-vue'
-import { computed, defineComponent } from 'vue'
+import { Table as ATable, Form } from 'ant-design-vue'
+import { computed, defineComponent, VNode } from 'vue'
 import { tableProps } from './index.type'
 import useColumns from './useColumns'
 import useDataSource from './useDataSource'
-import useQueryForm from './useQueryForm'
+import useQueryForm, { TableFormInstance } from './useQueryForm'
 import usePagination from './usePagination'
 import useParams from './useParams'
-export default defineComponent({
+
+export interface TableSlots {
+    queryFormExtraLeft?: (form: TableFormInstance) => VNode[]
+    queryFormExtraCenter?: (form: TableFormInstance) => VNode[]
+    queryFormExtraRight?: (form: TableFormInstance) => VNode[]
+}
+const Table = defineComponent({
     name: 'DTable',
 
     props: initDefaultProps(tableProps(), {}),
 
-    setup(props, { expose, emit }) {
+    setup(props, { expose, emit, slots }) {
+        console.log(slots)
         const { resColumns } = useColumns({
             columns: props.columns,
         })
@@ -25,6 +32,9 @@ export default defineComponent({
             queryFormRowProps: props?.queryFormRowProps,
             queryFormColProps: props?.queryFormColProps,
             queryFormFlexProps: props?.queryFormFlexProps,
+            queryFormSubmitBtn: props?.queryFormSubmitBtn,
+            queryFormResetBtn: props?.queryFormResetBtn,
+            slots,
         })
 
         const { pagination, resultParams } = useParams({
@@ -60,7 +70,7 @@ export default defineComponent({
         })
 
         const RenderQueryForm = computed(() => {
-            return props?.ownQueryForm ? (
+            return props?.queryForm ? (
                 <div class={['d-table-query-form']}>
                     <QueryForm></QueryForm>
                 </div>
@@ -90,4 +100,8 @@ export default defineComponent({
             </div>
         )
     },
-})
+}) as unknown as {
+    new (): { $slots: TableSlots }
+}
+
+export default Table

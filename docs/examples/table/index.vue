@@ -15,17 +15,29 @@
             }"
             :onSourceSuccess="onSourceSuccess"
             :queryFormItem="queryFormItem"
-        ></Table>
+            :queryFormColProps="{
+                span: 24 / queryFormItem.length,
+            }"
+        >
+            <template #queryFormExtraLeft="form">
+                <Button @click="form.onQueryFormReset">左边</Button>
+            </template>
+            <template #queryFormExtraCenter>
+                <Button>中间</Button>
+            </template>
+            <template #queryFormExtraRight>
+                <Button>右边</Button>
+            </template>
+        </Table>
     </div>
 </template>
 
-<script setup lang="tsx">
-import { Table, TableProps } from '@dbthor/ant-design-vue-pro'
-import { ControlMapType } from '@src/components/table/control'
+<script setup lang="ts">
+import { TableProps, Table } from '@dbthor/ant-design-vue-pro'
 import { TableQueryFormItemProps } from '@src/components/table/useQueryForm'
 import axios from 'axios'
-import { Input } from 'ant-design-vue'
-import { computed, Reactive, reactive, ref, h } from 'vue'
+import { Button } from 'ant-design-vue'
+import { computed, reactive, ref, h } from 'vue'
 // TableConfig.fieldsNames.default.list = ['data', 'data', 'list']
 // TableConfig.fieldsNames.default.total = ['data', 'data', 'total']
 const tableRef = ref()
@@ -39,10 +51,6 @@ const queryFormItem = computed((): TableQueryFormItemProps[] => {
         {
             label: '农作物名称',
             name: 'name',
-        },
-        {
-            label: '自定义控件',
-            name: 'custom',
         },
     ]
 })
