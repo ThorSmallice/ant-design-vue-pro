@@ -17,7 +17,7 @@ import { FieldNamesType } from 'ant-design-vue/es/cascader'
 import { Callbacks, RuleError, RuleObject } from 'ant-design-vue/es/form/interface'
 import { Props, ValidateInfo, validateInfos, validateOptions } from 'ant-design-vue/es/form/useForm'
 import { isFunction } from 'es-toolkit'
-import { Reactive, reactive, Ref, SlotsType, VNode } from 'vue'
+import { computed, Reactive, reactive, Ref, useSlots, VNode } from 'vue'
 import { ControlMapProps, FormItemControl } from './control'
 import { TableSlots } from './index.type'
 interface DebounceSettings {
@@ -74,7 +74,6 @@ export interface TableQueryFormProps {
     queryFormResetBtn?: boolean | ((form: FormInstance) => VNode)
     queryFormResetBtnProps?: ButtonProps
     queryFormSubmitWithReset?: boolean
-    slots?: TableSlots
 }
 
 export default (props: TableQueryFormProps) => {
@@ -89,7 +88,6 @@ export default (props: TableQueryFormProps) => {
         queryFormSubmitBtn,
         queryFormResetBtn,
         queryFormSubmitWithReset,
-        slots,
     } = $(props)
     const queryFormState = reactive<any>({ values: {} })
     const { resetFields, validate, ...formMethods } = Form.useForm(
@@ -97,6 +95,8 @@ export default (props: TableQueryFormProps) => {
         queryFormRules,
         queryUseFormOptions
     )
+
+    const { queryFormExtraLeft, queryFormExtraCenter, queryFormExtraRight } = $(useSlots())
 
     const queryFormParams = reactive<{ [key: string]: any }>({
         values: {},
@@ -111,13 +111,18 @@ export default (props: TableQueryFormProps) => {
         queryFormSubmitWithReset && validate().then((vals) => onQueryFormFinish(vals))
     }
 
-    const QueryFormInstance = {
-        resetFields,
-        validate,
-        ...formMethods,
-        onQueryFormFinish,
-        onQueryFormReset,
-    } as TableQueryFormInstance
+    const QueryFormInstance = $(
+        computed(
+            () =>
+                ({
+                    ...formMethods,
+                    resetFields,
+                    validate,
+                    onQueryFormFinish,
+                    onQueryFormReset,
+                } as TableQueryFormInstance)
+        )
+    )
     const QueryForm = () => (
         <Form model={queryFormState.values} onFinish={onQueryFormFinish} {...queryFormProps}>
             <Flex justify="space-between" {...queryFormFlexProps}>
@@ -162,7 +167,7 @@ export default (props: TableQueryFormProps) => {
                 </Row>
                 <Form.Item class={['ml-2']}>
                     <Space>
-                        {slots?.queryFormExtraLeft?.(QueryFormInstance)}
+                        {queryFormExtraLeft?.(QueryFormInstance)}
                         {queryFormSubmitBtn ? (
                             isFunction(queryFormSubmitBtn) ? (
                                 queryFormSubmitBtn?.(QueryFormInstance)
@@ -172,7 +177,7 @@ export default (props: TableQueryFormProps) => {
                                 </Button>
                             )
                         ) : null}
-                        {slots?.queryFormExtraCenter?.(QueryFormInstance)}
+                        {queryFormExtraCenter?.(QueryFormInstance)}
 
                         {queryFormResetBtn ? (
                             isFunction(queryFormResetBtn) ? (
@@ -182,7 +187,7 @@ export default (props: TableQueryFormProps) => {
                             )
                         ) : null}
 
-                        {slots?.queryFormExtraRight?.(QueryFormInstance)}
+                        {queryFormExtraRight?.(QueryFormInstance)}
                     </Space>
                 </Form.Item>
             </Flex>

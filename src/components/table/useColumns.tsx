@@ -9,7 +9,6 @@ export interface TableColumnProps extends ATableColumnProps {
 
 export interface TableUseColumnsProps {
     columns: TableColumnProps[]
-    colResizable?: boolean
 }
 
 const vnodeToString = async (vnode: VNode) => {
@@ -27,7 +26,7 @@ const computedTitleWidth = (title: string): number => {
 }
 
 export default (props: any) => {
-    const { columns, colResizable } = $(props)
+    const { columns } = $(props)
     const columnsTitleString = ref([])
     const resColumns = ref([])
 
@@ -40,7 +39,6 @@ export default (props: any) => {
             ?.map?.((col: TableColumnProps, i: number) => {
                 const { ...o } = col
                 const resCol: ATableColumnProps = {
-                    resizable: colResizable,
                     width: computedTitleWidth(titleArr[i]),
                     ...o,
                 }
@@ -66,7 +64,7 @@ export default (props: any) => {
     }
 
     watch(
-        [() => columns, () => colResizable],
+        [() => columns],
         () => {
             updateColumns(columns)
         },

@@ -15,6 +15,18 @@
             :queryFormSubmitBtn="open"
             :colResizable="open"
         >
+            <template #headerCell="{ column }">
+                <span style="color: #1890ff">{{ column.dataIndex }}</span>
+            </template>
+            <template #queryFormExtraLeft>
+                <Button>left</Button>
+            </template>
+            <template #queryFormExtraCenter>
+                <Button>center</Button>
+            </template>
+            <template #queryFormExtraRight>
+                <Button>right</Button>
+            </template>
         </Table>
     </div>
 </template>
@@ -35,6 +47,7 @@ const open = ref(false)
 const click = () => {
     open.value = !open.value
 }
+
 const queryFormItem = computed((): TableQueryFormItemProps[] => {
     return [
         {

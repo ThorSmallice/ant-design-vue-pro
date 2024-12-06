@@ -10,7 +10,11 @@
                 :data-source="source"
                 :loading="loading"
                 @resize-column="onResizeColumn"
-            ></ATable>
+            >
+                <template #headerCell="{ title, column }">
+                    <slot name="headerCell" :title="title" :column="column"></slot>
+                </template>
+            </ATable>
         </div>
         <div :class="['d-table-pagination-wrap']" v-if="ownPagin">
             <Pagination></Pagination>
@@ -19,25 +23,28 @@
 </template>
 
 <script setup lang="tsx">
-import { Table as ATable, TableColumnProps } from 'ant-design-vue'
 import config from '@config/index'
-import { mergeConfigProps, TableProps } from './index.type'
+import { Table as ATable, TableColumnProps } from 'ant-design-vue'
+import { mergeConfigProps, TableProps, TableSlots } from './index.type'
 import useColumns from './useColumns'
-import useQueryForm from './useQueryForm'
+import useDataSource from './useDataSource'
 import usePagination from './usePagination'
 import useParams from './useParams'
-import { watch } from 'vue'
-import useDataSource from './useDataSource'
+import useQueryForm from './useQueryForm'
+import { useSlots } from 'vue'
 defineOptions({
     name: 'DTable',
 })
+
+defineSlots<TableSlots>()
+
+// const slots = $(useSlots())
 
 const onResizeColumn = (w: number, col: TableColumnProps) => {
     col['width'] = w
 }
 const {
     columns,
-    colResizable,
     apis,
     params,
     requestParamsFormatter,
@@ -74,7 +81,6 @@ const {
 const { resColumns }: any = $$(
     useColumns({
         columns,
-        colResizable,
     })
 )
 
@@ -102,7 +108,6 @@ const { resultParams, pagination } = $$(
     })
 )
 
-console.log(apis.list)
 const { source, loading, total, updateSource }: any = $$(
     useDataSource({
         api: apis,
@@ -112,9 +117,7 @@ const { source, loading, total, updateSource }: any = $$(
         onSourceError,
     })
 )
-watch(source, () => {
-    console.log('🚀 ~ resultParams:', source)
-})
+
 const Pagination = $$(usePagination({ pagination, total, ownPaginProps }))
 
 defineExpose({
