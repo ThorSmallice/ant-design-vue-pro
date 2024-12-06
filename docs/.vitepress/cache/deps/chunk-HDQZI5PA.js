@@ -191,6 +191,24 @@ var isBooleanAttr = makeMap(
 function includeBooleanAttr(value) {
   return !!value || value === "";
 }
+var unsafeAttrCharRE = /[>/="'\u0009\u000a\u000c\u0020]/;
+var attrValidationCache = {};
+function isSSRSafeAttrName(name) {
+  if (attrValidationCache.hasOwnProperty(name)) {
+    return attrValidationCache[name];
+  }
+  const isUnsafe = unsafeAttrCharRE.test(name);
+  if (isUnsafe) {
+    console.error(`unsafe attribute name: ${name}`);
+  }
+  return attrValidationCache[name] = !isUnsafe;
+}
+var propsToAttrMap = {
+  acceptCharset: "accept-charset",
+  className: "class",
+  htmlFor: "for",
+  httpEquiv: "http-equiv"
+};
 var isKnownHtmlAttr = makeMap(
   `accept,accept-charset,accesskey,action,align,allow,alt,async,autocapitalize,autocomplete,autofocus,autoplay,background,bgcolor,border,buffered,capture,challenge,charset,checked,cite,class,code,codebase,color,cols,colspan,content,contenteditable,contextmenu,controls,coords,crossorigin,csp,data,datetime,decoding,default,defer,dir,dirname,disabled,download,draggable,dropzone,enctype,enterkeyhint,for,form,formaction,formenctype,formmethod,formnovalidate,formtarget,headers,height,hidden,high,href,hreflang,http-equiv,icon,id,importance,inert,integrity,ismap,itemprop,keytype,kind,label,lang,language,loading,list,loop,low,manifest,max,maxlength,minlength,media,min,multiple,muted,name,novalidate,open,optimum,pattern,ping,placeholder,poster,preload,radiogroup,readonly,referrerpolicy,rel,required,reversed,rows,rowspan,sandbox,scope,scoped,selected,shape,size,sizes,slot,span,spellcheck,src,srcdoc,srclang,srcset,start,step,style,summary,tabindex,target,title,translate,type,usemap,value,width,wrap`
 );
@@ -206,6 +224,49 @@ function isRenderableAttrValue(value) {
   }
   const type = typeof value;
   return type === "string" || type === "number" || type === "boolean";
+}
+var escapeRE = /["'&<>]/;
+function escapeHtml(string) {
+  const str = "" + string;
+  const match = escapeRE.exec(str);
+  if (!match) {
+    return str;
+  }
+  let html = "";
+  let escaped;
+  let index;
+  let lastIndex = 0;
+  for (index = match.index; index < str.length; index++) {
+    switch (str.charCodeAt(index)) {
+      case 34:
+        escaped = "&quot;";
+        break;
+      case 38:
+        escaped = "&amp;";
+        break;
+      case 39:
+        escaped = "&#39;";
+        break;
+      case 60:
+        escaped = "&lt;";
+        break;
+      case 62:
+        escaped = "&gt;";
+        break;
+      default:
+        continue;
+    }
+    if (lastIndex !== index) {
+      html += str.slice(lastIndex, index);
+    }
+    lastIndex = index + 1;
+    html += escaped;
+  }
+  return lastIndex !== index ? html + str.slice(lastIndex, index) : html;
+}
+var commentStripRE = /^-?>|<!--|-->|--!>|<!-$/g;
+function escapeHtmlComment(src) {
+  return src.replace(commentStripRE, "");
 }
 var cssVarNameEscapeSymbolsRE = /[ !"#$%&'()*+,./:;<=>?@[\\\]^`{|}~]/g;
 function getEscapedCssVarName(key, doubleEscape) {
@@ -12329,12 +12390,34 @@ var compile2 = () => {
 };
 
 export {
+  makeMap,
+  EMPTY_OBJ,
+  NOOP,
+  isOn,
+  isArray,
+  isFunction,
+  isString,
+  isObject,
+  isPromise,
   camelize,
   capitalize,
   toHandlerKey,
+  getGlobalThis,
   normalizeStyle,
+  stringifyStyle,
   normalizeClass,
   normalizeProps,
+  isSVGTag,
+  isVoidTag,
+  isBooleanAttr,
+  includeBooleanAttr,
+  isSSRSafeAttrName,
+  propsToAttrMap,
+  isRenderableAttrValue,
+  escapeHtml,
+  escapeHtmlComment,
+  looseEqual,
+  looseIndexOf,
   toDisplayString,
   EffectScope,
   effectScope,
@@ -12539,4 +12622,4 @@ vue/dist/vue.runtime.esm-bundler.js:
   * @license MIT
   **)
 */
-//# sourceMappingURL=chunk-X54IR6VG.js.map
+//# sourceMappingURL=chunk-HDQZI5PA.js.map

@@ -1,18 +1,20 @@
 import config from '@config/index'
 import { arrayType, booleanType, functionType, objectType, someType } from '@src/tools/type'
-import {
-    TableProps as ATableProps,
-    TableColumnProps as ATableColumnProps,
-    PaginationProps,
-    FormItemProps,
-    FormProps,
-} from 'ant-design-vue'
+import { TableProps as ATableProps, FormProps, PaginationProps } from 'ant-design-vue'
 
-import { AxiosRequestConfig, AxiosResponse } from 'axios'
-import { validateOptions } from 'ant-design-vue/es/form/useForm'
 import { RuleObject } from 'ant-design-vue/es/form'
-import { TableQueryFormItemProps, TableQueryFormProps } from './useQueryForm'
-import { VNode } from 'vue'
+import { AxiosRequestConfig, AxiosResponse } from 'axios'
+import {
+    TableQueryFormInstance,
+    TableQueryFormItemProps,
+    TableQueryFormProps,
+} from './useQueryForm'
+import { TableColumnProps } from './useColumns'
+import { PropType, SetupContext, VNode } from 'vue'
+import { RenderExpandIconProps } from 'ant-design-vue/es/vc-table/interface'
+import { ColumnType } from 'ant-design-vue/es/table'
+import { cloneDeep } from 'es-toolkit'
+import { isArray, isObject } from 'es-toolkit/compat'
 
 type TableFieldNames = string | string[]
 
@@ -43,7 +45,11 @@ export interface TableProps extends Omit<ATableProps, 'columns'> {
     params?: {
         [key: string]: any
     }
-    columns?: any[]
+    /**
+     * 列配置
+     */
+    columns?: TableColumnProps[]
+    colResizable?: boolean
 
     /**
      * api 请求配置
@@ -57,9 +63,9 @@ export interface TableProps extends Omit<ATableProps, 'columns'> {
         export: TablePropsApi
         import: TablePropsApi
     }>
-    requestParamsFormatter: requestParamsFormatter
-    onSourceSuccess: (res: AxiosResponse) => Promise<TableSourceResult>
-    onSourceError: (err: Error) => void
+    requestParamsFormatter?: requestParamsFormatter
+    onSourceSuccess?: (res: AxiosResponse) => Promise<TableSourceResult>
+    onSourceError?: (err: Error) => void
     fieldsNames?: Partial<{
         page: string //  apis.list 请求参数中的 当前页的field
         pageSize: string //  apis.list 请求参数中的 每页数据量的field
@@ -71,7 +77,7 @@ export interface TableProps extends Omit<ATableProps, 'columns'> {
      * 分页配置
      */
     ownPagin?: boolean
-    ownPaginProps?: PaginationProps
+    ownPaginProps?: Partial<PaginationProps>
     showOwnPagination?: boolean
 
     /**
@@ -80,7 +86,7 @@ export interface TableProps extends Omit<ATableProps, 'columns'> {
     queryForm?: boolean
     queryFormProps?: FormProps
     queryFormRules?: RuleObject[]
-    queryUseFormOptions?: TableQueryFormProps['useFormOptions']
+    queryUseFormOptions?: TableQueryFormProps['queryUseFormOptions']
     queryFormItem?: TableQueryFormItemProps[]
     queryFormRowProps?: TableQueryFormProps['queryFormRowProps']
     queryFormColProps?: TableQueryFormProps['queryFormColProps']
@@ -96,6 +102,8 @@ export const tableProps = () => ({
     ...config?.Table,
     apis: objectType<TableProps['apis']>(),
     columns: arrayType<TableProps['columns']>([]),
+    colResizable: booleanType(true),
+
     ownPagin: booleanType(true),
     ownPaginProps: objectType<TableProps['ownPaginProps']>(),
     showOwnPagination: booleanType(true),
@@ -124,3 +132,48 @@ export const tableProps = () => ({
     queryFormResetBtnProps: objectType<TableProps['queryFormResetBtnProps']>(),
     queryFormSubmitWithReset: booleanType(false),
 })
+
+export type TableSlots = {
+    emptyText?: any
+    expandIcon?: RenderExpandIconProps<any>
+    title?: any
+    footer?: any
+    summary?: any
+    expandedRowRender?: any
+    expandColumnTitle?: any
+    bodyCell?: (props: {
+        text: any
+        value: any
+        record: Record<string, any>
+        index: number
+        column: ColumnType
+    }) => void
+    headerCell?: (props: { title: any; column: ColumnType }) => void
+    customFilterIcon?: any
+    customFilterDropdown?: any
+    default?: any
+    queryFormExtraLeft?: (form: TableQueryFormInstance) => VNode[]
+    queryFormExtraCenter?: (form: TableQueryFormInstance) => VNode[]
+    queryFormExtraRight?: (form: TableQueryFormInstance) => VNode[]
+}
+
+export interface TableSetupCtx extends Omit<SetupContext, 'slots'> {
+    slots: TableSlots
+}
+
+export const mergeConfigProps = <T>(
+    props: T
+): {
+    [key: string]: any
+} => {
+    const obj = cloneDeep(props)
+
+    for (let k in obj) {
+        if (isArray(obj[k]) || isObject(obj[k])) {
+            obj[k] = (function () {
+                return obj[k]
+            })()
+        }
+    }
+    return obj
+}

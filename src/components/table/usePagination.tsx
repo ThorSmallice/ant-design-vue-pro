@@ -1,13 +1,23 @@
-import { Pagination } from 'ant-design-vue'
+import { Pagination as APagination } from 'ant-design-vue'
+import { Ref } from 'vue'
+import { TableProps } from './index.type'
 
-export default ({ pagination, total, props }) => {
-    return () => (
-        <Pagination
+export default (props: {
+    pagination: Ref<{ page: number; pageSize: number }>
+    total: any
+    ownPaginProps: TableProps['ownPaginProps']
+}) => {
+    const { pagination, total, ownPaginProps = {} } = $(props)
+
+    const Pagination = () => (
+        <APagination
             v-model:current={pagination.page}
             v-model:pageSize={pagination.pageSize}
-            total={total.value}
-            show-quick-jumper
-            {...props}
-        ></Pagination>
+            v-model:total={total}
+            show-quick-jumper={true}
+            {...ownPaginProps}
+        ></APagination>
     )
+
+    return Pagination
 }

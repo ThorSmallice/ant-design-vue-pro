@@ -1,20 +1,25 @@
+import dayjs, { Dayjs } from 'dayjs'
 import { isFunction } from 'es-toolkit/predicate'
+import qs from 'qs'
 import { computed, reactive, unref } from 'vue'
 import { TableProps } from './index.type'
-import dayjs, { Dayjs } from 'dayjs'
-import qs from 'qs'
 export interface TableUseParmasProps {
     ownPagin: boolean
+
+    queryFormParams: {
+        [key: string]: any
+    }
     fieldsNames: TableProps['fieldsNames']
     params: TableProps['params']
     requestParamsFormatter: TableProps['requestParamsFormatter']
 }
-export default ({ params, queryFormParams, ownPagin, fieldsNames, requestParamsFormatter }) => {
+export default (props: TableUseParmasProps) => {
+    const { params, queryFormParams, ownPagin, fieldsNames, requestParamsFormatter } = $(props)
+
     const pagination = reactive({
         page: 1,
         pageSize: 10,
     })
-
     const resultParams = computed(() => {
         const paginParams = ownPagin
             ? {
@@ -48,8 +53,5 @@ export default ({ params, queryFormParams, ownPagin, fieldsNames, requestParamsF
             : qs.parse(requestParams)
     })
 
-    return {
-        pagination,
-        resultParams,
-    }
+    return { resultParams, pagination }
 }

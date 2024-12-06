@@ -1,8 +1,12 @@
 import vueJsx from '@vitejs/plugin-vue-jsx'
+
 import { resolve } from 'path'
 import { defineConfig } from 'vitepress'
+
+import VueMacros from 'unplugin-vue-macros/vite'
 import pkg from '../../package.json'
 import { search as zhSearch } from './zh'
+
 export const base = defineConfig({
     title: 'Ant-Design-Pro-Vue',
     description: 'Antd增强版',
@@ -15,7 +19,13 @@ export const base = defineConfig({
         'zh/:rest*': ':rest*',
     },
     vite: {
-        plugins: [vueJsx({})],
+        plugins: [
+            VueMacros({
+                plugins: {
+                    vueJsx: vueJsx(),
+                },
+            }),
+        ],
         resolve: {
             alias: {
                 [pkg.name]: resolve(__dirname, '../../src/main.ts'),

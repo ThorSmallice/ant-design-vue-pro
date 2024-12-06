@@ -4,11 +4,15 @@ import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 import pkg from './package.json'
-
+import VueMacros from 'unplugin-vue-macros/vite'
 export default defineConfig({
     plugins: [
-        Vue(),
-        vueJsx({}),
+        VueMacros({
+            plugins: {
+                vue: Vue(),
+                vueJsx: vueJsx(), // 如有需要
+            },
+        }),
         dts({
             outDir: 'dist',
             staticImport: true,
@@ -32,6 +36,13 @@ export default defineConfig({
     server: {
         host: '0.0.0.0',
         port: 13800,
+        proxy: {
+            '/api': {
+                target: 'http://116.177.41.89:8888',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/api/, '/hnz/admin-api'),
+            },
+        },
     },
     resolve: {
         alias: {

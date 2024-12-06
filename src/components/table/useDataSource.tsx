@@ -3,23 +3,18 @@ import { isFunction } from 'es-toolkit/predicate'
 import { EmitFn, ref, watch } from 'vue'
 import { requestParams, TableProps } from './index.type'
 export interface TableUseDataSourceProps {
-    api: TableProps['apis']['list']
+    api: any
     fieldsNames: TableProps['fieldsNames']
     params: TableProps['params']
     onSourceSuccess: TableProps['onSourceSuccess']
     onSourceError: TableProps['onSourceError']
-    emit: EmitFn
+    emit?: EmitFn
 }
 
 let controller: AbortController
 
-export default ({
-    api,
-    fieldsNames,
-    params,
-    onSourceSuccess,
-    onSourceError,
-}: TableUseDataSourceProps) => {
+export default (props: TableUseDataSourceProps) => {
+    const { api, fieldsNames, params, onSourceSuccess, onSourceError } = $(props)
     const source = ref([])
     const loading = ref(false)
     const total = ref(0)
@@ -28,7 +23,7 @@ export default ({
         controller?.abort?.()
         loading.value = true
         controller = new AbortController()
-        api?.(params, {
+        api?.list?.(params, {
             signal: controller.signal,
         })
             ?.then(async (res) => {
@@ -56,11 +51,11 @@ export default ({
     }
 
     const updateSource = async () => {
-        getSource(params.value)
+        getSource(params)
     }
 
     watch(
-        [params],
+        () => params,
         () => {
             requestAnimationFrame(() => {
                 updateSource()

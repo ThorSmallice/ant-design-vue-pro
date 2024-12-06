@@ -21,7 +21,8 @@
         "noUnusedParameters": true,
         "noUnusedLocals": true,
         "noImplicitAny": false,
-        "types": ["vite/client", "node"],
+        "types": ["vite/client", "node", "unplugin-vue-macros/macros-global"],
+        // "types": ["vite/client", "node"],
 
         "strictNullChecks": false,
         "verbatimModuleSyntax": false,
@@ -45,5 +46,8 @@
         "docs/**/*.ts",
         "docs/**/*.tsx"
     ],
-    "exclude": ["node_modules"]
+    "exclude": ["node_modules"],
+    "vueCompilerOptions": {
+        "plugins": ["unplugin-vue-macros/volar"]
+    }
 }

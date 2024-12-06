@@ -17,17 +17,17 @@ import { FieldNamesType } from 'ant-design-vue/es/cascader'
 import { Callbacks, RuleError, RuleObject } from 'ant-design-vue/es/form/interface'
 import { Props, ValidateInfo, validateInfos, validateOptions } from 'ant-design-vue/es/form/useForm'
 import { isFunction } from 'es-toolkit'
-import { computed, Reactive, reactive, ref, Ref, VNode, watch } from 'vue'
+import { Reactive, reactive, Ref, SlotsType, VNode } from 'vue'
 import { ControlMapProps, FormItemControl } from './control'
-import { TableSlots } from './table'
-
+import { TableSlots } from './index.type'
 interface DebounceSettings {
     leading?: boolean
     wait?: number
     trailing?: boolean
 }
 type namesType = string | string[]
-export interface TableFormInstance {
+
+export interface TableQueryFormInstance {
     modelRef: Props | Ref<Props>
     rulesRef: Props | Ref<Props>
     initialModel: Props
@@ -56,10 +56,10 @@ export interface TableQueryFormItemProps<T extends keyof ControlMapProps = keyof
     rules?: RuleObject[]
 }
 export interface TableQueryFormProps {
-    filterFormItem?: TableQueryFormItemProps[]
-    formProps?: FormProps
-    rules?: RuleObject[]
-    useFormOptions?: {
+    queryFormItem?: TableQueryFormItemProps[]
+    queryFormProps?: FormProps
+    queryFormRules?: RuleObject[]
+    queryUseFormOptions?: {
         immediate?: boolean
         deep?: boolean
         validateOnRuleChange?: boolean
@@ -74,27 +74,28 @@ export interface TableQueryFormProps {
     queryFormResetBtn?: boolean | ((form: FormInstance) => VNode)
     queryFormResetBtnProps?: ButtonProps
     queryFormSubmitWithReset?: boolean
-    slots: TableSlots
+    slots?: TableSlots
 }
 
-export default ({
-    filterFormItem,
-    formProps,
-    rules,
-    useFormOptions,
-    queryFormRowProps,
-    queryFormColProps,
-    queryFormFlexProps,
-    queryFormSubmitBtn,
-    queryFormResetBtn,
-    queryFormSubmitWithReset,
-    slots,
-}: TableQueryFormProps) => {
+export default (props: TableQueryFormProps) => {
+    const {
+        queryFormItem,
+        queryFormProps,
+        queryFormRules,
+        queryUseFormOptions,
+        queryFormRowProps,
+        queryFormColProps,
+        queryFormFlexProps,
+        queryFormSubmitBtn,
+        queryFormResetBtn,
+        queryFormSubmitWithReset,
+        slots,
+    } = $(props)
     const queryFormState = reactive<any>({ values: {} })
     const { resetFields, validate, ...formMethods } = Form.useForm(
         queryFormState,
-        rules,
-        useFormOptions
+        queryFormRules,
+        queryUseFormOptions
     )
 
     const queryFormParams = reactive<{ [key: string]: any }>({
@@ -116,12 +117,12 @@ export default ({
         ...formMethods,
         onQueryFormFinish,
         onQueryFormReset,
-    } as TableFormInstance
+    } as TableQueryFormInstance
     const QueryForm = () => (
-        <Form model={queryFormState.values} onFinish={onQueryFormFinish} {...formProps}>
+        <Form model={queryFormState.values} onFinish={onQueryFormFinish} {...queryFormProps}>
             <Flex justify="space-between" {...queryFormFlexProps}>
                 <Row gutter={[10, 10]} class={['flex-1']} {...queryFormRowProps}>
-                    {filterFormItem?.map((item, i) => {
+                    {queryFormItem?.map((item, i) => {
                         const {
                             label,
                             name,
