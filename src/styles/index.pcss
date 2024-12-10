@@ -5,6 +5,9 @@
 .d-table {
     @apply w-full flex flex-col relative bg-white;
 
+    .d-table-cies-btns-wrap {
+        @apply p-2;
+    }
     .d-table-pagination-wrap {
         @apply flex w-full items-center justify-end my-4;
         .ant-pagination {
@@ -32,10 +35,13 @@
         @apply p-2;
     }
     .d-table-query-form {
-        @apply p-2;
+        @apply p-2 pt-4;
         .ant-form-item {
             @apply mb-0;
         }
+    }
+    .ant-form-item .ant-form-item-label > label .ant-form-item-tooltip {
+        @apply flex;
     }
 }
 .d-table-full {

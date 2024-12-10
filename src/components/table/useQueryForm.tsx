@@ -6,7 +6,6 @@ import {
     Flex,
     FlexProps,
     Form,
-    FormInstance,
     FormItemProps,
     FormProps,
     Row,
@@ -17,17 +16,15 @@ import { FieldNamesType } from 'ant-design-vue/es/cascader'
 import { Callbacks, RuleError, RuleObject } from 'ant-design-vue/es/form/interface'
 import { Props, ValidateInfo, validateInfos, validateOptions } from 'ant-design-vue/es/form/useForm'
 import { isFunction } from 'es-toolkit'
-import { computed, Reactive, reactive, Ref, useSlots, VNode } from 'vue'
+import { computed, Reactive, reactive, ref, Ref, useSlots, VNode } from 'vue'
 import { ControlMapProps, FormItemControl } from './control'
-import { TableSlots } from './index.type'
 interface DebounceSettings {
     leading?: boolean
     wait?: number
     trailing?: boolean
 }
 type namesType = string | string[]
-
-export interface TableQueryFormInstance {
+export interface FormInstance {
     modelRef: Props | Ref<Props>
     rulesRef: Props | Ref<Props>
     initialModel: Props
@@ -43,6 +40,8 @@ export interface TableQueryFormInstance {
     ) => Promise<RuleError[]>
     mergeValidateInfo: (items: ValidateInfo | ValidateInfo[]) => ValidateInfo
     clearValidate: (names?: namesType) => void
+}
+export interface TableQueryFormInstance extends FormInstance {
     onQueryFormFinish: (vals: any) => void
     onQueryFormReset: () => void
 }
@@ -55,23 +54,24 @@ export interface TableQueryFormItemProps<T extends keyof ControlMapProps = keyof
     formItemProps?: FormItemProps
     rules?: RuleObject[]
 }
+
+export type UseFormOptions = {
+    immediate?: boolean
+    deep?: boolean
+    validateOnRuleChange?: boolean
+    debounce?: DebounceSettings
+    onValidate?: Callbacks['onValidate']
+}
+
 export interface TableQueryFormProps {
     queryFormItem?: TableQueryFormItemProps[]
     queryFormProps?: FormProps
-    queryFormRules?: RuleObject[]
-    queryUseFormOptions?: {
-        immediate?: boolean
-        deep?: boolean
-        validateOnRuleChange?: boolean
-        debounce?: DebounceSettings
-        onValidate?: Callbacks['onValidate']
-    }
     queryFormRowProps?: RowProps
     queryFormColProps?: ColProps
     queryFormFlexProps?: FlexProps
-    queryFormSubmitBtn?: boolean | ((form: FormInstance) => VNode)
+    queryFormSubmitBtn?: boolean | ((form: TableQueryFormInstance) => VNode)
     queryFormSubmitBtnProps?: ButtonProps
-    queryFormResetBtn?: boolean | ((form: FormInstance) => VNode)
+    queryFormResetBtn?: boolean | ((form: TableQueryFormInstance) => VNode)
     queryFormResetBtnProps?: ButtonProps
     queryFormSubmitWithReset?: boolean
 }
@@ -80,8 +80,6 @@ export default (props: TableQueryFormProps) => {
     const {
         queryFormItem,
         queryFormProps,
-        queryFormRules,
-        queryUseFormOptions,
         queryFormRowProps,
         queryFormColProps,
         queryFormFlexProps,
@@ -90,15 +88,11 @@ export default (props: TableQueryFormProps) => {
         queryFormSubmitWithReset,
     } = $(props)
     const queryFormState = reactive<any>({ values: {} })
-    const { resetFields, validate, ...formMethods } = Form.useForm(
-        queryFormState,
-        queryFormRules,
-        queryUseFormOptions
-    )
+    const formRef = ref<FormInstance>()
 
     const { queryFormExtraLeft, queryFormExtraCenter, queryFormExtraRight } = $(useSlots())
 
-    const queryFormParams = reactive<{ [key: string]: any }>({
+    const queryFormParams = reactive<{ values: any }>({
         values: {},
     })
 
@@ -107,24 +101,27 @@ export default (props: TableQueryFormProps) => {
     }
 
     const onQueryFormReset = () => {
-        resetFields()
-        queryFormSubmitWithReset && validate().then((vals) => onQueryFormFinish(vals))
+        queryFormSubmitWithReset && onQueryFormFinish(null)
+        formRef?.value?.resetFields()
     }
 
     const QueryFormInstance = $(
         computed(
             () =>
                 ({
-                    ...formMethods,
-                    resetFields,
-                    validate,
+                    ...(formRef.value || {}),
                     onQueryFormFinish,
                     onQueryFormReset,
                 } as TableQueryFormInstance)
         )
     )
     const QueryForm = () => (
-        <Form model={queryFormState.values} onFinish={onQueryFormFinish} {...queryFormProps}>
+        <Form
+            ref={formRef}
+            model={queryFormState.values}
+            onFinish={onQueryFormFinish}
+            {...queryFormProps}
+        >
             <Flex justify="space-between" {...queryFormFlexProps}>
                 <Row gutter={[10, 10]} class={['flex-1']} {...queryFormRowProps}>
                     {queryFormItem?.map((item, i) => {

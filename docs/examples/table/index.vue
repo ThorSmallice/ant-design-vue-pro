@@ -1,12 +1,11 @@
 <template>
-    <div style="width: 100%; height: 500px">
-        <Button @click="click">点我</Button>
+    <div style="width: 100%; height: 500px" class="flex flex-col">
+        <!-- <Button @click="click">点我</Button> -->
         <Table
             ref="tableRef"
             full
             :columns="columns"
             :apis="apis"
-            :onSourceSuccess="onSourceSuccess"
             :queryFormItem="queryFormItem"
             :queryFormColProps="{
                 span: 24 / queryFormItem.length,
@@ -14,10 +13,9 @@
             :queryFormResetBtn="open"
             :queryFormSubmitBtn="open"
             :colResizable="open"
+            :fieldsNames="fieldsNames"
+            :queryFormSubmitWithReset="true"
         >
-            <template #headerCell="{ column }">
-                <span style="color: #1890ff">{{ column.dataIndex }}</span>
-            </template>
             <template #queryFormExtraLeft>
                 <Button>left</Button>
             </template>
@@ -26,6 +24,18 @@
             </template>
             <template #queryFormExtraRight>
                 <Button>right</Button>
+            </template>
+            <template #controlColumnBtnExtraDetailStart="{ opt, metaColumn }">
+                <Button @click="() => console.log(opt, metaColumn)">start</Button>
+            </template>
+            <template #controlColumnBtnExtraEditLeft>
+                <Button>left</Button>
+            </template>
+            <template #controlColumnBtnExtraEditRight>
+                <Button>right</Button>
+            </template>
+            <template #controlColumnBtnExtraEnd>
+                <Button>end</Button>
             </template>
         </Table>
     </div>
@@ -43,11 +53,21 @@ import { TableColumnProps } from '@src/components/table/useColumns'
 // TableConfig.fieldsNames.default.total = ['data', 'data', 'total']
 const tableRef = ref()
 const options = ref([])
-const open = ref(false)
+const fieldsNames = ref({
+    page: 'page',
+    pageSize: 'pageSize',
+    detail: ['data', 'data'],
+    list: ['data', 'data', 'list'],
+    total: ['data', 'data', 'total'],
+})
+const open = ref(true)
 const click = () => {
     open.value = !open.value
 }
 
+const rowEdit = async (record) => {
+    console.log('🚀 ~ rowEdit ~ record:', record)
+}
 const queryFormItem = computed((): TableQueryFormItemProps[] => {
     return [
         {
@@ -70,94 +90,16 @@ axios.defaults.headers = {
     Authorization: 'Bearer 9ba3f553f1f14f9d837b15f58138f715',
 } as any
 
-const onSourceSuccess: TableProps['onSourceSuccess'] = async (res) => {
-    return {
-        total: res?.data?.data?.total,
-        list: res?.data?.data?.list,
-    }
-}
+// const onSourceSuccess: TableProps['onSourceSuccess'] = async (res) => {
+//     return {
+//         total: res?.data?.data?.total,
+//         list: res?.data?.data?.list,
+//     }
+// }
 
+const asyncColumns = ref([])
 const columns = computed(() => {
-    return [
-        {
-            title: '序号',
-            type: 'index',
-        },
-        {
-            title: 'id',
-            dataIndex: 'id',
-            width: 80,
-            hidden: true,
-            // formItemProps: {
-            //     hidden: true,
-            // },
-        },
-        {
-            title: '城市名称',
-            dataIndex: 'cityName',
-            width: 150,
-            // formItemProps: {
-            //     controlType: 'Select',
-            //     controlProps: {},
-            // },
-            // search: true,
-            // filterComp: 'Select',
-            // filterCompProps: {},
-
-            // render: (text, record) => {
-            //     return record?.cityName
-            // },
-        },
-        {
-            title: '农作物名称',
-            dataIndex: 'name',
-            width: 150,
-            // formItemProps: {
-            //     rules: [{ required: true, message: '请输入农作物名称' }],
-            //     controlType: 'Input',
-            // },
-            // search: true,
-        },
-        {
-            title: '农作物品种',
-            dataIndex: 'kind',
-            width: 150,
-            // formItemProps: {
-            //     controlType: 'Input',
-            //     rules: [{ required: true }],
-            // },
-            // search: true,
-        },
-        {
-            title: '农作物分布区域',
-            dataIndex: 'area',
-            width: 150,
-            // formItemProps: {
-            //     controlType: 'Input',
-            //     rules: [{ required: true }],
-            // },
-        },
-        {
-            title: '农作物需水量(m³/亩)',
-            dataIndex: 'waterQuantity',
-            width: 150,
-            // formItemProps: {
-            //     controlType: 'InputNumber',
-            //     controlProps: {
-            //         readOnly: true,
-            //         placeholder: '只读属性，无需填写',
-            //     },
-            // },
-        },
-        {
-            title: '农作物用水量(m³/亩)',
-            dataIndex: 'useWaterQuantity',
-            width: 150,
-            // formItemProps: {
-            //     controlType: 'InputNumber',
-            // },
-        },
-    ] as TableColumnProps[]
+    return asyncColumns.value as TableColumnProps[]
 })
 
 onMounted(() => {
@@ -170,6 +112,95 @@ onMounted(() => {
             {
                 label: '同仁',
                 value: 2,
+            },
+        ]
+
+        asyncColumns.value = [
+            {
+                title: 'id',
+                dataIndex: 'id',
+                width: 80,
+                hidden: true,
+                formItemProps: {
+                    hidden: true,
+                },
+            },
+            {
+                title: '城市名称',
+                dataIndex: 'cityName',
+                width: 150,
+
+                formItemProps: {
+                    control: 'Select',
+                    controlProps: {
+                        options: [
+                            {
+                                label: '泽库县',
+                                value: 3,
+                            },
+                            {
+                                label: '尖扎县',
+                                value: 2,
+                            },
+                        ],
+                    },
+                },
+                // search: true,
+                // filterComp: 'Select',
+                // filterCompProps: {},
+
+                // render: (text, record) => {
+                //     return record?.cityName
+                // },
+            },
+            {
+                title: '农作物名称',
+                dataIndex: 'name',
+                width: 150,
+                formItemProps: {
+                    rules: [{ required: true, message: '请输入农作物名称' }],
+                    controlType: 'Input',
+                },
+                // search: true,
+            },
+            {
+                title: '农作物品种',
+                dataIndex: 'kind',
+                width: 150,
+                formItemProps: {
+                    control: 'Input',
+                    rules: [{ required: true }],
+                },
+                // search: true,
+            },
+            {
+                title: '农作物分布区域',
+                dataIndex: 'area',
+                width: 150,
+                formItemProps: {
+                    controlType: 'Input',
+                    rules: [{ required: true }],
+                },
+            },
+            {
+                title: '农作物需水量(m³/亩)',
+                dataIndex: 'waterQuantity',
+                width: 150,
+                formItemProps: {
+                    control: 'InputNumber',
+                    controlProps: {
+                        readOnly: true,
+                        placeholder: '只读属性，无需填写',
+                    },
+                },
+            },
+            {
+                title: '农作物用水量(m³/亩)',
+                dataIndex: 'useWaterQuantity',
+                width: 150,
+                formItemProps: {
+                    control: 'InputNumber',
+                },
             },
         ]
     }, 1000)

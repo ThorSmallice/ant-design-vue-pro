@@ -2,19 +2,27 @@ import { get } from 'es-toolkit/compat'
 import { isFunction } from 'es-toolkit/predicate'
 import { EmitFn, ref, watch } from 'vue'
 import { requestParams, TableProps } from './index.type'
+import { AxiosResponse } from 'axios'
+export interface TableSourceResult {
+    total: number
+    list: any[] | null
+    page?: number | string
+    pageSize?: number | string
+}
+
 export interface TableUseDataSourceProps {
     api: any
     fieldsNames: TableProps['fieldsNames']
     params: TableProps['params']
-    onSourceSuccess: TableProps['onSourceSuccess']
-    onSourceError: TableProps['onSourceError']
-    emit?: EmitFn
+    onSourceSuccess: (res: AxiosResponse) => Promise<TableSourceResult>
+    onSourceError: (err: Error) => void
+    emits?: EmitFn
 }
 
 let controller: AbortController
 
 export default (props: TableUseDataSourceProps) => {
-    const { api, fieldsNames, params, onSourceSuccess, onSourceError } = $(props)
+    const { api, fieldsNames, params, onSourceSuccess, onSourceError, emits } = $(props)
     const source = ref([])
     const loading = ref(false)
     const total = ref(0)

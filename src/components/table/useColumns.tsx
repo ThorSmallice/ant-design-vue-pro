@@ -1,14 +1,84 @@
-import { TableColumnProps as ATableColumnProps } from 'ant-design-vue'
-import { createSSRApp, ref, VNode, watch } from 'vue'
+import {
+    TableColumnProps as ATableColumnProps,
+    Button,
+    ButtonProps,
+    Popconfirm,
+    Space,
+} from 'ant-design-vue'
+import { AxiosResponse } from 'axios'
+import Big from 'big.js'
+import dayjs from 'dayjs'
+import { cloneDeep, isFunction } from 'es-toolkit'
+import { get, isObject } from 'es-toolkit/compat'
+import numeral from 'numeral'
+import { createSSRApp, EmitFn, Reactive, Ref, ref, useSlots, VNode, watch } from 'vue'
 import { renderToString } from 'vue/server-renderer'
-export type TableColumnType = 'index' | 'control'
+import { TableProps, TableSlots } from './index.type'
+import { TableUseCUFormItemProps, TableUseCUReturnOptions } from './useCU'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+dayjs.extend(customParseFormat)
+
+export type TableColumnType = 'index' | 'control' | 'date' | 'number'
 export interface TableColumnProps extends ATableColumnProps {
     hidden?: boolean
     type?: TableColumnType
+    nowrap?: boolean
+    emptyText?: VNode | string
+    timeFormat?: string
+    numberFormat?:
+        | numeral.Numeral
+        | ((val: numeral.Numeral, local: string | number) => string | number | VNode)
+    numberComputed?: (val: Big.Big, Big: Big) => number
+
+    formItemProps?: TableUseCUFormItemProps
+}
+
+export type TableColumnCustomRenderArgs = {
+    value: any
+    text: any
+    record: any
+    index: number
+    renderIndex: number
+    column: ATableColumnProps
 }
 
 export interface TableUseColumnsProps {
-    columns: TableColumnProps[]
+    apis?: TableProps['apis']
+    columns?: TableColumnProps[]
+    columnsAlign?: TableColumnProps['align']
+    indexColumn?: boolean
+    controlColumn?: boolean
+    pagination?: Ref<{
+        page: number
+        pageSize: number
+    }>
+    columnsTimeFormat?: string
+    columnsEmptyText?: VNode | string
+    columnsTitleNoWrap?: boolean
+    controlColumnBtns?:
+        | {
+              detail: false | (ButtonProps & { children?: VNode | string })
+              edit: false | (ButtonProps & { children?: VNode | string })
+              delete: false | (ButtonProps & { children?: VNode | string })
+          }
+        | (({
+              DetailBtn,
+              EditBtn,
+              DeleteBtn,
+          }: {
+              DetailBtn: VNode
+              EditBtn: VNode
+              DeleteBtn: VNode
+          }) => VNode)
+    slots?: TableSlots
+    openCUModalForm?: TableUseCUReturnOptions['openCUModalForm'] | any
+    updateSource?: () => Promise<void>
+    cuFormModel?: TableUseCUReturnOptions['cuFormModel']
+    emits?: EmitFn
+    onRowEdit?: (res: AxiosResponse, record?: any) => Promise<{ [key: string]: any }>
+    cuModalLoading?: Ref<boolean> | Reactive<boolean>
+    cuFormBackFillByGetDetail?: boolean
+    [key: string]: any
 }
 
 const vnodeToString = async (vnode: VNode) => {
@@ -25,21 +95,91 @@ const computedTitleWidth = (title: string): number => {
     return title?.length ? title?.length * Math.floor(rootFontSize) : rootFontSize * 6
 }
 
-export default (props: any) => {
-    const { columns } = $(props)
+export default (props: TableUseColumnsProps) => {
+    const {
+        apis,
+        columns,
+        columnsAlign,
+        pagination,
+        columnsTimeFormat,
+        columnsEmptyText,
+        controlColumnBtns,
+        indexColumn,
+        controlColumn,
+        openCUModalForm,
+        columnsTitleNoWrap,
+        cuFormModel,
+        emits,
+        cuModalLoading,
+        onRowEdit,
+        fieldsNames,
+        onGetRowDetail,
+        cuFormBackFillByGetDetail,
+    } = $(props)
+    const _cuModalLoading = $$(cuModalLoading)
     const columnsTitleString = ref([])
     const resColumns = ref([])
 
+    const slots = useSlots()
     const transformColumns = (
         columns: TableColumnProps[],
         titleArr: string[]
     ): ATableColumnProps[] => {
-        const arr = columns
+        const tempColumns = cloneDeep(columns)
+        if (indexColumn) {
+            tempColumns?.unshift?.({
+                title: '序号',
+                type: 'index',
+                width: 80,
+            })
+        }
+
+        if (controlColumn) {
+            tempColumns?.push?.({
+                title: '操作',
+                type: 'control',
+                width: 220,
+            })
+        }
+        const arr = tempColumns
             ?.filter?.(({ hidden }) => !hidden)
             ?.map?.((col: TableColumnProps, i: number) => {
-                const { ...o } = col
+                const {
+                    title,
+                    nowrap,
+                    type,
+                    emptyText,
+                    align,
+                    customRender,
+                    numberFormat,
+                    numberComputed,
+                    ...o
+                } = col
                 const resCol: ATableColumnProps = {
-                    width: computedTitleWidth(titleArr[i]),
+                    title: (
+                        <div class={[(nowrap ?? columnsTitleNoWrap) && 'whitespace-nowrap']}>
+                            {title}
+                        </div>
+                    ),
+                    width: computedTitleWidth(titleArr[i]) || String(title)?.length * 16,
+                    align: columnsAlign,
+                    customRender: (...args) =>
+                        getCustomRender(...args, col, pagination, {
+                            columnsTimeFormat,
+                            columnsEmptyText,
+                            controlColumnBtns,
+                            apis,
+                            slots,
+                            openCUModalForm,
+                            cuFormModel,
+                            emits,
+                            _cuModalLoading,
+                            cuFormBackFillByGetDetail,
+                            columns,
+                            onRowEdit,
+                            fieldsNames,
+                            onGetRowDetail,
+                        }),
                     ...o,
                 }
                 return resCol
@@ -72,4 +212,169 @@ export default (props: any) => {
     )
 
     return { resColumns }
+}
+
+const getCustomRender = (
+    opt: TableColumnCustomRenderArgs,
+    metaColumn: TableColumnProps,
+    pagination: {
+        page: number
+        pageSize: number
+    },
+    {
+        columnsEmptyText,
+        columnsTimeFormat,
+        controlColumnBtns,
+        apis,
+        slots,
+        openCUModalForm,
+        updateSource,
+        cuFormModel,
+        emits,
+        _cuModalLoading,
+        cuFormBackFillByGetDetail,
+        columns,
+        onRowEdit,
+        fieldsNames,
+        onGetRowDetail,
+    }: TableUseColumnsProps
+) => {
+    const { text, record, index, column } = opt
+    const { type, customRender, emptyText, timeFormat, numberFormat, numberComputed } = metaColumn
+
+    if (customRender && isFunction(customRender)) return customRender?.(opt)
+    if (type === 'index') {
+        return pagination.page * pagination.pageSize - pagination.pageSize + (index + 1)
+    }
+
+    if (type === 'date') {
+        return text
+            ? dayjs(text)?.format?.(timeFormat || columnsTimeFormat)
+            : text || emptyText || columnsEmptyText
+    }
+
+    if (type === 'number') {
+        const val = Number(text)
+        return isFunction(numberFormat)
+            ? numberFormat?.(numeral(val), text)
+            : numeral?.(
+                  isFunction(numberComputed) ? numberComputed?.(new Big(val), Big) : val
+              )?.format?.((numberFormat as unknown as string) || '0[.]00') ||
+                  emptyText ||
+                  columnsEmptyText
+    }
+
+    if (type === 'control') {
+        const { children: detailBtnChildren, ...detailsBtnProps } =
+            (controlColumnBtns as any)?.detail || {}
+        const { children: editBtnChildren, ...editBtnProps } =
+            (controlColumnBtns as any)?.edit || {}
+        const { children: deleteBtnChildren, ...deleteBtnProps } =
+            (controlColumnBtns as any)?.delete || {}
+
+        const deleteRow = async () => {
+            await apis?.delete?.({ id: record?.id }, record)
+            updateSource()
+        }
+
+        const getDetails = async (record: any) => {
+            return new Promise(async (resolve, reject) => {
+                return apis?.details?.({ id: record?.id }, record)?.then(async (res) => {
+                    if (onGetRowDetail && isFunction(onGetRowDetail)) {
+                        return resolve((await onGetRowDetail(res)) || {})
+                    }
+                    return resolve(get(res, fieldsNames?.detail) || {})
+                })
+            })
+        }
+
+        const edit = async (record: any) => {
+            _cuModalLoading.value = true
+            openCUModalForm(true)
+
+            try {
+                const detail = cuFormBackFillByGetDetail ? await getDetails?.(record) : record
+                console.log('🚀 ~ edit ~ detail:', detail)
+
+                for (let k in detail) {
+                    const colType = columns?.find?.(({ dataIndex }) => dataIndex === k)?.type
+                    if (colType === 'date' && isDate(detail[k])) {
+                        detail[k] = dayjs(detail[k])
+                    }
+                }
+
+                const backFill = (await onRowEdit?.(detail, record)) || detail
+
+                cuFormModel.values = backFill
+                _cuModalLoading.value = false
+            } catch (error) {}
+        }
+        const DetailBtn =
+            controlColumnBtns && isObject((controlColumnBtns as any)?.detail) ? (
+                <Button class="p-0" {...detailsBtnProps}>
+                    {detailBtnChildren}
+                </Button>
+            ) : null
+
+        const EditBtn =
+            controlColumnBtns && isObject((controlColumnBtns as any)?.edit) ? (
+                <Button class="p-0" onClick={() => edit(record)} {...editBtnProps}>
+                    {editBtnChildren}
+                </Button>
+            ) : null
+        const DeleteBtn =
+            controlColumnBtns && isObject((controlColumnBtns as any)?.delete) ? (
+                <Popconfirm
+                    onConfirm={deleteRow}
+                    title="确定删除吗?"
+                    okText="确定"
+                    cancelText="取消"
+                >
+                    <Button class="p-0" {...deleteBtnProps}>
+                        {deleteBtnChildren}
+                    </Button>
+                </Popconfirm>
+            ) : null
+        return (
+            <Space>
+                {isFunction(controlColumnBtns) ? (
+                    controlColumnBtns?.({ DetailBtn, EditBtn, DeleteBtn })
+                ) : (
+                    <>
+                        {slots?.controlColumnBtnExtraDetailStart?.({ opt, metaColumn })}
+
+                        {DetailBtn}
+                        {slots?.controlColumnBtnExtraEditLeft?.({ opt, metaColumn })}
+
+                        {EditBtn}
+                        {slots?.controlColumnBtnExtraEditRight?.({ opt, metaColumn })}
+
+                        {DeleteBtn}
+
+                        {slots?.controlColumnBtnExtraEnd?.({ opt, metaColumn })}
+                    </>
+                )}
+            </Space>
+        )
+    }
+
+    return text || emptyText || columnsEmptyText
+}
+const possibleFormats = [
+    'YYYY-MM-DD',
+    'DD/MM/YYYY',
+    'MM-DD-YYYY',
+    'YYYY/MM/DD',
+    'MM/DD/YYYY',
+    'YYYY',
+    'YYYY-MM-DD HH:mm:ss',
+    'MM-DD',
+    'HH:mm:ss',
+    'x',
+]
+const isDate = (str: number | string) => {
+    if (isNaN(Number(dayjs(str).valueOf())) || String(str).length >= 10) {
+        return possibleFormats?.some?.((format) => dayjs?.(str, format, true)?.isValid?.())
+    }
+    return false
 }

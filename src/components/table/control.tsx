@@ -75,13 +75,20 @@ const enum ControlModelFields {
     Checked = 'checked',
 }
 
-export const FormItemControl = ({ type = 'Input', model, name, ...props }) => {
+export const FormItemControl = ({ type = 'Input', model, name, customControl, ...props }: any) => {
     const Comp = ControlMap[type]
 
     switch (FormItemControlModelFields[type]) {
         case ControlModelFields.Checked:
             return <Comp v-model:checked={model[`${name}`]} {...props}></Comp>
         default:
-            return <Comp allowClear v-model:value={model[`${name}`]} {...props}></Comp>
+            return (
+                <Comp
+                    allowClear
+                    v-model:value={model[`${name}`]}
+                    class={['w-full']}
+                    {...props}
+                ></Comp>
+            )
     }
 }

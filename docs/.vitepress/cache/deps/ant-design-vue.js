@@ -61,6 +61,12 @@ import {
   presetPrimaryColors
 } from "./chunk-FG2PRHQS.js";
 import {
+  require_dayjs_min
+} from "./chunk-KLOCJB4C.js";
+import {
+  require_customParseFormat
+} from "./chunk-TCLP4MPK.js";
+import {
   Comment,
   Fragment,
   Teleport,
@@ -107,9 +113,6 @@ import {
   withDirectives,
   withModifiers
 } from "./chunk-HDQZI5PA.js";
-import {
-  require_dayjs_min
-} from "./chunk-KLOCJB4C.js";
 import {
   __commonJS,
   __export,
@@ -334,133 +337,6 @@ var require_advancedFormat = __commonJS({
             }
           });
           return n3.bind(this)(a2);
-        };
-      };
-    });
-  }
-});
-
-// node_modules/.pnpm/dayjs@1.11.13/node_modules/dayjs/plugin/customParseFormat.js
-var require_customParseFormat = __commonJS({
-  "node_modules/.pnpm/dayjs@1.11.13/node_modules/dayjs/plugin/customParseFormat.js"(exports2, module2) {
-    !function(e3, t3) {
-      "object" == typeof exports2 && "undefined" != typeof module2 ? module2.exports = t3() : "function" == typeof define && define.amd ? define(t3) : (e3 = "undefined" != typeof globalThis ? globalThis : e3 || self).dayjs_plugin_customParseFormat = t3();
-    }(exports2, function() {
-      "use strict";
-      var e3 = { LTS: "h:mm:ss A", LT: "h:mm A", L: "MM/DD/YYYY", LL: "MMMM D, YYYY", LLL: "MMMM D, YYYY h:mm A", LLLL: "dddd, MMMM D, YYYY h:mm A" }, t3 = /(\[[^[]*\])|([-_:/.,()\s]+)|(A|a|Q|YYYY|YY?|ww?|MM?M?M?|Do|DD?|hh?|HH?|mm?|ss?|S{1,3}|z|ZZ?)/g, n3 = /\d/, r3 = /\d\d/, i3 = /\d\d?/, o2 = /\d*[^-_:/,()\s\d]+/, s2 = {}, a2 = function(e4) {
-        return (e4 = +e4) + (e4 > 68 ? 1900 : 2e3);
-      };
-      var f2 = function(e4) {
-        return function(t4) {
-          this[e4] = +t4;
-        };
-      }, h3 = [/[+-]\d\d:?(\d\d)?|Z/, function(e4) {
-        (this.zone || (this.zone = {})).offset = function(e5) {
-          if (!e5) return 0;
-          if ("Z" === e5) return 0;
-          var t4 = e5.match(/([+-]|\d\d)/g), n4 = 60 * t4[1] + (+t4[2] || 0);
-          return 0 === n4 ? 0 : "+" === t4[0] ? -n4 : n4;
-        }(e4);
-      }], u2 = function(e4) {
-        var t4 = s2[e4];
-        return t4 && (t4.indexOf ? t4 : t4.s.concat(t4.f));
-      }, d2 = function(e4, t4) {
-        var n4, r4 = s2.meridiem;
-        if (r4) {
-          for (var i4 = 1; i4 <= 24; i4 += 1) if (e4.indexOf(r4(i4, 0, t4)) > -1) {
-            n4 = i4 > 12;
-            break;
-          }
-        } else n4 = e4 === (t4 ? "pm" : "PM");
-        return n4;
-      }, c2 = { A: [o2, function(e4) {
-        this.afternoon = d2(e4, false);
-      }], a: [o2, function(e4) {
-        this.afternoon = d2(e4, true);
-      }], Q: [n3, function(e4) {
-        this.month = 3 * (e4 - 1) + 1;
-      }], S: [n3, function(e4) {
-        this.milliseconds = 100 * +e4;
-      }], SS: [r3, function(e4) {
-        this.milliseconds = 10 * +e4;
-      }], SSS: [/\d{3}/, function(e4) {
-        this.milliseconds = +e4;
-      }], s: [i3, f2("seconds")], ss: [i3, f2("seconds")], m: [i3, f2("minutes")], mm: [i3, f2("minutes")], H: [i3, f2("hours")], h: [i3, f2("hours")], HH: [i3, f2("hours")], hh: [i3, f2("hours")], D: [i3, f2("day")], DD: [r3, f2("day")], Do: [o2, function(e4) {
-        var t4 = s2.ordinal, n4 = e4.match(/\d+/);
-        if (this.day = n4[0], t4) for (var r4 = 1; r4 <= 31; r4 += 1) t4(r4).replace(/\[|\]/g, "") === e4 && (this.day = r4);
-      }], w: [i3, f2("week")], ww: [r3, f2("week")], M: [i3, f2("month")], MM: [r3, f2("month")], MMM: [o2, function(e4) {
-        var t4 = u2("months"), n4 = (u2("monthsShort") || t4.map(function(e5) {
-          return e5.slice(0, 3);
-        })).indexOf(e4) + 1;
-        if (n4 < 1) throw new Error();
-        this.month = n4 % 12 || n4;
-      }], MMMM: [o2, function(e4) {
-        var t4 = u2("months").indexOf(e4) + 1;
-        if (t4 < 1) throw new Error();
-        this.month = t4 % 12 || t4;
-      }], Y: [/[+-]?\d+/, f2("year")], YY: [r3, function(e4) {
-        this.year = a2(e4);
-      }], YYYY: [/\d{4}/, f2("year")], Z: h3, ZZ: h3 };
-      function l2(n4) {
-        var r4, i4;
-        r4 = n4, i4 = s2 && s2.formats;
-        for (var o3 = (n4 = r4.replace(/(\[[^\]]+])|(LTS?|l{1,4}|L{1,4})/g, function(t4, n5, r5) {
-          var o4 = r5 && r5.toUpperCase();
-          return n5 || i4[r5] || e3[r5] || i4[o4].replace(/(\[[^\]]+])|(MMMM|MM|DD|dddd)/g, function(e4, t5, n6) {
-            return t5 || n6.slice(1);
-          });
-        })).match(t3), a3 = o3.length, f3 = 0; f3 < a3; f3 += 1) {
-          var h4 = o3[f3], u3 = c2[h4], d3 = u3 && u3[0], l3 = u3 && u3[1];
-          o3[f3] = l3 ? { regex: d3, parser: l3 } : h4.replace(/^\[|\]$/g, "");
-        }
-        return function(e4) {
-          for (var t4 = {}, n5 = 0, r5 = 0; n5 < a3; n5 += 1) {
-            var i5 = o3[n5];
-            if ("string" == typeof i5) r5 += i5.length;
-            else {
-              var s3 = i5.regex, f4 = i5.parser, h5 = e4.slice(r5), u4 = s3.exec(h5)[0];
-              f4.call(t4, u4), e4 = e4.replace(u4, "");
-            }
-          }
-          return function(e5) {
-            var t5 = e5.afternoon;
-            if (void 0 !== t5) {
-              var n6 = e5.hours;
-              t5 ? n6 < 12 && (e5.hours += 12) : 12 === n6 && (e5.hours = 0), delete e5.afternoon;
-            }
-          }(t4), t4;
-        };
-      }
-      return function(e4, t4, n4) {
-        n4.p.customParseFormat = true, e4 && e4.parseTwoDigitYear && (a2 = e4.parseTwoDigitYear);
-        var r4 = t4.prototype, i4 = r4.parse;
-        r4.parse = function(e5) {
-          var t5 = e5.date, r5 = e5.utc, o3 = e5.args;
-          this.$u = r5;
-          var a3 = o3[1];
-          if ("string" == typeof a3) {
-            var f3 = true === o3[2], h4 = true === o3[3], u3 = f3 || h4, d3 = o3[2];
-            h4 && (d3 = o3[2]), s2 = this.$locale(), !f3 && d3 && (s2 = n4.Ls[d3]), this.$d = function(e6, t6, n5, r6) {
-              try {
-                if (["x", "X"].indexOf(t6) > -1) return new Date(("X" === t6 ? 1e3 : 1) * e6);
-                var i5 = l2(t6)(e6), o4 = i5.year, s3 = i5.month, a4 = i5.day, f4 = i5.hours, h5 = i5.minutes, u4 = i5.seconds, d4 = i5.milliseconds, c4 = i5.zone, m3 = i5.week, M3 = /* @__PURE__ */ new Date(), Y2 = a4 || (o4 || s3 ? 1 : M3.getDate()), p = o4 || M3.getFullYear(), v2 = 0;
-                o4 && !s3 || (v2 = s3 > 0 ? s3 - 1 : M3.getMonth());
-                var D2, w2 = f4 || 0, g2 = h5 || 0, y2 = u4 || 0, L2 = d4 || 0;
-                return c4 ? new Date(Date.UTC(p, v2, Y2, w2, g2, y2, L2 + 60 * c4.offset * 1e3)) : n5 ? new Date(Date.UTC(p, v2, Y2, w2, g2, y2, L2)) : (D2 = new Date(p, v2, Y2, w2, g2, y2, L2), m3 && (D2 = r6(D2).week(m3).toDate()), D2);
-              } catch (e7) {
-                return /* @__PURE__ */ new Date("");
-              }
-            }(t5, a3, r5, n4), this.init(), d3 && true !== d3 && (this.$L = this.locale(d3).$L), u3 && t5 != this.format(a3) && (this.$d = /* @__PURE__ */ new Date("")), s2 = {};
-          } else if (a3 instanceof Array) for (var c3 = a3.length, m2 = 1; m2 <= c3; m2 += 1) {
-            o3[1] = a3[m2 - 1];
-            var M2 = n4.apply(this, o3);
-            if (M2.isValid()) {
-              this.$d = M2.$d, this.$L = M2.$L, this.init();
-              break;
-            }
-            m2 === c3 && (this.$d = /* @__PURE__ */ new Date(""));
-          }
-          else i4.call(this, e5);
         };
       };
     });
