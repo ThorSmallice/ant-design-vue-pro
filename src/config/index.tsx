@@ -1,6 +1,22 @@
 import { TableProps } from '@src/components'
 
 export const TableConfig: TableProps = {
+    tableTextConfig: {
+        modalTitle: {
+            create: '新增',
+            update: '编辑',
+            detail: '详情',
+        },
+        message: {
+            createSuccess: '新增成功!',
+            createError: '新增失败!',
+            updateSuccess: '编辑成功!',
+            updateError: '编辑失败!',
+            deleteSuccess: '删除成功!',
+            deleteError: '删除失败!',
+        },
+    },
+    detailDescItemEmptyText: '-',
     cuFormBackFillByGetDetail: true,
     cuFormModalProps: {
         width: '65%',
@@ -47,6 +63,13 @@ export const TableConfig: TableProps = {
         pageSize: 'pageSize',
         total: 'total',
         detail: 'data',
+    },
+    queryFormSubmitBtnProps: {
+        type: 'primary',
+        children: '查询',
+    },
+    queryFormResetBtnProps: {
+        children: '重置',
     },
 }
 

@@ -12,15 +12,13 @@ import {
     Row,
     RowProps,
     Skeleton,
-    Spin,
 } from 'ant-design-vue'
 import { isFunction } from 'es-toolkit'
-import { computed, Reactive, reactive, Ref, ref, useTemplateRef, VNode } from 'vue'
+import { computed, Reactive, reactive, Ref, ref, VNode } from 'vue'
 import { JSX } from 'vue/jsx-runtime'
 import { ControlMapProps, FormItemControl } from './control'
-import { TableProps } from './index.type'
+import { ownBtnProps, TableProps, TableTextConfig } from './index.type'
 import { FormInstance, UseFormOptions } from './useQueryForm'
-import { TableColumnProps } from './useColumns'
 
 export interface TableCUFormInstance extends FormInstance {}
 
@@ -29,6 +27,7 @@ export interface TableUseCUReturnOptions {
     CUModalForm: () => JSX.Element
     cuFormModel: Reactive<{ values: any }>
     cuModalLoading: Ref<boolean>
+    submitBtnLoading: Ref<boolean>
     cuModalFormIsEdit: Ref<boolean>
     openCUModalForm: (isEdit: boolean) => void
     CUModalFormInstance: TableCUFormInstance
@@ -36,7 +35,7 @@ export interface TableUseCUReturnOptions {
 
 export interface TableUseCUFormProps {
     apis?: TableProps['apis']
-    createBtn?: TableProps['createBtn']
+    createBtn?: ownBtnProps
     columns?: TableProps['columns']
     cuFormProps?: FormProps
     cuFormRules?: FormItemProps['rules']
@@ -44,6 +43,8 @@ export interface TableUseCUFormProps {
     cuFormModalProps?: ModalProps
     cuFormRowProps?: RowProps
     cuFormColProps?: ColProps
+    tableTextConfig?: TableTextConfig
+
     [key: string]: any
 }
 export interface TableUseCUFormItemProps<T extends keyof ControlMapProps = keyof ControlMapProps>
@@ -67,6 +68,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         apis,
         createBtn,
         columns,
+        tableTextConfig,
 
         cuFormProps,
         cuFormModalProps,
@@ -97,6 +99,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
     }
 
     const submitCUModalForm = async () => {
+        submitBtnLoading.value = true
         formRef.value
             .validate?.()
             .then(async (vals) => {
@@ -109,15 +112,30 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                     if (onCuFormSubmitSuccess?.(res, cuModalFormIsEdit.value) === false) {
                         return
                     }
-                    message.success(`${cuModalFormIsEdit.value ? '编辑' : '新增'}成功！`)
+                    message.success(
+                        `${
+                            cuModalFormIsEdit.value
+                                ? tableTextConfig?.message?.updateSuccess
+                                : tableTextConfig?.message?.createSuccess
+                        }`
+                    )
                 } catch (error) {
                     if (onCuFormSubmitError?.(error, cuModalFormIsEdit.value) === false) {
                         return
                     }
-                    message.error(`${cuModalFormIsEdit.value ? '编辑' : '新增'}失败！`)
+                    message.error(
+                        `${
+                            cuModalFormIsEdit.value
+                                ? tableTextConfig?.message?.updateError
+                                : tableTextConfig?.message?.createError
+                        }`
+                    )
                 }
             })
             .catch(() => {})
+            .finally(() => {
+                submitBtnLoading.value = false
+            })
     }
 
     const cancelCUModalForm = () => {
@@ -137,7 +155,11 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         return (
             <Modal
                 v-model:open={cuModalOpen.value}
-                title={!cuModalFormIsEdit.value ? '新增' : '编辑'}
+                title={
+                    !cuModalFormIsEdit.value
+                        ? tableTextConfig?.modalTitle?.create
+                        : tableTextConfig?.modalTitle?.update
+                }
                 onCancel={cancelCUModalForm}
                 onOk={submitCUModalForm}
                 confirmLoading={submitBtnLoading.value}
@@ -217,6 +239,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         CUModalForm,
         cuFormModel,
         cuModalLoading,
+        submitBtnLoading,
         cuModalFormIsEdit,
         openCUModalForm,
         CUModalFormInstance,

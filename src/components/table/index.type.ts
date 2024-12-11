@@ -1,30 +1,28 @@
-import config from '@config/index'
-import { arrayType, booleanType, functionType, objectType, someType } from '@src/tools/type'
-import {
-    TableProps as ATableProps,
-    ButtonProps,
-    FormProps,
-    ModalProps,
-    PaginationProps,
-} from 'ant-design-vue'
+import { TableProps as ATableProps, ButtonProps, FormProps, PaginationProps } from 'ant-design-vue'
 
-import { RuleObject } from 'ant-design-vue/es/form'
+import { ColumnType } from 'ant-design-vue/es/table'
+import { RenderExpandIconProps } from 'ant-design-vue/es/vc-table/interface'
 import { AxiosRequestConfig, AxiosResponse } from 'axios'
+import { cloneDeep } from 'es-toolkit'
+import { isArray, isObject } from 'es-toolkit/compat'
+import { Ref, SetupContext, VNode } from 'vue'
+import { TableColumnCustomRenderArgs, TableColumnProps, TableUseColumnsProps } from './useColumns'
+import { TableUseCUFormProps } from './useCU'
+import { TableUseDataSourceProps } from './useDataSource'
+import { TableUseDetailProps } from './useDetail'
 import {
     TableQueryFormInstance,
     TableQueryFormItemProps,
     TableQueryFormProps,
 } from './useQueryForm'
-import { TableColumnCustomRenderArgs, TableColumnProps, TableUseColumnsProps } from './useColumns'
-import { PropType, SetupContext, VNode } from 'vue'
-import { RenderExpandIconProps } from 'ant-design-vue/es/vc-table/interface'
-import { ColumnType } from 'ant-design-vue/es/table'
-import { cloneDeep } from 'es-toolkit'
-import { isArray, isObject } from 'es-toolkit/compat'
-import { TableUseCUFormProps } from './useCU'
-import { TableUseDataSourceProps } from './useDataSource'
+import { JSX } from 'vue/jsx-runtime'
 
 type TableFieldNames = string | string[]
+
+export interface OwnBtnProps extends ButtonProps {
+    children?: string | VNode | JSX.Element
+}
+export type ownBtnProps = OwnBtnProps | false
 
 export type TablePropsApi = (
     params?: AxiosRequestConfig['params'],
@@ -43,9 +41,32 @@ export type ParamsFormatter = (
           }
         | unknown
 ) => Promise<{ [key: string]: any } | unknown>
+
+export type TableTextConfig = Partial<{
+    modalTitle: {
+        create: string
+        update: string
+        detail: string
+    }
+    message: {
+        createSuccess: string
+        createError: string
+        updateSuccess: string
+        updateError: string
+        deleteSuccess: string
+        deleteError: string
+    }
+}>
+export type ciesBtnsVNode = Ref<
+    Partial<{
+        CreateBtn: VNode | JSX.Element
+        ImportBtn: VNode | JSX.Element
+        ExportBtn: VNode | JSX.Element
+    }>
+>
 export interface TableProps extends Omit<ATableProps, 'columns'> {
     full?: boolean // 高度100%
-
+    tableTextConfig?: TableTextConfig
     /**
      * 额外的请求参数
      * 会覆盖重名的参数
@@ -134,12 +155,19 @@ export interface TableProps extends Omit<ATableProps, 'columns'> {
     cuFormColProps?: TableUseCUFormProps['cuFormColProps']
     cuFormBackFillByGetDetail?: TableUseColumnsProps['cuFormBackFillByGetDetail']
 
+    /**
+     * 详情 描述列表配置
+     */
+    detailBackFillByGetDetail?: TableUseColumnsProps['detailBackFillByGetDetail']
+    detailDescItemEmptyText?: TableUseDetailProps['detailDescItemEmptyText']
+    detailDescItemProps?: TableUseDetailProps['detailDescItemProps']
+    detailDescItemTimeFormat?: TableUseDetailProps['detailDescItemTimeFormat']
+
     ciesBtns?: boolean
-    createBtn?:
-        | false
-        | (ButtonProps & {
-              children?: string | VNode
-          })
+    ciesBtnsInQueryForm?: boolean
+
+    createBtn?: TableUseCUFormProps['createBtn']
+
     importBtn?:
         | false
         | (ButtonProps & {
@@ -151,41 +179,6 @@ export interface TableProps extends Omit<ATableProps, 'columns'> {
               children?: string | VNode
           })
 }
-
-// export const tableProps = () => ({
-//     ...config?.Table,
-//     apis: objectType<TableProps['apis']>(),
-//     columns: arrayType<TableProps['columns']>([]),
-//     colResizable: booleanType(true),
-
-//     ownPagin: booleanType(true),
-//     ownPaginProps: objectType<TableProps['ownPaginProps']>(),
-//     showOwnPagination: booleanType(true),
-//     full: booleanType(false),
-//     params: objectType<TableProps['params']>(),
-//     requestParamsFormatter: functionType<TableProps['requestParamsFormatter']>(),
-//     onSourceSuccess: functionType<TableProps['onSourceSuccess']>(),
-//     onSourceError: functionType<TableProps['onSourceError']>(),
-//     queryForm: booleanType(true),
-//     queryFormProps: objectType<TableProps['queryFormProps']>(),
-//     queryFormRules: arrayType<TableProps['queryFormRules']>(),
-//     queryUseFormOptions: objectType<TableProps['queryUseFormOptions']>(),
-//     queryFormItem: arrayType<TableProps['queryFormItem']>(),
-//     queryFormRowProps: objectType<TableProps['queryFormRowProps']>(),
-//     queryFormColProps: objectType<TableProps['queryFormColProps']>(),
-//     queryFormFlexProps: objectType<TableProps['queryFormFlexProps']>(),
-//     queryFormSubmitBtn: someType<boolean | TableProps['queryFormSubmitBtn']>(
-//         [Boolean, Function],
-//         true
-//     ),
-//     queryFormSubmitBtnProps: objectType<TableProps['queryFormSubmitBtnProps']>(),
-//     queryFormResetBtn: someType<boolean | TableProps['queryFormSubmitBtn']>(
-//         [Boolean, Function],
-//         true
-//     ),
-//     queryFormResetBtnProps: objectType<TableProps['queryFormResetBtnProps']>(),
-//     queryFormSubmitWithReset: booleanType(false),
-// })
 
 export type TableSlots = {
     emptyText?: any
@@ -206,26 +199,32 @@ export type TableSlots = {
     customFilterIcon?: any
     customFilterDropdown?: any
     default?: any
-    queryFormExtraLeft?: (form: TableQueryFormInstance) => VNode[]
-    queryFormExtraCenter?: (form: TableQueryFormInstance) => VNode[]
-    queryFormExtraRight?: (form: TableQueryFormInstance) => VNode[]
+    queryFormExtraLeft?: (form: TableQueryFormInstance) => VNode[] | JSX.Element[]
+    queryFormExtraCenter?: (form: TableQueryFormInstance) => VNode[] | JSX.Element[]
+    queryFormExtraRight?: (form: TableQueryFormInstance) => VNode[] | JSX.Element[]
 
     controlColumnBtnExtraDetailStart?: (obj: {
         opt: TableColumnCustomRenderArgs
         metaColumn: TableColumnProps
-    }) => VNode[]
+    }) => VNode[] | JSX.Element[]
     controlColumnBtnExtraEditLeft?: (obj: {
         opt: TableColumnCustomRenderArgs
         metaColumn: TableColumnProps
-    }) => VNode[]
+    }) => VNode[] | JSX.Element[]
     controlColumnBtnExtraEditRight?: (obj: {
         opt: TableColumnCustomRenderArgs
         metaColumn: TableColumnProps
-    }) => VNode[]
+    }) => VNode[] | JSX.Element[]
     controlColumnBtnExtraEnd?: (obj: {
         opt: TableColumnCustomRenderArgs
         metaColumn: TableColumnProps
-    }) => VNode[]
+    }) => VNode[] | JSX.Element[]
+
+    customCiesBtns?: (orgNode: {
+        CreateBtn: VNode
+        ImportBtn: VNode
+        ExportBtn: VNode
+    }) => VNode | JSX.Element
 }
 export const ATableSlotsWhiteList = [
     'emptyText',

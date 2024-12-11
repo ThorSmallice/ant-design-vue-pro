@@ -16,6 +16,7 @@
             :fieldsNames="fieldsNames"
             :queryFormSubmitWithReset="true"
             :onBeforeCuFormSubmit="onBeforeCuFormSubmit"
+            :cies-btns-in-query-form="true"
         >
             <template #queryFormExtraLeft>
                 <Button>left</Button>

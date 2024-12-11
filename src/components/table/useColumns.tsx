@@ -14,12 +14,27 @@ import { get, isObject } from 'es-toolkit/compat'
 import numeral from 'numeral'
 import { createSSRApp, EmitFn, Reactive, Ref, ref, useSlots, VNode, watch } from 'vue'
 import { renderToString } from 'vue/server-renderer'
-import { TableProps, TableSlots } from './index.type'
+import { TableProps, TableSlots, TableTextConfig } from './index.type'
 import { TableUseCUFormItemProps, TableUseCUReturnOptions } from './useCU'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { JSX } from 'vue/jsx-runtime'
+import { TableDescItemsProps } from './useDetail'
 dayjs.extend(customParseFormat)
 
+export const formatterObjValueWithDate = (
+    obj: { [key: string]: any },
+    columns: TableColumnProps[]
+) => {
+    const temp = cloneDeep(obj)
+
+    for (let k in temp) {
+        const colType = columns?.find?.(({ dataIndex }) => dataIndex === k)?.type
+        if (colType === 'date' && isDate(temp[k])) {
+            temp[k] = dayjs(temp[k])
+        }
+    }
+    return temp
+}
 export type TableColumnType = 'index' | 'control' | 'date' | 'number'
 export interface TableColumnProps extends ATableColumnProps {
     hidden?: boolean
@@ -33,6 +48,7 @@ export interface TableColumnProps extends ATableColumnProps {
     numberComputed?: (val: Big.Big, Big: Big) => number
 
     formItemProps?: TableUseCUFormItemProps
+    descItemProps?: TableDescItemsProps
 }
 
 export type TableColumnCustomRenderArgs = {
@@ -47,6 +63,7 @@ export type TableColumnCustomRenderArgs = {
 export type TableColumnRowMethods = {
     editRow: (record: any) => Promise<void>
     deleteRow: (record: any) => Promise<void>
+    openRowDetails: (record: any) => Promise<void>
 }
 export interface TableUseColumnsProps {
     apis?: TableProps['apis']
@@ -80,9 +97,17 @@ export interface TableUseColumnsProps {
     updateSource?: () => Promise<void>
     cuFormModel?: TableUseCUReturnOptions['cuFormModel']
     emits?: EmitFn
-    onBeforeRowEditBackFill?: (res: AxiosResponse, record?: any) => Promise<{ [key: string]: any }>
-    cuModalLoading?: Ref<boolean> | Reactive<boolean>
+    onBeforeRowEditBackFill?: (
+        res: AxiosResponse | any,
+        record?: any
+    ) => Promise<{ [key: string]: any }>
+
     cuFormBackFillByGetDetail?: boolean
+    cuModalLoading?: Ref<boolean> | Reactive<boolean>
+
+    detailModalLoading?: Ref<boolean> | Reactive<boolean>
+    detailBackFillByGetDetail?: boolean
+    tableTextConfig?: TableTextConfig
     [key: string]: any
 }
 
@@ -124,8 +149,15 @@ export default (props: TableUseColumnsProps) => {
         onBeforeRowDelete,
         onRowDeleteSuccess,
         onRowDeleteError,
+
+        detailModalLoading,
+        openDetailModal,
+        detailsDataSource,
+        detailBackFillByGetDetail,
+        tableTextConfig,
     } = $(props)
     const _cuModalLoading = $$(cuModalLoading)
+    const _detailModalLoading = $$(detailModalLoading)
     const columnsTitleString = ref([])
     const resColumns = ref([])
 
@@ -194,6 +226,7 @@ export default (props: TableUseColumnsProps) => {
                             deleteRow,
                             getDetails,
                             editRow,
+                            openRowDetails,
                         }),
                     ...o,
                 }
@@ -201,6 +234,18 @@ export default (props: TableUseColumnsProps) => {
             })
 
         return arr
+    }
+
+    const openRowDetails = async (record: any) => {
+        _detailModalLoading.value = true
+        openDetailModal()
+
+        try {
+            const detail = detailBackFillByGetDetail ? await getDetails?.(record) : record
+            const res = formatterObjValueWithDate(detail, columns)
+            detailsDataSource.values = res
+        } catch (error) {}
+        _detailModalLoading.value = false
     }
 
     const deleteRow = async (record: any) => {
@@ -212,23 +257,25 @@ export default (props: TableUseColumnsProps) => {
             if (onRowDeleteSuccess?.(res) === false) {
                 return
             }
-            message.success('删除成功！')
+            message.success(tableTextConfig?.message?.deleteSuccess)
         } catch (error) {
             if (onRowDeleteError?.(error) === false) {
                 return
             }
-            message.error('删除失败！')
+            message.error(tableTextConfig?.message?.deleteError)
         }
     }
 
     const getDetails = async (record: any) => {
         return new Promise(async (resolve, reject) => {
-            return apis?.details?.({ id: record?.id }, record)?.then(async (res) => {
-                if (onGetRowDetail && isFunction(onGetRowDetail)) {
-                    return resolve((await onGetRowDetail(res)) || {})
-                }
-                return resolve(get(res, fieldsNames?.detail) || {})
-            })
+            return apis
+                ?.details?.({ id: record?.id }, record)
+                ?.then(async (res) => {
+                    return resolve(
+                        (await onGetRowDetail?.(res)) || get(res, fieldsNames?.detail) || {}
+                    )
+                })
+                .catch((error) => reject(error))
         })
     }
 
@@ -239,18 +286,13 @@ export default (props: TableUseColumnsProps) => {
         try {
             const detail = cuFormBackFillByGetDetail ? await getDetails?.(record) : record
 
-            for (let k in detail) {
-                const colType = columns?.find?.(({ dataIndex }) => dataIndex === k)?.type
-                if (colType === 'date' && isDate(detail[k])) {
-                    detail[k] = dayjs(detail[k])
-                }
-            }
+            const res = formatterObjValueWithDate(detail, columns)
 
-            const backFill = (await onBeforeRowEditBackFill?.(detail, record)) || detail
+            const backFill = (await onBeforeRowEditBackFill?.(res, record)) || res
 
             cuFormModel.values = backFill
-            _cuModalLoading.value = false
         } catch (error) {}
+        _cuModalLoading.value = false
     }
     const updateColumnsTitleString = async (columns: TableColumnProps[]) => {
         const str_arr = await Promise.all(
@@ -294,6 +336,7 @@ const getCustomRender = (
 
         deleteRow,
         editRow,
+        openRowDetails,
     }: TableUseColumnsProps
 ) => {
     const { text, record, index, column } = opt
@@ -331,7 +374,7 @@ const getCustomRender = (
 
         const DetailBtn =
             controlColumnBtns && isObject((controlColumnBtns as any)?.detail) ? (
-                <Button class="p-0" {...detailsBtnProps}>
+                <Button class="p-0" onClick={() => openRowDetails(record)} {...detailsBtnProps}>
                     {detailBtnChildren}
                 </Button>
             ) : null
@@ -363,6 +406,7 @@ const getCustomRender = (
                         {
                             deleteRow,
                             editRow,
+                            openRowDetails,
                         }
                     )
                 ) : (

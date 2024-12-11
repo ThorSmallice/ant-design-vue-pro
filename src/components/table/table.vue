@@ -6,9 +6,19 @@
 
         <div :class="['d-table-cies-btns-wrap']" v-if="ciesBtns">
             <Space>
-                <CreateBtn v-if="createBtn"></CreateBtn>
-                <ImportBtn v-if="importBtn"></ImportBtn>
-                <ExportBtn v-if="exportBtn"></ExportBtn>
+                <template v-if="slots?.customCiesBtns">
+                    <slot
+                        name="customCiesBtns"
+                        :CreateBtn="CreateBtn"
+                        :ImportBtn="ImportBtn"
+                        :ExportBtn="ExportBtn"
+                    ></slot>
+                </template>
+                <template v-else>
+                    <CreateBtn v-if="createBtn"></CreateBtn>
+                    <ImportBtn v-if="importBtn"></ImportBtn>
+                    <ExportBtn v-if="exportBtn"></ExportBtn>
+                </template>
             </Space>
         </div>
 
@@ -30,17 +40,19 @@
             <Pagination></Pagination>
         </div>
         <component :is="CUModalForm"></component>
+        <component :is="DetailModal"></component>
     </div>
 </template>
 
 <script setup lang="tsx">
 import config from '@config/index'
 import { Table as ATable, Space, TableColumnProps } from 'ant-design-vue'
-import { computed, ref, useTemplateRef } from 'vue'
+import { computed, provide, ref, useTemplateRef, watch } from 'vue'
 import { ATableSlotsWhiteList, mergeConfigProps, TableProps, TableSlots } from './index.type'
 import useColumns from './useColumns'
 import useCU from './useCU'
 import useDataSource from './useDataSource'
+import useDetail from './useDetail'
 import useExport from './useExport'
 import useImport from './useImport'
 import usePagination from './usePagination'
@@ -93,6 +105,8 @@ const {
     queryFormFlexProps,
     queryFormSubmitBtn,
     queryFormResetBtn,
+    queryFormSubmitBtnProps,
+    queryFormResetBtnProps,
 
     columns,
     indexColumn,
@@ -110,8 +124,15 @@ const {
     cuFormRowProps,
     cuFormColProps,
     cuFormBackFillByGetDetail,
+    tableTextConfig,
+
+    detailBackFillByGetDetail,
+    detailDescItemEmptyText,
+    detailDescItemProps,
+    detailDescItemTimeFormat,
 
     ciesBtns,
+    ciesBtnsInQueryForm,
     createBtn,
     importBtn,
     exportBtn,
@@ -131,6 +152,10 @@ const {
     })
 )
 
+const ciesBtnsVNode = ref({})
+const { ImportBtn } = $$(useImport())
+const { ExportBtn } = $$(useExport())
+
 const { QueryForm, QueryFormInstance, queryFormParams } = $$(
     useQueryForm({
         queryFormItem,
@@ -141,9 +166,12 @@ const { QueryForm, QueryFormInstance, queryFormParams } = $$(
         queryFormFlexProps,
         queryFormSubmitBtn,
         queryFormResetBtn,
+        queryFormSubmitBtnProps,
+        queryFormResetBtnProps,
+        ciesBtnsInQueryForm,
+        ciesBtnsVNode,
     })
 )
-
 const { resultParams, pagination } = $$(
     useParams({
         params,
@@ -153,7 +181,6 @@ const { resultParams, pagination } = $$(
         queryFormParams,
     })
 )
-
 const { source, loading, total, updateSource }: any = $$(
     useDataSource({
         api: apis,
@@ -163,7 +190,6 @@ const { source, loading, total, updateSource }: any = $$(
         onSourceError,
     })
 )
-
 const { CreateBtn, CUModalForm, openCUModalForm, cuFormModel, cuModalLoading, cuModalFormIsEdit } =
     $$(
         useCU({
@@ -181,8 +207,18 @@ const { CreateBtn, CUModalForm, openCUModalForm, cuFormModel, cuModalLoading, cu
             onCuFormSubmitSuccess,
             onCuFormSubmitError,
             updateSource,
+            tableTextConfig,
         })
     )
+const { openDetailModal, detailModalLoading, detailsDataSource, DetailModal } = $$(
+    useDetail({
+        columns,
+        detailDescItemEmptyText,
+        detailDescItemProps,
+        detailDescItemTimeFormat,
+        tableTextConfig,
+    })
+)
 
 const { resColumns }: any = $$(
     useColumns({
@@ -207,19 +243,34 @@ const { resColumns }: any = $$(
         onBeforeRowDelete,
         onRowDeleteSuccess,
         onRowDeleteError,
+        openDetailModal,
+        detailModalLoading: detailModalLoading as any,
+        detailsDataSource,
+        detailBackFillByGetDetail,
+        tableTextConfig,
     })
 )
 
 const Pagination = $$(usePagination({ pagination, total, ownPaginProps }))
 
-const { ImportBtn } = $$(useImport())
-const { ExportBtn } = $$(useExport())
+watch(
+    [CreateBtn, ImportBtn, ExportBtn],
+    () => {
+        ciesBtnsVNode.value = { CreateBtn, ImportBtn, ExportBtn }
+    },
+    {
+        immediate: true,
+    }
+)
 defineExpose({
     QueryForm,
     QueryFormInstance,
     updateSource,
     Pagination,
     cuModalFormIsEdit,
+    CreateBtn,
+    ImportBtn,
+    ExportBtn,
 })
 </script>
 

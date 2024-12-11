@@ -15,6 +15,15 @@
     "files": [
         "dist"
     ],
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/@dbthor/ant-design-vue-pro.es.js",
+            "require": "./dist/@dbthor/ant-design-vue-pro.umd.js"
+        },
+        "./*": "./*",
+        "./src/*": "./dist/src/*"
+    },
     "keywords": [],
     "author": "dbthor",
     "license": "ISC",

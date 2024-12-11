@@ -22,6 +22,8 @@ export default defineConfig({
     build: {
         lib: {
             entry: resolve(__dirname, 'src/main.ts'),
+            name: '@dbthor/ant-design-vue-pro',
+            fileName: (format) => `@dbthor/ant-design-vue-pro.${format}.js`,
         },
         rollupOptions: {
             plugins: [],

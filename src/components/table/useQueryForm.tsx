@@ -1,6 +1,5 @@
 import {
     Button,
-    ButtonProps,
     Col,
     ColProps,
     Flex,
@@ -15,9 +14,11 @@ import {
 import { FieldNamesType } from 'ant-design-vue/es/cascader'
 import { Callbacks, RuleError, RuleObject } from 'ant-design-vue/es/form/interface'
 import { Props, ValidateInfo, validateInfos, validateOptions } from 'ant-design-vue/es/form/useForm'
-import { isFunction } from 'es-toolkit'
-import { computed, Reactive, reactive, ref, Ref, useSlots, VNode } from 'vue'
+import { isFunction, omit } from 'es-toolkit'
+import { computed, h, Reactive, reactive, ref, Ref, useSlots, VNode } from 'vue'
 import { ControlMapProps, FormItemControl } from './control'
+import { ciesBtnsVNode, OwnBtnProps } from './index.type'
+import { TableUseCUReturnOptions } from './useCU'
 interface DebounceSettings {
     leading?: boolean
     wait?: number
@@ -70,10 +71,15 @@ export interface TableQueryFormProps {
     queryFormColProps?: ColProps
     queryFormFlexProps?: FlexProps
     queryFormSubmitBtn?: boolean | ((form: TableQueryFormInstance) => VNode)
-    queryFormSubmitBtnProps?: ButtonProps
+    queryFormSubmitBtnProps?: OwnBtnProps
     queryFormResetBtn?: boolean | ((form: TableQueryFormInstance) => VNode)
-    queryFormResetBtnProps?: ButtonProps
+    queryFormResetBtnProps?: OwnBtnProps
     queryFormSubmitWithReset?: boolean
+    ciesBtnsInQueryForm?: boolean
+    ciesBtnsVNode?: ciesBtnsVNode
+    CreateBtn?: Ref<TableUseCUReturnOptions['CreateBtn']>
+    ImportBtn?: TableUseCUReturnOptions
+    [key: string]: any
 }
 
 export default (props: TableQueryFormProps) => {
@@ -86,7 +92,12 @@ export default (props: TableQueryFormProps) => {
         queryFormSubmitBtn,
         queryFormResetBtn,
         queryFormSubmitWithReset,
+        queryFormSubmitBtnProps,
+        queryFormResetBtnProps,
+        ciesBtnsInQueryForm,
+        ciesBtnsVNode,
     } = $(props)
+
     const queryFormState = reactive<any>({ values: {} })
     const formRef = ref<FormInstance>()
 
@@ -169,8 +180,12 @@ export default (props: TableQueryFormProps) => {
                             isFunction(queryFormSubmitBtn) ? (
                                 queryFormSubmitBtn?.(QueryFormInstance)
                             ) : (
-                                <Button type="primary" htmlType="submit">
-                                    查询
+                                <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    {...omit(queryFormSubmitBtnProps, ['children'])}
+                                >
+                                    {queryFormSubmitBtnProps?.children}
                                 </Button>
                             )
                         ) : null}
@@ -180,11 +195,24 @@ export default (props: TableQueryFormProps) => {
                             isFunction(queryFormResetBtn) ? (
                                 queryFormResetBtn?.(QueryFormInstance)
                             ) : (
-                                <Button onClick={onQueryFormReset}>重置</Button>
+                                <Button
+                                    onClick={onQueryFormReset}
+                                    {...omit(queryFormResetBtnProps, ['children'])}
+                                >
+                                    {queryFormResetBtnProps?.children}
+                                </Button>
                             )
                         ) : null}
 
                         {queryFormExtraRight?.(QueryFormInstance)}
+
+                        {ciesBtnsInQueryForm ? (
+                            <>
+                                {h(ciesBtnsVNode?.CreateBtn)}
+                                {h(ciesBtnsVNode?.ImportBtn)}
+                                {h(ciesBtnsVNode?.ExportBtn)}
+                            </>
+                        ) : null}
                     </Space>
                 </Form.Item>
             </Flex>
