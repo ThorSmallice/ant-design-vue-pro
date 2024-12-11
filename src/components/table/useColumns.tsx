@@ -2,6 +2,7 @@ import {
     TableColumnProps as ATableColumnProps,
     Button,
     ButtonProps,
+    message,
     Popconfirm,
     Space,
 } from 'ant-design-vue'
@@ -16,6 +17,7 @@ import { renderToString } from 'vue/server-renderer'
 import { TableProps, TableSlots } from './index.type'
 import { TableUseCUFormItemProps, TableUseCUReturnOptions } from './useCU'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
+import { JSX } from 'vue/jsx-runtime'
 dayjs.extend(customParseFormat)
 
 export type TableColumnType = 'index' | 'control' | 'date' | 'number'
@@ -42,6 +44,10 @@ export type TableColumnCustomRenderArgs = {
     column: ATableColumnProps
 }
 
+export type TableColumnRowMethods = {
+    editRow: (record: any) => Promise<void>
+    deleteRow: (record: any) => Promise<void>
+}
 export interface TableUseColumnsProps {
     apis?: TableProps['apis']
     columns?: TableColumnProps[]
@@ -61,21 +67,20 @@ export interface TableUseColumnsProps {
               edit: false | (ButtonProps & { children?: VNode | string })
               delete: false | (ButtonProps & { children?: VNode | string })
           }
-        | (({
-              DetailBtn,
-              EditBtn,
-              DeleteBtn,
-          }: {
-              DetailBtn: VNode
-              EditBtn: VNode
-              DeleteBtn: VNode
-          }) => VNode)
+        | ((
+              orgNode: {
+                  DetailBtn: VNode
+                  EditBtn: VNode
+                  DeleteBtn: VNode
+              },
+              methods: TableColumnRowMethods
+          ) => VNode | JSX.Element)
     slots?: TableSlots
     openCUModalForm?: TableUseCUReturnOptions['openCUModalForm'] | any
     updateSource?: () => Promise<void>
     cuFormModel?: TableUseCUReturnOptions['cuFormModel']
     emits?: EmitFn
-    onRowEdit?: (res: AxiosResponse, record?: any) => Promise<{ [key: string]: any }>
+    onBeforeRowEditBackFill?: (res: AxiosResponse, record?: any) => Promise<{ [key: string]: any }>
     cuModalLoading?: Ref<boolean> | Reactive<boolean>
     cuFormBackFillByGetDetail?: boolean
     [key: string]: any
@@ -111,10 +116,14 @@ export default (props: TableUseColumnsProps) => {
         cuFormModel,
         emits,
         cuModalLoading,
-        onRowEdit,
+        onBeforeRowEditBackFill,
         fieldsNames,
         onGetRowDetail,
         cuFormBackFillByGetDetail,
+        updateSource,
+        onBeforeRowDelete,
+        onRowDeleteSuccess,
+        onRowDeleteError,
     } = $(props)
     const _cuModalLoading = $$(cuModalLoading)
     const columnsTitleString = ref([])
@@ -150,7 +159,6 @@ export default (props: TableUseColumnsProps) => {
                     type,
                     emptyText,
                     align,
-                    customRender,
                     numberFormat,
                     numberComputed,
                     ...o
@@ -176,9 +184,16 @@ export default (props: TableUseColumnsProps) => {
                             _cuModalLoading,
                             cuFormBackFillByGetDetail,
                             columns,
-                            onRowEdit,
+                            onBeforeRowEditBackFill,
                             fieldsNames,
                             onGetRowDetail,
+                            updateSource,
+                            onBeforeRowDelete,
+                            onRowDeleteSuccess,
+                            onRowDeleteError,
+                            deleteRow,
+                            getDetails,
+                            editRow,
                         }),
                     ...o,
                 }
@@ -188,6 +203,55 @@ export default (props: TableUseColumnsProps) => {
         return arr
     }
 
+    const deleteRow = async (record: any) => {
+        try {
+            const data = (await onBeforeRowDelete?.(record)) || { id: record?.id }
+            const res = await apis?.delete?.(data, record)
+            updateSource?.()
+
+            if (onRowDeleteSuccess?.(res) === false) {
+                return
+            }
+            message.success('删除成功！')
+        } catch (error) {
+            if (onRowDeleteError?.(error) === false) {
+                return
+            }
+            message.error('删除失败！')
+        }
+    }
+
+    const getDetails = async (record: any) => {
+        return new Promise(async (resolve, reject) => {
+            return apis?.details?.({ id: record?.id }, record)?.then(async (res) => {
+                if (onGetRowDetail && isFunction(onGetRowDetail)) {
+                    return resolve((await onGetRowDetail(res)) || {})
+                }
+                return resolve(get(res, fieldsNames?.detail) || {})
+            })
+        })
+    }
+
+    const editRow = async (record: any) => {
+        _cuModalLoading.value = true
+        openCUModalForm(true)
+
+        try {
+            const detail = cuFormBackFillByGetDetail ? await getDetails?.(record) : record
+
+            for (let k in detail) {
+                const colType = columns?.find?.(({ dataIndex }) => dataIndex === k)?.type
+                if (colType === 'date' && isDate(detail[k])) {
+                    detail[k] = dayjs(detail[k])
+                }
+            }
+
+            const backFill = (await onBeforeRowEditBackFill?.(detail, record)) || detail
+
+            cuFormModel.values = backFill
+            _cuModalLoading.value = false
+        } catch (error) {}
+    }
     const updateColumnsTitleString = async (columns: TableColumnProps[]) => {
         const str_arr = await Promise.all(
             columns?.map?.(async ({ title }) => await vnodeToString(title as VNode))
@@ -225,18 +289,11 @@ const getCustomRender = (
         columnsEmptyText,
         columnsTimeFormat,
         controlColumnBtns,
-        apis,
+
         slots,
-        openCUModalForm,
-        updateSource,
-        cuFormModel,
-        emits,
-        _cuModalLoading,
-        cuFormBackFillByGetDetail,
-        columns,
-        onRowEdit,
-        fieldsNames,
-        onGetRowDetail,
+
+        deleteRow,
+        editRow,
     }: TableUseColumnsProps
 ) => {
     const { text, record, index, column } = opt
@@ -272,43 +329,6 @@ const getCustomRender = (
         const { children: deleteBtnChildren, ...deleteBtnProps } =
             (controlColumnBtns as any)?.delete || {}
 
-        const deleteRow = async () => {
-            await apis?.delete?.({ id: record?.id }, record)
-            updateSource()
-        }
-
-        const getDetails = async (record: any) => {
-            return new Promise(async (resolve, reject) => {
-                return apis?.details?.({ id: record?.id }, record)?.then(async (res) => {
-                    if (onGetRowDetail && isFunction(onGetRowDetail)) {
-                        return resolve((await onGetRowDetail(res)) || {})
-                    }
-                    return resolve(get(res, fieldsNames?.detail) || {})
-                })
-            })
-        }
-
-        const edit = async (record: any) => {
-            _cuModalLoading.value = true
-            openCUModalForm(true)
-
-            try {
-                const detail = cuFormBackFillByGetDetail ? await getDetails?.(record) : record
-                console.log('🚀 ~ edit ~ detail:', detail)
-
-                for (let k in detail) {
-                    const colType = columns?.find?.(({ dataIndex }) => dataIndex === k)?.type
-                    if (colType === 'date' && isDate(detail[k])) {
-                        detail[k] = dayjs(detail[k])
-                    }
-                }
-
-                const backFill = (await onRowEdit?.(detail, record)) || detail
-
-                cuFormModel.values = backFill
-                _cuModalLoading.value = false
-            } catch (error) {}
-        }
         const DetailBtn =
             controlColumnBtns && isObject((controlColumnBtns as any)?.detail) ? (
                 <Button class="p-0" {...detailsBtnProps}>
@@ -318,14 +338,14 @@ const getCustomRender = (
 
         const EditBtn =
             controlColumnBtns && isObject((controlColumnBtns as any)?.edit) ? (
-                <Button class="p-0" onClick={() => edit(record)} {...editBtnProps}>
+                <Button class="p-0" onClick={() => editRow(record)} {...editBtnProps}>
                     {editBtnChildren}
                 </Button>
             ) : null
         const DeleteBtn =
             controlColumnBtns && isObject((controlColumnBtns as any)?.delete) ? (
                 <Popconfirm
-                    onConfirm={deleteRow}
+                    onConfirm={() => deleteRow(record)}
                     title="确定删除吗?"
                     okText="确定"
                     cancelText="取消"
@@ -338,7 +358,13 @@ const getCustomRender = (
         return (
             <Space>
                 {isFunction(controlColumnBtns) ? (
-                    controlColumnBtns?.({ DetailBtn, EditBtn, DeleteBtn })
+                    controlColumnBtns?.(
+                        { DetailBtn, EditBtn, DeleteBtn },
+                        {
+                            deleteRow,
+                            editRow,
+                        }
+                    )
                 ) : (
                     <>
                         {slots?.controlColumnBtnExtraDetailStart?.({ opt, metaColumn })}

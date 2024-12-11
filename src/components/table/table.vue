@@ -51,7 +51,6 @@ defineOptions({
 })
 
 const tableRef = useTemplateRef('tableRef')
-console.log('🚀 ~ tableRef:', tableRef)
 const slots = defineSlots<TableSlots>()
 
 const emits = defineEmits<{}>()
@@ -73,8 +72,14 @@ const {
     fieldsNames,
     onSourceSuccess,
     onSourceError,
-    onRowEdit,
+    onBeforeRowEditBackFill,
     onGetRowDetail,
+    onBeforeCuFormSubmit,
+    onCuFormSubmitSuccess,
+    onCuFormSubmitError,
+    onBeforeRowDelete,
+    onRowDeleteSuccess,
+    onRowDeleteError,
 
     ownPagin,
     ownPaginProps,
@@ -148,20 +153,6 @@ const { resultParams, pagination } = $$(
         queryFormParams,
     })
 )
-const { CreateBtn, CUModalForm, openCUModalForm, cuFormModel, cuModalLoading } = $$(
-    useCU({
-        apis,
-        createBtn,
-        columns,
-        cuFormProps,
-        cuUseFormOptions,
-        cuFormRules,
-        cuFormModalProps,
-        cuFormRowProps,
-        cuFormColProps,
-        tableRef,
-    })
-)
 
 const { source, loading, total, updateSource }: any = $$(
     useDataSource({
@@ -172,6 +163,27 @@ const { source, loading, total, updateSource }: any = $$(
         onSourceError,
     })
 )
+
+const { CreateBtn, CUModalForm, openCUModalForm, cuFormModel, cuModalLoading, cuModalFormIsEdit } =
+    $$(
+        useCU({
+            apis,
+            createBtn,
+            columns,
+            cuFormProps,
+            cuUseFormOptions,
+            cuFormRules,
+            cuFormModalProps,
+            cuFormRowProps,
+            cuFormColProps,
+            tableRef,
+            onBeforeCuFormSubmit,
+            onCuFormSubmitSuccess,
+            onCuFormSubmitError,
+            updateSource,
+        })
+    )
+
 const { resColumns }: any = $$(
     useColumns({
         columns,
@@ -187,11 +199,14 @@ const { resColumns }: any = $$(
         openCUModalForm,
         updateSource,
         cuFormModel: cuFormModel as any,
-        onRowEdit,
+        onBeforeRowEditBackFill,
         cuModalLoading: cuModalLoading as any,
         cuFormBackFillByGetDetail,
         fieldsNames,
         onGetRowDetail,
+        onBeforeRowDelete,
+        onRowDeleteSuccess,
+        onRowDeleteError,
     })
 )
 
@@ -204,6 +219,7 @@ defineExpose({
     QueryFormInstance,
     updateSource,
     Pagination,
+    cuModalFormIsEdit,
 })
 </script>
 

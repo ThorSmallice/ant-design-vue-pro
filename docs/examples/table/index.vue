@@ -15,6 +15,7 @@
             :colResizable="open"
             :fieldsNames="fieldsNames"
             :queryFormSubmitWithReset="true"
+            :onBeforeCuFormSubmit="onBeforeCuFormSubmit"
         >
             <template #queryFormExtraLeft>
                 <Button>left</Button>
@@ -127,7 +128,7 @@ onMounted(() => {
             },
             {
                 title: '城市名称',
-                dataIndex: 'cityName',
+                dataIndex: 'cityId',
                 width: 150,
 
                 formItemProps: {
@@ -144,6 +145,9 @@ onMounted(() => {
                             },
                         ],
                     },
+                },
+                customRender: ({ record }: any) => {
+                    return record?.cityName
                 },
                 // search: true,
                 // filterComp: 'Select',
@@ -189,7 +193,7 @@ onMounted(() => {
                 formItemProps: {
                     control: 'InputNumber',
                     controlProps: {
-                        readOnly: true,
+                        disabled: true,
                         placeholder: '只读属性，无需填写',
                     },
                 },
@@ -202,17 +206,23 @@ onMounted(() => {
                     control: 'InputNumber',
                 },
             },
-        ]
+        ] as TableColumnProps[]
     }, 1000)
 })
+
+const onBeforeCuFormSubmit = (vals) => {
+    return {
+        ...vals,
+        cityName: options.value?.find(({ value }) => value === vals.cityId)?.label,
+    }
+}
 const listApi = async (params?: any, config?: any) =>
     await axios.get('/hnz/base/crop/page', { params, ...config })
 const detailsApi = async (params?: any, config?: any) =>
     await axios.get('/hnz/base/crop/get', { params, ...config })
-const createApi = async (params?: any, config?: any) =>
-    await axios.post('/hnz/base/crop/create', { params, ...config })
-const updateApi = async (params?: any, config?: any) =>
-    await axios.put('/hnz/base/crop/update', { params, ...config })
+const createApi = async (data?: any, config?: any) =>
+    await axios.post('/hnz/base/crop/create', data)
+const updateApi = async (data?: any, config?: any) => await axios.put('/hnz/base/crop/update', data)
 const deleteApi = async (params?: any, config?: any) =>
     await axios.delete('/hnz/base/crop/delete', { params, ...config })
 const exportApi = async (params?: any, config?: any) => await axios.get('', { params, ...config })

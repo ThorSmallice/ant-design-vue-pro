@@ -31,11 +31,18 @@ export type TablePropsApi = (
     config?: AxiosRequestConfig
 ) => Promise<any>
 
-export type requestParams = {
+export type RequestParams = {
     [key: string]: any
 }
-export type requestParamsFormatter = (params: requestParams) => requestParams
-
+export type RequestParamsFormatter = (params: RequestParams) => RequestParams
+export type CRUDRequestFinish = (res: AxiosResponse, info?: any) => boolean | void
+export type ParamsFormatter = (
+    vals:
+        | {
+              [key: string]: any
+          }
+        | unknown
+) => Promise<{ [key: string]: any } | unknown>
 export interface TableProps extends Omit<ATableProps, 'columns'> {
     full?: boolean // 高度100%
 
@@ -70,13 +77,22 @@ export interface TableProps extends Omit<ATableProps, 'columns'> {
         export: TablePropsApi
         import: TablePropsApi
     }>
-    requestParamsFormatter?: requestParamsFormatter
+    requestParamsFormatter?: RequestParamsFormatter
     onSourceSuccess?: TableUseDataSourceProps['onSourceSuccess']
     onSourceError?: TableUseDataSourceProps['onSourceError']
     onGetRowDetail?: (res: AxiosResponse) => Promise<{
         [key: string]: any
     }>
-    onRowEdit?: TableUseColumnsProps['onRowEdit']
+    onBeforeCuFormSubmit?: ParamsFormatter
+
+    onBeforeRowEditBackFill?: TableUseColumnsProps['onBeforeRowEditBackFill']
+    onCuFormSubmitSuccess?: CRUDRequestFinish
+    onCuFormSubmitError?: CRUDRequestFinish
+
+    onBeforeRowDelete?: ParamsFormatter
+    onRowDeleteSuccess?: CRUDRequestFinish
+    onRowDeleteError?: CRUDRequestFinish
+
     fieldsNames?: Partial<{
         page: string //  apis.list 请求参数中的 当前页的field
         pageSize: string //  apis.list 请求参数中的 每页数据量的field
@@ -97,8 +113,6 @@ export interface TableProps extends Omit<ATableProps, 'columns'> {
      */
     queryForm?: boolean
     queryFormProps?: FormProps
-    queryFormRules?: RuleObject[]
-    queryUseFormOptions?: TableQueryFormProps['queryUseFormOptions']
     queryFormItem?: TableQueryFormItemProps[]
     queryFormRowProps?: TableQueryFormProps['queryFormRowProps']
     queryFormColProps?: TableQueryFormProps['queryFormColProps']

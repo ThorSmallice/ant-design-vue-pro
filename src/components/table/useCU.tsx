@@ -6,6 +6,7 @@ import {
     Form,
     FormItemProps,
     FormProps,
+    message,
     Modal,
     ModalProps,
     Row,
@@ -28,6 +29,7 @@ export interface TableUseCUReturnOptions {
     CUModalForm: () => JSX.Element
     cuFormModel: Reactive<{ values: any }>
     cuModalLoading: Ref<boolean>
+    cuModalFormIsEdit: Ref<boolean>
     openCUModalForm: (isEdit: boolean) => void
     CUModalFormInstance: TableCUFormInstance
 }
@@ -65,13 +67,16 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         apis,
         createBtn,
         columns,
-        cuFormRules,
-        cuUseFormOptions,
+
         cuFormProps,
         cuFormModalProps,
         cuFormRowProps,
         cuFormColProps,
         tableRef,
+        onBeforeCuFormSubmit,
+        onCuFormSubmitSuccess,
+        onCuFormSubmitError,
+        updateSource,
     } = $(props)
 
     const cuModalLoading = ref(false)
@@ -91,21 +96,33 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         cuModalFormIsEdit.value = isEdit
     }
 
-    const submitCUModalForm = () => {
-        // console.log(s)
+    const submitCUModalForm = async () => {
         formRef.value
             .validate?.()
-            .then((vals) => {
-                console.log('🚀 ~ validate?. ~ vals:', vals)
+            .then(async (vals) => {
+                const data = (await onBeforeCuFormSubmit?.(vals)) || vals
+
+                try {
+                    const res = await apis?.[cuModalFormIsEdit.value ? 'update' : 'create']?.(data)
+                    cuModalOpen.value = false
+                    updateSource?.()
+                    if (onCuFormSubmitSuccess?.(res, cuModalFormIsEdit.value) === false) {
+                        return
+                    }
+                    message.success(`${cuModalFormIsEdit.value ? '编辑' : '新增'}成功！`)
+                } catch (error) {
+                    if (onCuFormSubmitError?.(error, cuModalFormIsEdit.value) === false) {
+                        return
+                    }
+                    message.error(`${cuModalFormIsEdit.value ? '编辑' : '新增'}失败！`)
+                }
             })
-            .catch((err) => {
-                console.log('🚀 ~ validate?. ~ err:', err)
-            })
+            .catch(() => {})
     }
 
     const cancelCUModalForm = () => {
         cuModalOpen.value = false
-        // cuFormModel.values = {}
+        cuFormModel.values = {}
     }
     const CreateBtn = () => {
         const { children, ...btnProps } = createBtn || {}
@@ -200,6 +217,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         CUModalForm,
         cuFormModel,
         cuModalLoading,
+        cuModalFormIsEdit,
         openCUModalForm,
         CUModalFormInstance,
     }
