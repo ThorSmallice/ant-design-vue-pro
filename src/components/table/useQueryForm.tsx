@@ -82,7 +82,7 @@ export interface TableQueryFormProps {
     [key: string]: any
 }
 
-export default (props: TableQueryFormProps) => {
+const useQueryForm = (props: TableQueryFormProps) => {
     const {
         queryFormItem,
         queryFormProps,
@@ -224,3 +224,5 @@ export default (props: TableQueryFormProps) => {
         queryFormParams,
     }
 }
+
+export default useQueryForm

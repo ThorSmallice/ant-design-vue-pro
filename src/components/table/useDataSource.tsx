@@ -1,8 +1,8 @@
+import { AxiosResponse } from 'axios'
 import { get } from 'es-toolkit/compat'
 import { isFunction } from 'es-toolkit/predicate'
 import { EmitFn, ref, watch } from 'vue'
-import { requestParams, TableProps } from './index.type'
-import { AxiosResponse } from 'axios'
+import { RequestParams, TableProps } from './index.type'
 export interface TableSourceResult {
     total: number
     list: any[] | null
@@ -27,7 +27,7 @@ export default (props: TableUseDataSourceProps) => {
     const loading = ref(false)
     const total = ref(0)
 
-    const getSource = async (params: requestParams) => {
+    const getSource = async (params: RequestParams) => {
         controller?.abort?.()
         loading.value = true
         controller = new AbortController()

@@ -172,60 +172,56 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                 ) : (
                     <Form ref={formRef} model={cuFormModel.values} {...cuFormProps}>
                         <Row gutter={[24, 10]} {...cuFormRowProps}>
-                            {columns?.map?.(
-                                ({ title, dataIndex, formItemProps, ...o }, i: number) => {
-                                    const {
-                                        name,
-                                        label,
-                                        customRender,
-                                        control,
-                                        colProps,
-                                        controlProps,
-                                        rules,
-                                        hidden,
-                                        customControl,
-                                        ...oths
-                                    } = formItemProps
-                                    return (
-                                        <Col
-                                            key={
-                                                JSON.stringify(name || dataIndex || title) ||
-                                                `${i}-${title}-${dataIndex}`
-                                            }
-                                            class={[hidden && 'hidden']}
-                                            {...cuFormColProps}
-                                            {...colProps}
-                                        >
-                                            {customRender && isFunction(customRender) ? (
-                                                customRender?.(cuFormModel, CUModalFormInstance)
-                                            ) : (
-                                                <Form.Item
-                                                    label={label || title}
-                                                    name={
-                                                        name || (dataIndex as FormItemProps['name'])
-                                                    }
-                                                    rules={rules}
-                                                    {...oths}
-                                                >
-                                                    {isFunction(customControl) ? (
-                                                        customControl?.(
-                                                            { name, dataIndex, label, title },
-                                                            cuFormModel
-                                                        )
-                                                    ) : (
-                                                        <FormItemControl
-                                                            type={control}
-                                                            model={cuFormModel.values}
-                                                            name={name || dataIndex}
-                                                            {...controlProps}
-                                                        ></FormItemControl>
-                                                    )}
-                                                </Form.Item>
-                                            )}
-                                        </Col>
-                                    )
-                                }
-                            )}
+                            {columns?.map?.(({ title, dataIndex, formItemProps }, i: number) => {
+                                const {
+                                    name,
+                                    label,
+                                    customRender,
+                                    control,
+                                    colProps,
+                                    controlProps,
+                                    rules,
+                                    hidden,
+                                    customControl,
+                                    ...oths
+                                } = formItemProps
+                                return (
+                                    <Col
+                                        key={
+                                            JSON.stringify(name || dataIndex || title) ||
+                                            `${i}-${title}-${dataIndex}`
+                                        }
+                                        class={[hidden && 'hidden']}
+                                        {...cuFormColProps}
+                                        {...colProps}
+                                    >
+                                        {customRender && isFunction(customRender) ? (
+                                            customRender?.(cuFormModel, CUModalFormInstance)
+                                        ) : (
+                                            <Form.Item
+                                                label={label || title}
+                                                name={name || (dataIndex as FormItemProps['name'])}
+                                                rules={rules}
+                                                {...oths}
+                                            >
+                                                {isFunction(customControl) ? (
+                                                    customControl?.(
+                                                        { name, dataIndex, label, title },
+                                                        cuFormModel
+                                                    )
+                                                ) : (
+                                                    <FormItemControl
+                                                        type={control}
+                                                        model={cuFormModel.values}
+                                                        name={name || dataIndex}
+                                                        {...controlProps}
+                                                    ></FormItemControl>
+                                                )}
+                                            </Form.Item>
+                                        )}
+                                    </Col>
+                                )
+                            })}
                         </Row>
                     </Form>
                 )}

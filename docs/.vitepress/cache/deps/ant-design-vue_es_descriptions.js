@@ -4,7 +4,7 @@ import {
   descriptionsContext,
   descriptionsProps,
   descriptions_default
-} from "./chunk-WH77DRSM.js";
+} from "./chunk-65XKSGNS.js";
 import "./chunk-LXEYKIM3.js";
 import "./chunk-HDQZI5PA.js";
 import "./chunk-G3PMV62Z.js";

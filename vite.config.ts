@@ -31,6 +31,7 @@ export default defineConfig({
             output: {
                 globals: {
                     vue: 'Vue',
+                    'ant-design-vue': 'AntDesignVue',
                 },
             },
         },

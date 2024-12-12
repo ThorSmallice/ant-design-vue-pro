@@ -1,17 +1,17 @@
 import { Descriptions, Modal, ModalProps } from 'ant-design-vue'
-import { computed, Reactive, reactive, Ref, ref, VNode, watch } from 'vue'
-import { JSX } from 'vue/jsx-runtime'
-import { TableColumnProps } from './useColumns'
 import {
     DescriptionsItem,
     DescriptionsItemProp,
     DescriptionsProps,
 } from 'ant-design-vue/es/descriptions'
-import { get, isFunction } from 'es-toolkit/compat'
-import dayjs from 'dayjs'
-import numeral from 'numeral'
 import Big from 'big.js'
+import dayjs from 'dayjs'
+import { get, isFunction } from 'es-toolkit/compat'
+import numeral from 'numeral'
+import { computed, Reactive, reactive, Ref, ref, VNode } from 'vue'
+import { JSX } from 'vue/jsx-runtime'
 import { TableTextConfig } from './index.type'
+import { TableColumnProps } from './useColumns'
 
 export interface TableUseDetailProps {
     columns?: TableColumnProps[]
