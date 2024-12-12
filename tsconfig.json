@@ -22,13 +22,8 @@
         "noUnusedLocals": false,
         "noImplicitAny": false,
         "noEmit": true,
-        "types": [
-            "vite/client",
-            "node",
-            // "unplugin-vue-macros/macros-global",
-            "@vue-macros/reactivity-transform/macros-global"
-        ],
-        // "types": ["vite/client", "node"],
+        "types": ["vite/client", "node", "@vue-macros/reactivity-transform/macros-global"],
+
         "outDir": "./dist",
         "strictNullChecks": false,
         "verbatimModuleSyntax": false,

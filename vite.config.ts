@@ -45,6 +45,7 @@ export default defineConfig({
             plugins: [terser()],
             external: ['vue', 'ant-design-vue', 'dayjs', 'numeral', 'es-toolkit', 'big.js', 'qs'],
             output: {
+                exports: 'named',
                 globals: {
                     vue: 'Vue',
                     'ant-design-vue': 'AntDesignVue',
