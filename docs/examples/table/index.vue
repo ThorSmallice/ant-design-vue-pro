@@ -1,5 +1,5 @@
 <template>
-    <div style="width: 100%; height: 500px" class="flex flex-col overflow-hidden">
+    <div style="width: 100; height: 500px" class="flex flex-col overflow-hidden">
         <!-- <Button @click="click">点我</Button> -->
         <Table
             ref="tableRef"
@@ -16,9 +16,6 @@
             :queryFormSubmitWithReset="true"
             :onBeforeCuFormSubmit="onBeforeCuFormSubmit"
             :cies-btns-in-query-form="true"
-            :scroll="{
-                x: 'max-content',
-            }"
         >
             <template #queryFormExtraLeft>
                 <Button>left</Button>

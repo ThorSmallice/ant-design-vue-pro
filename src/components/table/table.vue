@@ -29,6 +29,7 @@
                 :data-source="source"
                 :loading="loading"
                 @resize-column="onResizeColumn"
+                v-bind="o"
             >
                 <template v-for="slot in aTableSlots" :key="slot" v-slot:[slot]="temp">
                     <slot :name="slot" v-bind="temp"></slot>
@@ -43,7 +44,44 @@
         <component :is="DetailModal"></component>
     </div>
 </template>
+<!-- :row-key="rowKey"
+:sticky="sticky"
+:size="size"
+:row-class-name="rowClassName"
+:id="id"
+:indent-size="indentSize"
+:locale="locale"
+@change="onChange"
+@expand="onExpand"
+@expanded-rows-change="onExpandedRowsChange"
+:row-selection="rowSelection"
+:row-expandable="rowExpandable"
+:show-expand-column="showExpandColumn"
+:show-sorter-tooltip="showSorterTooltip"
+:sort-directions="sortDirections"
+:table-layout="tableLayout"
+:prefix-cls="prefixCls"
+:expand-fixed="expandFixed"
+:expand-icon-column-index="expandIconColumnIndex" -->
 
+<!-- rowKey,
+    rowClassName,
+    id,
+    indentSize,
+    locale,
+    onChange,
+    onExpand,
+    onExpandedRowsChange,
+    rowSelection,
+    rowExpandable,
+    showExpandColumn,
+    showSorterTooltip,
+    sortDirections,
+    tableLayout,
+    transformCellText,
+    prefixCls,
+    expandFixed,
+    expandIconColumnIndex, -->
 <script setup lang="tsx" async>
 import config from '@config/index'
 import { Table as ATable, Space, TableColumnProps } from 'ant-design-vue'
@@ -81,7 +119,6 @@ const {
     full = config.table.full,
     params,
     requestParamsFormatter = config.table.requestParamsFormatter,
-
     fieldsNames = config.table.fieldsNames,
     onSourceSuccess = config.table.onSourceSuccess,
     onSourceError = config.table.onSourceError,
@@ -136,11 +173,13 @@ const {
     createBtn = config.table.createBtn,
     importBtn = config.table.importBtn,
     exportBtn = config.table.exportBtn,
+    scroll = config.table.scroll,
+    dataSource,
+
+    showHeader,
+
+    ...o
 } = defineProps<TableProps>()
-// withDefaults(defineProps<TableProps>(), {
-//     ...mergeConfigProps(config.table),
-//     params: () => null,
-// })
 
 const ciesBtnsVNode = ref({})
 const { ImportBtn } = $$(useImport())
@@ -178,6 +217,7 @@ const { source, loading, total, updateSource }: any = $$(
         params: resultParams,
         onSourceSuccess,
         onSourceError,
+        dataSource,
     })
 )
 const { CreateBtn, CUModalForm, openCUModalForm, cuFormModel, cuModalLoading, cuModalFormIsEdit } =

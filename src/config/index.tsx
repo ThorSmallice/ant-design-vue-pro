@@ -2,7 +2,9 @@ import { TableProps } from '@src/components'
 
 export const TableConfig: TableProps = {
     full: false,
-
+    scroll: {
+        x: true,
+    },
     fieldsNames: {
         list: 'list',
         page: 'page',

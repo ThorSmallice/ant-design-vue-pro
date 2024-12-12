@@ -65,7 +65,7 @@ export type ciesBtnsVNode = Ref<
         ExportBtn: VNode | JSX.Element
     }>
 >
-export interface TableProps extends Omit<ATableProps, 'columns'> {
+export interface TableProps extends Omit<ATableProps, 'columns' | 'loading'> {
     full?: boolean // 高度100%
     tableTextConfig?: TableTextConfig
     /**
@@ -130,7 +130,6 @@ export interface TableProps extends Omit<ATableProps, 'columns'> {
      */
     ownPagin?: boolean
     ownPaginProps?: Partial<PaginationProps>
-    showOwnPagination?: boolean
 
     /**
      * 内置查询表单配置
@@ -263,36 +262,3 @@ export const mergeConfigProps = <T>(
     }
     return obj
 }
-// export const tableProps = () => ({
-
-//     apis: objectType<TableProps['apis']>(),
-//     columns: arrayType<TableProps['columns']>([]),
-//     colResizable: booleanType(true),
-//     ownPagin: booleanType(true),
-//     ownPaginProps: objectType<TableProps['ownPaginProps']>(),
-//     showOwnPagination: booleanType(true),
-//     full: booleanType(false),
-//     params: objectType<TableProps['params']>(),
-//     requestParamsFormatter: functionType<TableProps['requestParamsFormatter']>(),
-//     onSourceSuccess: functionType<TableProps['onSourceSuccess']>(),
-//     onSourceError: functionType<TableProps['onSourceError']>(),
-//     queryForm: booleanType(true),
-//     queryFormProps: objectType<TableProps['queryFormProps']>(),
-//     queryFormRules: arrayType<TableProps['queryFormRules']>(),
-//     queryUseFormOptions: objectType<TableProps['queryUseFormOptions']>(),
-//     queryFormItem: arrayType<TableProps['queryFormItem']>(),
-//     queryFormRowProps: objectType<TableProps['queryFormRowProps']>(),
-//     queryFormColProps: objectType<TableProps['queryFormColProps']>(),
-//     queryFormFlexProps: objectType<TableProps['queryFormFlexProps']>(),
-//     queryFormSubmitBtn: someType<boolean | TableProps['queryFormSubmitBtn']>(
-//         [Boolean, Function],
-//         true
-//     ),
-//     queryFormSubmitBtnProps: objectType<TableProps['queryFormSubmitBtnProps']>(),
-//     queryFormResetBtn: someType<boolean | TableProps['queryFormSubmitBtn']>(
-//         [Boolean, Function],
-//         true
-//     ),
-//     queryFormResetBtnProps: objectType<TableProps['queryFormResetBtnProps']>(),
-//     queryFormSubmitWithReset: booleanType(false),
-// })

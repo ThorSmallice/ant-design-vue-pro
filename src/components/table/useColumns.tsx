@@ -179,6 +179,7 @@ export default (props: TableUseColumnsProps) => {
             tempColumns?.push?.({
                 title: '操作',
                 type: 'control',
+                fixed: 'right',
                 width: 220,
             })
         }

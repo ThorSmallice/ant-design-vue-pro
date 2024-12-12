@@ -17,12 +17,13 @@ export interface TableUseDataSourceProps {
     onSourceSuccess: (res: AxiosResponse) => Promise<TableSourceResult>
     onSourceError: (err: Error) => void
     emits?: EmitFn
+    dataSource?: any
 }
 
 let controller: AbortController
 
 export default (props: TableUseDataSourceProps) => {
-    const { api, fieldsNames, params, onSourceSuccess, onSourceError, emits } = $(props)
+    const { api, fieldsNames, dataSource, params, onSourceSuccess, onSourceError, emits } = $(props)
 
     const source = ref([])
     const loading = ref(false)
@@ -60,6 +61,9 @@ export default (props: TableUseDataSourceProps) => {
     }
 
     const updateSource = async () => {
+        if (dataSource) {
+            return (source.value = dataSource)
+        }
         api?.list && getSource(params)
     }
 
