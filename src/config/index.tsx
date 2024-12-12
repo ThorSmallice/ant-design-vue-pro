@@ -22,7 +22,11 @@ export const TableConfig: TableProps = {
     onRowDeleteError: null,
 
     ownPagin: true,
-    ownPaginProps: null,
+    ownPaginProps: {
+        showSizeChanger: true,
+        showTotal: (total) => `共${total}条数据`,
+        showQuickJumper: true,
+    },
 
     queryForm: true,
 
