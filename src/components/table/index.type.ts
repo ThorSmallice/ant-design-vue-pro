@@ -5,7 +5,7 @@ import { RenderExpandIconProps } from 'ant-design-vue/es/vc-table/interface'
 import { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { cloneDeep } from 'es-toolkit'
 import { isArray, isObject } from 'es-toolkit/compat'
-import { Ref, SetupContext, VNode } from 'vue'
+import { inject, Ref, SetupContext, VNode } from 'vue'
 import { TableColumnCustomRenderArgs, TableColumnProps, TableUseColumnsProps } from './useColumns'
 import { TableUseCUFormProps } from './useCU'
 import { TableUseDataSourceProps } from './useDataSource'
@@ -16,6 +16,7 @@ import {
     TableQueryFormProps,
 } from './useQueryForm'
 import { JSX } from 'vue/jsx-runtime'
+import { arrayType, booleanType, functionType, objectType } from '@src/tools/type'
 
 type TableFieldNames = string | string[]
 
@@ -98,21 +99,23 @@ export interface TableProps extends Omit<ATableProps, 'columns'> {
         export: TablePropsApi
         import: TablePropsApi
     }>
-    requestParamsFormatter?: RequestParamsFormatter
-    onSourceSuccess?: TableUseDataSourceProps['onSourceSuccess']
-    onSourceError?: TableUseDataSourceProps['onSourceError']
-    onGetRowDetail?: (res: AxiosResponse) => Promise<{
-        [key: string]: any
-    }>
-    onBeforeCuFormSubmit?: ParamsFormatter
+    requestParamsFormatter?: null | RequestParamsFormatter
+    onSourceSuccess?: null | TableUseDataSourceProps['onSourceSuccess']
+    onSourceError?: null | TableUseDataSourceProps['onSourceError']
+    onGetRowDetail?:
+        | null
+        | ((res: AxiosResponse) => Promise<{
+              [key: string]: any
+          }>)
+    onBeforeCuFormSubmit?: null | ParamsFormatter
 
-    onBeforeRowEditBackFill?: TableUseColumnsProps['onBeforeRowEditBackFill']
-    onCuFormSubmitSuccess?: CRUDRequestFinish
-    onCuFormSubmitError?: CRUDRequestFinish
+    onBeforeRowEditBackFill?: null | TableUseColumnsProps['onBeforeRowEditBackFill']
+    onCuFormSubmitSuccess?: null | CRUDRequestFinish
+    onCuFormSubmitError?: null | CRUDRequestFinish
 
-    onBeforeRowDelete?: ParamsFormatter
-    onRowDeleteSuccess?: CRUDRequestFinish
-    onRowDeleteError?: CRUDRequestFinish
+    onBeforeRowDelete?: null | ParamsFormatter
+    onRowDeleteSuccess?: null | CRUDRequestFinish
+    onRowDeleteError?: null | CRUDRequestFinish
 
     fieldsNames?: Partial<{
         page: string //  apis.list 请求参数中的 当前页的field
@@ -249,7 +252,6 @@ export const mergeConfigProps = <T>(
 ): {
     [key: string]: any
 } => {
-    console.log(JSON.stringify(props))
     const obj = cloneDeep(props)
 
     for (let k in obj) {
@@ -261,3 +263,36 @@ export const mergeConfigProps = <T>(
     }
     return obj
 }
+// export const tableProps = () => ({
+
+//     apis: objectType<TableProps['apis']>(),
+//     columns: arrayType<TableProps['columns']>([]),
+//     colResizable: booleanType(true),
+//     ownPagin: booleanType(true),
+//     ownPaginProps: objectType<TableProps['ownPaginProps']>(),
+//     showOwnPagination: booleanType(true),
+//     full: booleanType(false),
+//     params: objectType<TableProps['params']>(),
+//     requestParamsFormatter: functionType<TableProps['requestParamsFormatter']>(),
+//     onSourceSuccess: functionType<TableProps['onSourceSuccess']>(),
+//     onSourceError: functionType<TableProps['onSourceError']>(),
+//     queryForm: booleanType(true),
+//     queryFormProps: objectType<TableProps['queryFormProps']>(),
+//     queryFormRules: arrayType<TableProps['queryFormRules']>(),
+//     queryUseFormOptions: objectType<TableProps['queryUseFormOptions']>(),
+//     queryFormItem: arrayType<TableProps['queryFormItem']>(),
+//     queryFormRowProps: objectType<TableProps['queryFormRowProps']>(),
+//     queryFormColProps: objectType<TableProps['queryFormColProps']>(),
+//     queryFormFlexProps: objectType<TableProps['queryFormFlexProps']>(),
+//     queryFormSubmitBtn: someType<boolean | TableProps['queryFormSubmitBtn']>(
+//         [Boolean, Function],
+//         true
+//     ),
+//     queryFormSubmitBtnProps: objectType<TableProps['queryFormSubmitBtnProps']>(),
+//     queryFormResetBtn: someType<boolean | TableProps['queryFormSubmitBtn']>(
+//         [Boolean, Function],
+//         true
+//     ),
+//     queryFormResetBtnProps: objectType<TableProps['queryFormResetBtnProps']>(),
+//     queryFormSubmitWithReset: booleanType(false),
+// })

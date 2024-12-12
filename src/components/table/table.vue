@@ -44,21 +44,11 @@
     </div>
 </template>
 
-<script setup lang="tsx">
+<script setup lang="tsx" async>
 import config from '@config/index'
 import { Table as ATable, Space, TableColumnProps } from 'ant-design-vue'
-import {
-    computed,
-    inject,
-    mergeProps,
-    provide,
-    ref,
-    toRef,
-    toRefs,
-    useTemplateRef,
-    watch,
-} from 'vue'
-import { ATableSlotsWhiteList, mergeConfigProps, TableProps, TableSlots } from './index.type'
+import { computed, ref, useTemplateRef, watch } from 'vue'
+import { ATableSlotsWhiteList, TableProps, TableSlots } from './index.type'
 import useColumns from './useColumns'
 import useCU from './useCU'
 import useDataSource from './useDataSource'
@@ -68,7 +58,7 @@ import useImport from './useImport'
 import usePagination from './usePagination'
 import useParams from './useParams'
 import useQueryForm from './useQueryForm'
-import { merge } from 'es-toolkit'
+
 defineOptions({
     name: 'DbTable',
 })
@@ -82,90 +72,75 @@ const aTableSlots = computed(() => {
         (key: string) => ATableSlotsWhiteList?.indexOf(key) !== -1
     )
 })
-const GlobalDefaultProps: any = inject('GlobalDefaultProps')
 const onResizeColumn = (w: number, col: TableColumnProps) => {
     col['width'] = w
 }
 
-const props = withDefaults(defineProps<TableProps>(), {
-    // ...mergeConfigProps(config.Table),
-    params: () => ({}),
-    apis: () => ({}),
-})
-
-const resProps = $(
-    computed(() => {
-        console.log('🚀 ~ GlobalDefaultProps:', GlobalDefaultProps, props)
-
-        return {
-            ...GlobalDefaultProps.table,
-            ...props,
-        }
-    })
-)
-console.log('🚀 ~ resProps ~ resProps:', resProps)
-
 const {
     apis,
-    full,
+    full = config.table.full,
     params,
-    requestParamsFormatter,
+    requestParamsFormatter = config.table.requestParamsFormatter,
 
-    fieldsNames,
-    onSourceSuccess,
-    onSourceError,
-    onBeforeRowEditBackFill,
-    onGetRowDetail,
-    onBeforeCuFormSubmit,
-    onCuFormSubmitSuccess,
-    onCuFormSubmitError,
-    onBeforeRowDelete,
-    onRowDeleteSuccess,
-    onRowDeleteError,
+    fieldsNames = config.table.fieldsNames,
+    onSourceSuccess = config.table.onSourceSuccess,
+    onSourceError = config.table.onSourceError,
+    onBeforeRowEditBackFill = config.table.onBeforeRowEditBackFill,
+    onGetRowDetail = config.table.onGetRowDetail,
+    onBeforeCuFormSubmit = config.table.onBeforeCuFormSubmit,
+    onCuFormSubmitSuccess = config.table.onCuFormSubmitSuccess,
+    onCuFormSubmitError = config.table.onCuFormSubmitError,
+    onBeforeRowDelete = config.table.onBeforeRowDelete,
+    onRowDeleteSuccess = config.table.onRowDeleteSuccess,
+    onRowDeleteError = config.table.onRowDeleteError,
 
-    ownPagin,
-    ownPaginProps,
+    ownPagin = config.table.ownPagin,
+    ownPaginProps = config.table.ownPaginProps,
 
-    queryForm,
+    queryForm = config.table.queryForm,
     queryFormItem,
-    queryFormProps,
-    queryFormSubmitWithReset,
-    queryFormRowProps,
-    queryFormColProps,
-    queryFormFlexProps,
-    queryFormSubmitBtn,
-    queryFormResetBtn,
-    queryFormSubmitBtnProps,
-    queryFormResetBtnProps,
+    queryFormProps = config.table.queryFormProps,
+    queryFormSubmitWithReset = config.table.queryFormSubmitWithReset,
+    queryFormRowProps = config.table.queryFormRowProps,
+    queryFormColProps = config.table.queryFormColProps,
+    queryFormFlexProps = config.table.queryFormFlexProps,
+    queryFormSubmitBtn = config.table.queryFormSubmitBtn,
+    queryFormResetBtn = config.table.queryFormResetBtn,
+    queryFormSubmitBtnProps = config.table.queryFormSubmitBtnProps,
+    queryFormResetBtnProps = config.table.queryFormResetBtnProps,
 
     columns,
-    indexColumn,
-    controlColumn,
-    columnsAlign,
-    columnsTitleNoWrap,
-    columnsTimeFormat,
-    columnsEmptyText,
-    controlColumnBtns,
+    indexColumn = config.table.indexColumn,
+    controlColumn = config.table.controlColumn,
+    columnsAlign = config.table.columnsAlign,
+    columnsTitleNoWrap = config.table.columnsTitleNoWrap,
+    columnsTimeFormat = config.table.columnsTimeFormat,
+    columnsEmptyText = config.table.columnsEmptyText,
+    controlColumnBtns = config.table.controlColumnBtns,
 
-    cuFormProps,
+    cuFormProps = config.table.cuFormProps,
     cuFormRules,
-    cuFormModalProps,
-    cuFormRowProps,
-    cuFormColProps,
-    cuFormBackFillByGetDetail,
-    tableTextConfig,
+    cuFormModalProps = config.table.cuFormModalProps,
+    cuFormRowProps = config.table.cuFormRowProps,
+    cuFormColProps = config.table.cuFormColProps,
+    cuFormBackFillByGetDetail = config.table.cuFormBackFillByGetDetail,
+    tableTextConfig = config.table.tableTextConfig,
 
-    detailBackFillByGetDetail,
-    detailDescItemEmptyText,
-    detailDescItemProps,
-    detailDescItemTimeFormat,
+    detailBackFillByGetDetail = config.table.detailBackFillByGetDetail,
+    detailDescItemEmptyText = config.table.detailDescItemEmptyText,
+    detailDescItemProps = config.table.detailDescItemProps,
+    detailDescItemTimeFormat = config.table.detailDescItemTimeFormat,
 
-    ciesBtns,
-    ciesBtnsInQueryForm,
-    createBtn,
-    importBtn,
-    exportBtn,
-} = $(resProps)
+    ciesBtns = config.table.ciesBtns,
+    ciesBtnsInQueryForm = config.table.ciesBtnsInQueryForm,
+    createBtn = config.table.createBtn,
+    importBtn = config.table.importBtn,
+    exportBtn = config.table.exportBtn,
+} = defineProps<TableProps>()
+// withDefaults(defineProps<TableProps>(), {
+//     ...mergeConfigProps(config.table),
+//     params: () => null,
+// })
 
 const ciesBtnsVNode = ref({})
 const { ImportBtn } = $$(useImport())

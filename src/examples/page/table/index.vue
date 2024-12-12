@@ -45,15 +45,12 @@
 <script setup lang="ts">
 import { TableProps, Table, GlobalComponentDefalutPropsConfig, TableConfig } from 'antd-vue-dbthor'
 
-// import '../../../dist/style.css'
 import { ControlMapType } from '@src/components/table/control'
 import { TableQueryFormItemProps } from '@src/components/table/useQueryForm'
 import axios from 'axios'
 import { Button } from 'ant-design-vue'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { TableColumnProps } from '@src/components/table/useColumns'
-// TableConfig.fieldsNames.default.list = ['data', 'data', 'list']
-// TableConfig.fieldsNames.default.total = ['data', 'data', 'total']
 const tableRef = ref()
 const options = ref([])
 const fieldsNames = ref({

@@ -1,5 +1,4 @@
 import { TableProps } from '@src/components'
-import { inject } from 'vue'
 
 export const TableConfig: TableProps = {
     full: false,
@@ -113,6 +112,6 @@ export const TableConfig: TableProps = {
 }
 
 const GlobalComponentDefalutPropsConfig = {
-    Table: TableConfig,
+    table: TableConfig,
 }
 export default GlobalComponentDefalutPropsConfig

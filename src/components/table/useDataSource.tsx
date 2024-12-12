@@ -23,6 +23,7 @@ let controller: AbortController
 
 export default (props: TableUseDataSourceProps) => {
     const { api, fieldsNames, params, onSourceSuccess, onSourceError, emits } = $(props)
+
     const source = ref([])
     const loading = ref(false)
     const total = ref(0)
@@ -34,7 +35,7 @@ export default (props: TableUseDataSourceProps) => {
         api?.list?.(params, {
             signal: controller.signal,
         })
-            ?.then(async (res) => {
+            ?.then(async (res: AxiosResponse) => {
                 const res_trans = await new Promise(async (resolve, reject) => {
                     try {
                         return isFunction(onSourceSuccess)
