@@ -1,5 +1,5 @@
 <template>
-    <div style="width: 100%; height: 500px" class="flex flex-col">
+    <div style="width: 100%; height: 500px" class="flex flex-col overflow-hidden">
         <!-- <Button @click="click">点我</Button> -->
         <Table
             ref="tableRef"
@@ -16,6 +16,9 @@
             :queryFormSubmitWithReset="true"
             :onBeforeCuFormSubmit="onBeforeCuFormSubmit"
             :cies-btns-in-query-form="true"
+            :scroll="{
+                x: 'max-content',
+            }"
         >
             <template #queryFormExtraLeft>
                 <Button>left</Button>
@@ -43,15 +46,18 @@
 </template>
 
 <script setup lang="ts">
-import { TableProps, Table, GlobalComponentDefalutPropsConfig, TableConfig } from 'antd-vue-dbthor'
+import { Table } from 'antd-vue-dbthor'
 
-// import '../../../dist/style.css'
 import { ControlMapType } from '@src/components/table/control'
 import { TableQueryFormItemProps } from '@src/components/table/useQueryForm'
 import axios from 'axios'
 import { Button } from 'ant-design-vue'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { TableColumnProps } from '@src/components/table/useColumns'
+defineOptions({
+    inheritAttrs: true,
+})
+defineProps()
 // TableConfig.fieldsNames.default.list = ['data', 'data', 'list']
 // TableConfig.fieldsNames.default.total = ['data', 'data', 'total']
 const tableRef = ref()

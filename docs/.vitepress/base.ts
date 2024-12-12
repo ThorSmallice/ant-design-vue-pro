@@ -1,16 +1,12 @@
-import { TableConfig } from 'antd-vue-dbthor'
 import vueJsx from '@vitejs/plugin-vue-jsx'
-// import Vue from '@vitejs/plugin-vue'
 
 import { resolve } from 'path'
 import { defineConfig } from 'vitepress'
 import ReactivityTransform from '@vue-macros/reactivity-transform/vite'
 import terser from '@rollup/plugin-terser'
 
-// import VueMacros from 'unplugin-vue-macros/vite'
 import pkg from '../../package.json'
 import { search as zhSearch } from './zh'
-TableConfig.full = true
 export const base = defineConfig({
     title: 'Antd-Vue-Dbthor',
     description: 'Antd增强版',
