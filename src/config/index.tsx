@@ -1,4 +1,5 @@
 import { TableProps } from '@src/components'
+import { inject } from 'vue'
 
 export const TableConfig: TableProps = {
     full: false,

@@ -47,7 +47,17 @@
 <script setup lang="tsx">
 import config from '@config/index'
 import { Table as ATable, Space, TableColumnProps } from 'ant-design-vue'
-import { computed, provide, ref, useTemplateRef, watch } from 'vue'
+import {
+    computed,
+    inject,
+    mergeProps,
+    provide,
+    ref,
+    toRef,
+    toRefs,
+    useTemplateRef,
+    watch,
+} from 'vue'
 import { ATableSlotsWhiteList, mergeConfigProps, TableProps, TableSlots } from './index.type'
 import useColumns from './useColumns'
 import useCU from './useCU'
@@ -58,6 +68,7 @@ import useImport from './useImport'
 import usePagination from './usePagination'
 import useParams from './useParams'
 import useQueryForm from './useQueryForm'
+import { merge } from 'es-toolkit'
 defineOptions({
     name: 'DbTable',
 })
@@ -71,10 +82,29 @@ const aTableSlots = computed(() => {
         (key: string) => ATableSlotsWhiteList?.indexOf(key) !== -1
     )
 })
-
+const GlobalDefaultProps: any = inject('GlobalDefaultProps')
 const onResizeColumn = (w: number, col: TableColumnProps) => {
     col['width'] = w
 }
+
+const props = withDefaults(defineProps<TableProps>(), {
+    // ...mergeConfigProps(config.Table),
+    params: () => ({}),
+    apis: () => ({}),
+})
+
+const resProps = $(
+    computed(() => {
+        console.log('🚀 ~ GlobalDefaultProps:', GlobalDefaultProps, props)
+
+        return {
+            ...GlobalDefaultProps.table,
+            ...props,
+        }
+    })
+)
+console.log('🚀 ~ resProps ~ resProps:', resProps)
+
 const {
     apis,
     full,
@@ -135,14 +165,8 @@ const {
     createBtn,
     importBtn,
     exportBtn,
-} = $(
-    withDefaults(defineProps<TableProps>(), {
-        ...mergeConfigProps(config?.Table),
+} = $(resProps)
 
-        params: () => ({}),
-        apis: () => ({}),
-    })
-)
 const ciesBtnsVNode = ref({})
 const { ImportBtn } = $$(useImport())
 const { ExportBtn } = $$(useExport())

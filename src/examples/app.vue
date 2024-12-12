@@ -1,7 +1,15 @@
 <template>
-    <router-view></router-view>
+    <ConfigProvider
+        :table="{
+            full: true,
+        }"
+    >
+        <router-view></router-view>
+    </ConfigProvider>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ConfigProvider } from '@src/components'
+</script>
 
 <style scoped></style>

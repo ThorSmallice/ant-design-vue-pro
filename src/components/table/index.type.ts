@@ -249,6 +249,7 @@ export const mergeConfigProps = <T>(
 ): {
     [key: string]: any
 } => {
+    console.log(JSON.stringify(props))
     const obj = cloneDeep(props)
 
     for (let k in obj) {
