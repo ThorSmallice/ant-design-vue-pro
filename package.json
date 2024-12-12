@@ -20,11 +20,10 @@
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
-            "import": "./dist/@dbthor/ant-design-vue-pro.es.js",
-            "require": "./dist/@dbthor/ant-design-vue-pro.umd.js"
+            "import": "./dist/lib/index.es.js",
+            "require": "./dist/lib/index.umd.js"
         },
-        "./*": "./*",
-        "./src/*": "./dist/src/*"
+        "./*": "./*"
     },
     "keywords": [],
     "author": "dbthor",
@@ -34,16 +33,20 @@
     },
     "devDependencies": {
         "@ant-design/icons-vue": "^7.0.1",
+        "@rollup/plugin-terser": "^0.4.4",
         "@types/big.js": "^6.2.2",
         "@types/node": "^20.17.8",
         "@types/numeral": "^2.0.5",
         "@types/qs": "^6.9.17",
         "@vitejs/plugin-vue": "^5.2.0",
         "@vitejs/plugin-vue-jsx": "^4.1.0",
+        "@vue-macros/reactivity-transform": "^1.1.4",
         "ant-design-vue": "~4.2.6",
         "autoprefixer": "^10.4.20",
         "axios": "^1.7.8",
+        "big.js": "^6.2.2",
         "dayjs": "^1.11.13",
+        "es-toolkit": "^1.27.0",
         "numeral": "^2.0.6",
         "path": "^0.12.7",
         "postcss": "^8.4.49",
@@ -51,10 +54,11 @@
         "rimraf": "^6.0.1",
         "tailwindcss": "^3.4.15",
         "typescript": "^5.7.2",
-        "unplugin-vue-macros": "^2.13.5",
         "vite": "^5.4.11",
         "vite-plugin-compression2": "^1.3.1",
+        "vite-plugin-css-injected-by-js": "^3.5.2",
         "vite-plugin-dts": "4.0.0-beta.1",
+        "vite-plugin-remove-console": "^2.2.0",
         "vitepress": "^1.5.0",
         "vue": "^3.5.13",
         "vue-router": "^4.5.0",
@@ -62,13 +66,11 @@
     },
     "peerDependencies": {
         "ant-design-vue": "4.x",
+        "big.js": "^6.2.2",
         "dayjs": "^1.11.13",
+        "es-toolkit": "^1.27.0",
         "numeral": "^2.0.6",
         "qs": "^6.13.1",
         "vue": "^3.5.12"
-    },
-    "dependencies": {
-        "big.js": "^6.2.2",
-        "es-toolkit": "^1.27.0"
     }
 }

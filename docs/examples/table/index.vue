@@ -44,7 +44,8 @@
 </template>
 
 <script setup lang="ts">
-import { TableProps, Table } from '@dbthor/ant-design-vue-pro'
+import { TableProps, Table } from '../../../dist/lib/index.es'
+// import '../../../dist/style.css'
 import { ControlMapType } from '@src/components/table/control'
 import { TableQueryFormItemProps } from '@src/components/table/useQueryForm'
 import axios from 'axios'

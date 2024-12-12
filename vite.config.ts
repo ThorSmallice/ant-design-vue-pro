@@ -4,34 +4,55 @@ import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 import pkg from './package.json'
-import VueMacros from 'unplugin-vue-macros/vite'
+// import VueMacros from 'unplugin-vue-macros/vite'
+import ReactivityTransform from '@vue-macros/reactivity-transform/vite'
+import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
+import removeConsole from 'vite-plugin-remove-console'
+import terser from '@rollup/plugin-terser'
+import { compression } from 'vite-plugin-compression2'
+
 export default defineConfig({
     plugins: [
-        VueMacros({
-            plugins: {
-                vue: Vue(),
-                vueJsx: vueJsx(), // 如有需要
-            },
-        }),
+        // VueMacros({
+        //     plugins: {
+        //         vue: Vue(),
+        //         vueJsx: vueJsx(), // 如有需要
+        //     },
+        // }),
+        Vue(),
+        vueJsx(),
         dts({
             outDir: 'dist',
             staticImport: true,
             insertTypesEntry: true,
         }),
+        compression(),
+        cssInjectedByJsPlugin({
+            topExecutionPriority: true,
+        }),
+        removeConsole({
+            includes: ['log'],
+        }),
+        ReactivityTransform(),
     ],
     build: {
         lib: {
             entry: resolve(__dirname, 'src/main.ts'),
             name: '@dbthor/ant-design-vue-pro',
-            fileName: (format) => `@dbthor/ant-design-vue-pro.${format}.js`,
+            fileName: (format) => `lib/index.${format}.js`,
         },
         rollupOptions: {
-            plugins: [],
-            external: ['vue', 'ant-design-vue'],
+            plugins: [terser()],
+            external: ['vue', 'ant-design-vue', 'dayjs', 'numeral', 'es-toolkit', 'big.js', 'qs'],
             output: {
                 globals: {
                     vue: 'Vue',
                     'ant-design-vue': 'AntDesignVue',
+                    dayjs: 'Dayjs',
+                    numeral: 'Numeral',
+                    'es-toolkit': 'EsToolkit',
+                    'big.js': 'BigJs',
+                    qs: 'Qs',
                 },
             },
         },
