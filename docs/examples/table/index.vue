@@ -3,7 +3,6 @@
         <!-- <Button @click="click">点我</Button> -->
         <Table
             ref="tableRef"
-            full
             :columns="columns"
             :apis="apis"
             :queryFormItem="queryFormItem"
@@ -44,7 +43,8 @@
 </template>
 
 <script setup lang="ts">
-import { TableProps, Table } from '../../../dist/lib/index.es'
+import { TableProps, Table, GlobalComponentDefalutPropsConfig, TableConfig } from 'antd-vue-dbthor'
+TableConfig.full = true
 // import '../../../dist/style.css'
 import { ControlMapType } from '@src/components/table/control'
 import { TableQueryFormItemProps } from '@src/components/table/useQueryForm'

@@ -39,7 +39,6 @@ export interface TableUseCUFormProps {
     columns?: TableProps['columns']
     cuFormProps?: FormProps
     cuFormRules?: FormItemProps['rules']
-    cuUseFormOptions?: UseFormOptions
     cuFormModalProps?: ModalProps
     cuFormRowProps?: RowProps
     cuFormColProps?: ColProps

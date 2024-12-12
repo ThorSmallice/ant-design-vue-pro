@@ -148,7 +148,6 @@ export interface TableProps extends Omit<ATableProps, 'columns'> {
      * 新增 编辑表单配置
      */
     cuFormProps?: TableUseCUFormProps['cuFormProps']
-    cuUseFormOptions?: TableUseCUFormProps['cuUseFormOptions']
     cuFormRules?: TableUseCUFormProps['cuFormRules']
     cuFormModalProps?: TableUseCUFormProps['cuFormModalProps']
     cuFormRowProps?: TableUseCUFormProps['cuFormRowProps']

@@ -32,7 +32,7 @@
             "@comps/*": ["src/components/*"],
             "@config/*": ["src/config/*"],
             "@tools/*": ["src/tools/*"],
-            "@dbthor/ant-design-vue-pro": ["src/main.ts"],
+            "antd-vue-dbthor": ["src/main.ts"],
             "@examples/*": ["docs/examples/*"]
         }
     },

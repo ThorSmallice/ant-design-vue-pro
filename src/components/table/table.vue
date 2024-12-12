@@ -77,7 +77,7 @@ const onResizeColumn = (w: number, col: TableColumnProps) => {
 }
 const {
     apis,
-
+    full,
     params,
     requestParamsFormatter,
 
@@ -118,7 +118,6 @@ const {
     controlColumnBtns,
 
     cuFormProps,
-    cuUseFormOptions,
     cuFormRules,
     cuFormModalProps,
     cuFormRowProps,
@@ -138,20 +137,12 @@ const {
     exportBtn,
 } = $(
     withDefaults(defineProps<TableProps>(), {
-        ...mergeConfigProps(config.Table),
-        full: false,
+        ...mergeConfigProps(config?.Table),
+
         params: () => ({}),
         apis: () => ({}),
-        ownPagin: true,
-        queryForm: true,
-        queryFormSubmitBtn: true,
-        queryFormResetBtn: true,
-        indexColumn: true,
-        controlColumn: true,
-        ciesBtns: true,
     })
 )
-
 const ciesBtnsVNode = ref({})
 const { ImportBtn } = $$(useImport())
 const { ExportBtn } = $$(useExport())
@@ -197,7 +188,7 @@ const { CreateBtn, CUModalForm, openCUModalForm, cuFormModel, cuModalLoading, cu
             createBtn,
             columns,
             cuFormProps,
-            cuUseFormOptions,
+
             cuFormRules,
             cuFormModalProps,
             cuFormRowProps,

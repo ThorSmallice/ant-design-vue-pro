@@ -32,7 +32,6 @@ export default (props: TableUseParmasProps) => {
 
         for (let k in queryFormParamsRaw) {
             if (dayjs.isDayjs(queryFormParamsRaw[k])) {
-                console.log(queryFormParamsRaw[k])
                 queryFormParamsRaw[k] = queryFormParamsRaw[k].format('YYYY-MM-DD HH:mm:ss')
             }
             if (queryFormParamsRaw[k]?.every?.((t: any) => dayjs.isDayjs(t))) {
