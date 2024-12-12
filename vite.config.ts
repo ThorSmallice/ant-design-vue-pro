@@ -4,7 +4,6 @@ import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 import pkg from './package.json'
-// import VueMacros from 'unplugin-vue-macros/vite'
 import ReactivityTransform from '@vue-macros/reactivity-transform/vite'
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 import removeConsole from 'vite-plugin-remove-console'
@@ -13,12 +12,6 @@ import { compression } from 'vite-plugin-compression2'
 
 export default defineConfig({
     plugins: [
-        // VueMacros({
-        //     plugins: {
-        //         vue: Vue(),
-        //         vueJsx: vueJsx(), // 如有需要
-        //     },
-        // }),
         Vue(),
         vueJsx(),
         dts({

@@ -59,7 +59,7 @@ export default (props: TableUseDataSourceProps) => {
     }
 
     const updateSource = async () => {
-        getSource(params)
+        api?.list && getSource(params)
     }
 
     watch(
