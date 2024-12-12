@@ -1,8 +1,8 @@
 {
-    "name": "@dbthor/ant-design-vue-pro",
+    "name": "antd-vue-dbthor",
     "type": "module",
     "private": false,
-    "version": "0.0.0",
+    "version": "1.0.0",
     "description": "",
     "main": "index.js",
     "scripts": {
@@ -25,9 +25,11 @@
         },
         "./*": "./*"
     },
-    "keywords": [],
+    "keywords": [
+        "ant-design-vue-pro"
+    ],
     "author": "dbthor",
-    "license": "ISC",
+    "license": "MIT",
     "publishConfig": {
         "registry": "https://registry.npmjs.org/"
     },

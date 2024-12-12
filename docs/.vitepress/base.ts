@@ -11,7 +11,7 @@ import pkg from '../../package.json'
 import { search as zhSearch } from './zh'
 
 export const base = defineConfig({
-    title: 'Ant-Design-Pro-Vue',
+    title: 'Antd-Vue-Dbthor',
     description: 'Antd增强版',
     srcDir: 'md',
     lastUpdated: true,
