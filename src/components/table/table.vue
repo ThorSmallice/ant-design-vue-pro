@@ -1,10 +1,10 @@
 <template>
-    <div :class="['d-table', full ? 'd-table-full' : null]" ref="tableRef">
-        <div :class="['d-table-query-form']" v-if="queryForm">
+    <div :class="['db-table', full ? 'db-table-full' : null]" ref="tableRef">
+        <div :class="['db-table-query-form']" v-if="queryForm">
             <QueryForm></QueryForm>
         </div>
 
-        <div :class="['d-table-cies-btns-wrap']" v-if="ciesBtns">
+        <div :class="['db-table-cies-btns-wrap']" v-if="ciesBtns">
             <Space>
                 <template v-if="slots?.customCiesBtns">
                     <slot
@@ -22,7 +22,7 @@
             </Space>
         </div>
 
-        <div :class="['d-table-wrap']">
+        <div :class="['db-table-wrap']">
             <ATable
                 :pagination="false"
                 :columns="resColumns"
@@ -36,7 +36,7 @@
             </ATable>
         </div>
 
-        <div :class="['d-table-pagination-wrap']" v-if="ownPagin">
+        <div :class="['db-table-pagination-wrap']" v-if="ownPagin">
             <Pagination></Pagination>
         </div>
         <component :is="CUModalForm"></component>
@@ -59,7 +59,7 @@ import usePagination from './usePagination'
 import useParams from './useParams'
 import useQueryForm from './useQueryForm'
 defineOptions({
-    name: 'DTable',
+    name: 'DbTable',
 })
 
 const tableRef = useTemplateRef('tableRef')
