@@ -166,9 +166,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                 maskClosable={false}
                 {...cuFormModalProps}
             >
-                {cuModalLoading?.value ? (
-                    <Skeleton active />
-                ) : (
+                <Skeleton active loading={cuModalLoading?.value}>
                     <Form ref={formRef} model={cuFormModel.values} {...cuFormProps}>
                         <Row gutter={[24, 10]} {...cuFormRowProps}>
                             {columns?.map?.(({ title, dataIndex, formItemProps }, i: number) => {
@@ -183,7 +181,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                                     hidden,
                                     customControl,
                                     ...oths
-                                } = formItemProps
+                                } = formItemProps || {}
                                 return (
                                     <Col
                                         key={
@@ -223,7 +221,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                             })}
                         </Row>
                     </Form>
-                )}
+                </Skeleton>
             </Modal>
         )
     }

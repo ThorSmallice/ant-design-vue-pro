@@ -16,11 +16,14 @@ import {
     RangePicker,
     Select,
     SelectProps,
+    TextAreaProps,
 } from 'ant-design-vue'
 import { RangePickerProps } from 'ant-design-vue/es/date-picker'
+const { TextArea } = Input
 const ControlMap = {
     Input,
     InputNumber,
+    TextArea,
     Select,
     DatePicker,
     RangePicker,
@@ -39,6 +42,7 @@ export enum ControlMapType {
     CheckboxGroup = 'CheckboxGroup',
     Radio = 'Radio',
     RadioGroup = 'RadioGroup',
+    TextArea = 'TextArea',
 }
 
 export interface ControlMapProps {
@@ -51,6 +55,7 @@ export interface ControlMapProps {
     CheckboxGroup: CheckboxGroupProps
     Radio: RadioProps
     RadioGroup: RadioGroupProps
+    TextArea: TextAreaProps
 }
 
 const Control = ({ type = 'Input', ...props }: any) => {
@@ -80,13 +85,14 @@ export const FormItemControl = ({ type = 'Input', model, name, customControl, ..
 
     switch (FormItemControlModelFields[type]) {
         case ControlModelFields.Checked:
-            return <Comp v-model:checked={model[`${name}`]} {...props}></Comp>
+            return <Comp v-model:checked={model[`${name}`]} placeholder="请选择" {...props}></Comp>
         default:
             return (
                 <Comp
                     allowClear
                     v-model:value={model[`${name}`]}
                     class={['w-full']}
+                    placeholder="请输入"
                     {...props}
                 ></Comp>
             )
