@@ -44,44 +44,7 @@
         <component :is="DetailModal"></component>
     </div>
 </template>
-<!-- :row-key="rowKey"
-:sticky="sticky"
-:size="size"
-:row-class-name="rowClassName"
-:id="id"
-:indent-size="indentSize"
-:locale="locale"
-@change="onChange"
-@expand="onExpand"
-@expanded-rows-change="onExpandedRowsChange"
-:row-selection="rowSelection"
-:row-expandable="rowExpandable"
-:show-expand-column="showExpandColumn"
-:show-sorter-tooltip="showSorterTooltip"
-:sort-directions="sortDirections"
-:table-layout="tableLayout"
-:prefix-cls="prefixCls"
-:expand-fixed="expandFixed"
-:expand-icon-column-index="expandIconColumnIndex" -->
 
-<!-- rowKey,
-    rowClassName,
-    id,
-    indentSize,
-    locale,
-    onChange,
-    onExpand,
-    onExpandedRowsChange,
-    rowSelection,
-    rowExpandable,
-    showExpandColumn,
-    showSorterTooltip,
-    sortDirections,
-    tableLayout,
-    transformCellText,
-    prefixCls,
-    expandFixed,
-    expandIconColumnIndex, -->
 <script setup lang="tsx" async>
 import config from '@config/index'
 import { Table as ATable, Space, TableColumnProps } from 'ant-design-vue'
@@ -101,7 +64,8 @@ defineOptions({
     name: 'DbTable',
 })
 
-const tableRef = useTemplateRef('tableRef')
+const tableRef = ref<HTMLDivElement>()
+
 const slots = defineSlots<TableSlots>()
 
 const emits = defineEmits<{}>()
