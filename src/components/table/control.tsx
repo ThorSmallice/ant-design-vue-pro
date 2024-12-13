@@ -47,7 +47,7 @@ export enum ControlMapType {
 
 export interface ControlMapProps {
     Input: InputProps
-    InputNumberProps: InputNumberProps
+    InputNumber: InputNumberProps
     Select: SelectProps
     DatePicker: DatePickerProps
     RangePicker: RangePickerProps
