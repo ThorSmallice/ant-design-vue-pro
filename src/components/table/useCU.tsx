@@ -108,6 +108,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                 try {
                     const res = await apis?.[cuModalFormIsEdit.value ? 'update' : 'create']?.(data)
                     cuModalOpen.value = false
+                    cuFormModel.values = {}
                     updateSource?.()
                     if (onCuFormSubmitSuccess?.(res, cuModalFormIsEdit.value) === false) {
                         return
