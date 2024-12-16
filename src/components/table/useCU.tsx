@@ -165,6 +165,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                 confirmLoading={submitBtnLoading.value}
                 getContainer={() => tableRef}
                 maskClosable={false}
+                destroyOnClose
                 {...cuFormModalProps}
             >
                 <Skeleton active loading={cuModalLoading?.value}>

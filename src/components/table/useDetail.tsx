@@ -64,9 +64,8 @@ export default (props: TableUseDetailProps): TableUseDetailReturnOptions => {
                     numberComputed,
                     descItemProps,
                     customRender,
-                    hidden,
                 } = col
-                const { label, render, ...o } = descItemProps || {}
+                const { label, render, hidden, ...o } = descItemProps || {}
                 return {
                     ...detailDescItemProps,
                     label: title || label,
@@ -103,6 +102,8 @@ export default (props: TableUseDetailProps): TableUseDetailReturnOptions => {
                 title={tableTextConfig?.modalTitle?.detail}
                 footer={null}
                 width="65%"
+                destroyOnClose
+                maskClosable={false}
                 {...detailModalProps}
             >
                 <Descriptions bordered {...detailDescProps}>

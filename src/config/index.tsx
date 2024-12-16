@@ -77,6 +77,7 @@ export const TableConfig: TableProps = {
     cuFormRules: null,
     cuFormModalProps: {
         width: '65%',
+        destroyOnClose: true,
     },
     cuFormRowProps: null,
     cuFormColProps: {
