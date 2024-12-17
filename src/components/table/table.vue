@@ -121,6 +121,7 @@ const {
 
     cuFormProps = config.table.cuFormProps,
     cuFormRules,
+    cuFormInitalValues,
     cuFormModalProps = config.table.cuFormModalProps,
     cuFormRowProps = config.table.cuFormRowProps,
     cuFormColProps = config.table.cuFormColProps,
@@ -202,6 +203,7 @@ const { CreateBtn, CUModalForm, openCUModalForm, cuFormModel, cuModalLoading, cu
             onCuFormSubmitError,
             updateSource,
             tableTextConfig,
+            initalValues: cuFormInitalValues,
         })
     )
 const { openDetailModal, detailModalLoading, detailsDataSource, DetailModal } = $$(

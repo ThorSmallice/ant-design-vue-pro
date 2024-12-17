@@ -14,7 +14,7 @@ import {
     Skeleton,
 } from 'ant-design-vue'
 import { isFunction } from 'es-toolkit'
-import { computed, Reactive, reactive, Ref, ref, VNode } from 'vue'
+import { computed, isRef, Reactive, reactive, Ref, ref, toRaw, VNode } from 'vue'
 import { JSX } from 'vue/jsx-runtime'
 import { ControlMapProps, FormItemControl } from './control'
 import { ownBtnProps, TableProps, TableTextConfig } from './index.type'
@@ -43,7 +43,7 @@ export interface TableUseCUFormProps {
     cuFormRowProps?: RowProps
     cuFormColProps?: ColProps
     tableTextConfig?: TableTextConfig
-
+    initalValues?: any
     [key: string]: any
 }
 export interface TableUseCUFormItemProps<T extends keyof ControlMapProps = keyof ControlMapProps>
@@ -79,6 +79,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         onCuFormSubmitSuccess,
         onCuFormSubmitError,
         updateSource,
+        initalValues,
     } = $(props)
 
     const cuModalLoading = ref(false)
@@ -88,7 +89,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
     const cuFormModel = reactive<{
         values: any
     }>({
-        values: {},
+        values: initalValues && isRef(initalValues) ? toRaw(initalValues) : initalValues || {},
     })
 
     const formRef = ref<FormInstance>()
