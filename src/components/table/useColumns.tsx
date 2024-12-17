@@ -78,20 +78,12 @@ export interface TableUseColumnsProps {
     columnsTimeFormat?: string
     columnsEmptyText?: VNode | string
     columnsTitleNoWrap?: boolean
-    controlColumnBtns?:
-        | {
-              detail: false | (ButtonProps & { children?: VNode | string })
-              edit: false | (ButtonProps & { children?: VNode | string })
-              delete: false | (ButtonProps & { children?: VNode | string })
-          }
-        | ((
-              orgNode: {
-                  DetailBtn: VNode
-                  EditBtn: VNode
-                  DeleteBtn: VNode
-              },
-              methods: TableColumnRowMethods
-          ) => VNode | JSX.Element)
+    controlColumnBtns?: {
+        detail: false | (ButtonProps & { children?: VNode | string })
+        edit: false | (ButtonProps & { children?: VNode | string })
+        delete: false | (ButtonProps & { children?: VNode | string })
+    }
+
     slots?: TableSlots
     openCUModalForm?: TableUseCUReturnOptions['openCUModalForm'] | any
     updateSource?: () => Promise<void>
@@ -401,28 +393,23 @@ const getCustomRender = (
             ) : null
         return (
             <Space>
-                {isFunction(controlColumnBtns) ? (
-                    controlColumnBtns?.(
-                        { DetailBtn, EditBtn, DeleteBtn },
+                {slots?.customControlColumnBtns && isFunction(slots?.customControlColumnBtns) ? (
+                    slots?.customControlColumnBtns?.(
                         {
+                            DetailBtn,
+                            EditBtn,
+                            DeleteBtn,
                             deleteRow,
                             editRow,
                             openRowDetails,
-                        }
+                        },
+                        { opt, metaColumn }
                     )
                 ) : (
                     <>
-                        {slots?.controlColumnBtnExtraDetailStart?.({ opt, metaColumn })}
-
                         {DetailBtn}
-                        {slots?.controlColumnBtnExtraEditLeft?.({ opt, metaColumn })}
-
                         {EditBtn}
-                        {slots?.controlColumnBtnExtraEditRight?.({ opt, metaColumn })}
-
                         {DeleteBtn}
-
-                        {slots?.controlColumnBtnExtraEnd?.({ opt, metaColumn })}
                     </>
                 )}
             </Space>

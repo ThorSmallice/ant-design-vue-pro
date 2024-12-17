@@ -3,8 +3,9 @@ import { TableProps } from '@src/components'
 export const TableConfig: TableProps = {
     full: false,
     scroll: {
-        x: true,
+        x: 'max-content',
     },
+    tableLayout: 'fixed',
     fieldsNames: {
         list: 'list',
         page: 'page',

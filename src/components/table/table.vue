@@ -29,6 +29,8 @@
                 :data-source="source"
                 :loading="loading"
                 @resize-column="onResizeColumn"
+                :scroll="scroll"
+                :table-layout="tableLayout"
                 v-bind="o"
             >
                 <template v-for="slot in aTableSlots" :key="slot" v-slot:[slot]="temp">
@@ -139,6 +141,7 @@ const {
     importBtn = config.table.importBtn,
     exportBtn = config.table.exportBtn,
     scroll = config.table.scroll,
+    tableLayout = config.table.tableLayout,
     dataSource,
 
     showHeader,

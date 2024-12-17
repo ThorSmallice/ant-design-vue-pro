@@ -65,6 +65,21 @@ export type ciesBtnsVNode = Ref<
         ExportBtn: VNode | JSX.Element
     }>
 >
+export type controlColumnBtnVNode = {
+    DetailBtn: VNode | JSX.Element
+    EditBtn: VNode | JSX.Element
+    DeleteBtn: VNode | JSX.Element
+}
+export type controlColumnMethods = {
+    deleteRow: (record: any) => Promise<any>
+    editRow: (record: any) => Promise<any>
+    openRowDetails: (record: any) => Promise<any>
+}
+
+export type queryFormBtnVNode = {
+    SubmitBtn: VNode | JSX.Element
+    ResetBtn: VNode | JSX.Element
+}
 export interface TableProps extends Omit<ATableProps, 'columns' | 'loading'> {
     full?: boolean // 高度100%
     tableTextConfig?: TableTextConfig
@@ -201,26 +216,18 @@ export type TableSlots = {
     customFilterIcon?: any
     customFilterDropdown?: any
     default?: any
-    queryFormExtraLeft?: (form: TableQueryFormInstance) => VNode[] | JSX.Element[]
-    queryFormExtraCenter?: (form: TableQueryFormInstance) => VNode[] | JSX.Element[]
-    queryFormExtraRight?: (form: TableQueryFormInstance) => VNode[] | JSX.Element[]
+    customQueryFormBtns?: (
+        originNode: queryFormBtnVNode,
+        form: TableQueryFormInstance
+    ) => VNode[] | JSX.Element[]
 
-    controlColumnBtnExtraDetailStart?: (obj: {
-        opt: TableColumnCustomRenderArgs
-        metaColumn: TableColumnProps
-    }) => VNode[] | JSX.Element[]
-    controlColumnBtnExtraEditLeft?: (obj: {
-        opt: TableColumnCustomRenderArgs
-        metaColumn: TableColumnProps
-    }) => VNode[] | JSX.Element[]
-    controlColumnBtnExtraEditRight?: (obj: {
-        opt: TableColumnCustomRenderArgs
-        metaColumn: TableColumnProps
-    }) => VNode[] | JSX.Element[]
-    controlColumnBtnExtraEnd?: (obj: {
-        opt: TableColumnCustomRenderArgs
-        metaColumn: TableColumnProps
-    }) => VNode[] | JSX.Element[]
+    customControlColumnBtns?: (
+        originNode: controlColumnBtnVNode & controlColumnMethods,
+        obj: {
+            opt: TableColumnCustomRenderArgs
+            metaColumn: TableColumnProps
+        }
+    ) => VNode[] | JSX.Element[]
 
     customCiesBtns?: (orgNode: {
         CreateBtn: VNode

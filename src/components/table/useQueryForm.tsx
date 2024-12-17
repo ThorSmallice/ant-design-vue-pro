@@ -101,7 +101,7 @@ const useQueryForm = (props: TableQueryFormProps) => {
     const queryFormState = reactive<any>({ values: {} })
     const formRef = ref<FormInstance>()
 
-    const { queryFormExtraLeft, queryFormExtraCenter, queryFormExtraRight } = $(useSlots())
+    const { customQueryFormBtns, customCiesBtns } = $(useSlots())
 
     const queryFormParams = reactive<{ values: any }>({
         values: {},
@@ -126,6 +126,34 @@ const useQueryForm = (props: TableQueryFormProps) => {
                 } as TableQueryFormInstance)
         )
     )
+    const SubmitBtn = queryFormSubmitBtn ? (
+        isFunction(queryFormSubmitBtn) ? (
+            queryFormSubmitBtn?.(QueryFormInstance)
+        ) : (
+            <Button
+                type="primary"
+                htmlType="submit"
+                {...omit(queryFormSubmitBtnProps, ['children'])}
+            >
+                {queryFormSubmitBtnProps?.children}
+            </Button>
+        )
+    ) : null
+
+    const ResetBtn = queryFormResetBtn ? (
+        isFunction(queryFormResetBtn) ? (
+            queryFormResetBtn?.(QueryFormInstance)
+        ) : (
+            <Button onClick={onQueryFormReset} {...omit(queryFormResetBtnProps, ['children'])}>
+                {queryFormResetBtnProps?.children}
+            </Button>
+        )
+    ) : null
+
+    const CreateBtn = $(computed(() => h(ciesBtnsVNode?.CreateBtn)))
+    const ImportBtn = $(computed(() => h(ciesBtnsVNode?.ImportBtn)))
+    const ExportBtn = $(computed(() => h(ciesBtnsVNode?.ExportBtn)))
+
     const QueryForm = () => (
         <Form
             ref={formRef}
@@ -175,44 +203,29 @@ const useQueryForm = (props: TableQueryFormProps) => {
                 </Row>
                 <Form.Item class={['ml-2']}>
                     <Space>
-                        {queryFormExtraLeft?.(QueryFormInstance)}
-                        {queryFormSubmitBtn ? (
-                            isFunction(queryFormSubmitBtn) ? (
-                                queryFormSubmitBtn?.(QueryFormInstance)
-                            ) : (
-                                <Button
-                                    type="primary"
-                                    htmlType="submit"
-                                    {...omit(queryFormSubmitBtnProps, ['children'])}
-                                >
-                                    {queryFormSubmitBtnProps?.children}
-                                </Button>
-                            )
-                        ) : null}
-                        {queryFormExtraCenter?.(QueryFormInstance)}
-
-                        {queryFormResetBtn ? (
-                            isFunction(queryFormResetBtn) ? (
-                                queryFormResetBtn?.(QueryFormInstance)
-                            ) : (
-                                <Button
-                                    onClick={onQueryFormReset}
-                                    {...omit(queryFormResetBtnProps, ['children'])}
-                                >
-                                    {queryFormResetBtnProps?.children}
-                                </Button>
-                            )
-                        ) : null}
-
-                        {queryFormExtraRight?.(QueryFormInstance)}
-
-                        {ciesBtnsInQueryForm ? (
+                        {customQueryFormBtns && isFunction(customQueryFormBtns) ? (
+                            customQueryFormBtns?.({ SubmitBtn, ResetBtn }, QueryFormInstance)
+                        ) : (
                             <>
-                                {h(ciesBtnsVNode?.CreateBtn)}
-                                {h(ciesBtnsVNode?.ImportBtn)}
-                                {h(ciesBtnsVNode?.ExportBtn)}
+                                {SubmitBtn}
+                                {ResetBtn}
+                                {ciesBtnsInQueryForm ? (
+                                    customCiesBtns && isFunction(customCiesBtns) ? (
+                                        customCiesBtns?.({
+                                            CreateBtn,
+                                            ImportBtn,
+                                            ExportBtn,
+                                        })
+                                    ) : (
+                                        <>
+                                            {CreateBtn}
+                                            {ImportBtn}
+                                            {ExportBtn}
+                                        </>
+                                    )
+                                ) : null}
                             </>
-                        ) : null}
+                        )}
                     </Space>
                 </Form.Item>
             </Flex>

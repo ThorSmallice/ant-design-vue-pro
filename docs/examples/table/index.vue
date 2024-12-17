@@ -17,27 +17,6 @@
             :onBeforeCuFormSubmit="onBeforeCuFormSubmit"
             :cies-btns-in-query-form="true"
         >
-            <template #queryFormExtraLeft>
-                <Button>left</Button>
-            </template>
-            <template #queryFormExtraCenter>
-                <Button>center</Button>
-            </template>
-            <template #queryFormExtraRight>
-                <Button>right</Button>
-            </template>
-            <template #controlColumnBtnExtraDetailStart="{ opt, metaColumn }">
-                <Button @click="() => console.log(opt, metaColumn)">start</Button>
-            </template>
-            <template #controlColumnBtnExtraEditLeft>
-                <Button>left</Button>
-            </template>
-            <template #controlColumnBtnExtraEditRight>
-                <Button>right</Button>
-            </template>
-            <template #controlColumnBtnExtraEnd>
-                <Button>end</Button>
-            </template>
         </Table>
     </div>
 </template>
