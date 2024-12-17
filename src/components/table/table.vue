@@ -50,7 +50,7 @@
 <script setup lang="tsx" async>
 import config from '@config/index'
 import { Table as ATable, Space, TableColumnProps } from 'ant-design-vue'
-import { computed, ref, useTemplateRef, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { ATableSlotsWhiteList, TableProps, TableSlots } from './index.type'
 import useColumns from './useColumns'
 import useCU from './useCU'
@@ -125,7 +125,7 @@ const {
 
     cuFormProps = config.table.cuFormProps,
     cuFormRules,
-    cuFormInitalValues,
+    cuFormDefaultValues,
     cuFormModalProps = config.table.cuFormModalProps,
     cuFormRowProps = config.table.cuFormRowProps,
     cuFormColProps = config.table.cuFormColProps,
@@ -208,7 +208,7 @@ const { CreateBtn, CUModalForm, openCUModalForm, cuFormModel, cuModalLoading, cu
             onCuFormSubmitError,
             updateSource,
             tableTextConfig,
-            initalValues: cuFormInitalValues,
+            defaultValues: cuFormDefaultValues,
         })
     )
 const { openDetailModal, detailModalLoading, detailsDataSource, DetailModal } = $$(

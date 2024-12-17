@@ -43,7 +43,7 @@ export interface TableUseCUFormProps {
     cuFormRowProps?: RowProps
     cuFormColProps?: ColProps
     tableTextConfig?: TableTextConfig
-    initalValues?: any
+    defaultValues?: any
     [key: string]: any
 }
 export interface TableUseCUFormItemProps<T extends keyof ControlMapProps = keyof ControlMapProps>
@@ -79,7 +79,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         onCuFormSubmitSuccess,
         onCuFormSubmitError,
         updateSource,
-        initalValues,
+        defaultValues,
     } = $(props)
 
     const cuModalLoading = ref(false)
@@ -89,7 +89,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
     const cuFormModel = reactive<{
         values: any
     }>({
-        values: initalValues && isRef(initalValues) ? toRaw(initalValues) : initalValues || {},
+        values: defaultValues && isRef(defaultValues) ? toRaw(defaultValues) : defaultValues || {},
     })
 
     const formRef = ref<FormInstance>()

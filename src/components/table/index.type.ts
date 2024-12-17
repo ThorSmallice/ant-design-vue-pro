@@ -169,7 +169,7 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading'> {
      */
     cuFormProps?: TableUseCUFormProps['cuFormProps']
     cuFormRules?: TableUseCUFormProps['cuFormRules']
-    cuFormInitalValues?: TableUseCUFormProps['initalValues']
+    cuFormDefaultValues?: TableUseCUFormProps['defaultValues']
     cuFormModalProps?: TableUseCUFormProps['cuFormModalProps']
     cuFormRowProps?: TableUseCUFormProps['cuFormRowProps']
     cuFormColProps?: TableUseCUFormProps['cuFormColProps']
