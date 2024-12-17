@@ -73,6 +73,9 @@ export enum FormItemControlModelFields {
     CheckboxGroup = 'value',
     Radio = 'checked',
     RadioGroup = 'value',
+    RangePicker = 'value',
+    DatePicker = 'value',
+    TextArea = 'value',
 }
 
 const enum ControlModelFields {
@@ -80,19 +83,40 @@ const enum ControlModelFields {
     Checked = 'checked',
 }
 
+const ControlPlaceholder = {
+    Input: '请输入',
+    InputNumber: '请输入',
+    Select: '请选择',
+    Checkbox: '',
+    CheckboxGroup: '',
+    Radio: '',
+    RadioGroup: '',
+    RangePicker: ['开始时间', '结束时间'],
+    DatePicker: '请选择',
+    TextArea: '请输入',
+}
+
 export const FormItemControl = ({ type = 'Input', model, name, customControl, ...props }: any) => {
     const Comp = ControlMap[type]
 
+    const placeholder = ControlPlaceholder[type]
+
     switch (FormItemControlModelFields[type]) {
         case ControlModelFields.Checked:
-            return <Comp v-model:checked={model[`${name}`]} placeholder="请选择" {...props}></Comp>
+            return (
+                <Comp
+                    v-model:checked={model[`${name}`]}
+                    placeholder={placeholder}
+                    {...props}
+                ></Comp>
+            )
         default:
             return (
                 <Comp
                     allowClear
                     v-model:value={model[`${name}`]}
                     class={['w-full']}
-                    placeholder="请输入"
+                    placeholder={placeholder}
                     {...props}
                 ></Comp>
             )
