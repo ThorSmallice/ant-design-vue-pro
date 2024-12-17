@@ -114,7 +114,9 @@ const {
 
     columns,
     indexColumn = config.table.indexColumn,
+    indexColumnWidth = config.table.indexColumnWidth,
     controlColumn = config.table.controlColumn,
+    controlColumnWidth = config.table.controlColumnWidth,
     columnsAlign = config.table.columnsAlign,
     columnsTitleNoWrap = config.table.columnsTitleNoWrap,
     columnsTimeFormat = config.table.columnsTimeFormat,

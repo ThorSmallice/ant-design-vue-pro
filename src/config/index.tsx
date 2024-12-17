@@ -49,7 +49,9 @@ export const TableConfig: TableProps = {
     },
 
     indexColumn: true,
+    indexColumnWidth: 80,
     controlColumn: true,
+    controlColumnWidth: 220,
     columnsAlign: 'left',
     columnsTitleNoWrap: true,
     columnsTimeFormat: 'YYYY-MM-DD HH:mm:ss',

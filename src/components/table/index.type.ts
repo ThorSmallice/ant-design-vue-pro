@@ -96,7 +96,10 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading'> {
     columns?: TableColumnProps[]
     columnsTitleNoWrap?: TableUseColumnsProps['columnsTitleNoWrap']
     indexColumn?: TableUseColumnsProps['indexColumn']
+    indexColumnWidth?: TableUseColumnsProps['indexColumnWidth']
     controlColumn?: TableUseColumnsProps['controlColumn']
+    controlColumnWidth?: TableUseColumnsProps['controlColumnWidth']
+
     columnsAlign?: TableColumnProps['align']
     columnsTimeFormat?: TableUseColumnsProps['columnsTimeFormat']
     columnsEmptyText?: TableUseColumnsProps['columnsEmptyText']

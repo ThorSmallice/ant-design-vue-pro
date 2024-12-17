@@ -70,7 +70,9 @@ export interface TableUseColumnsProps {
     columns?: TableColumnProps[]
     columnsAlign?: TableColumnProps['align']
     indexColumn?: boolean
+    indexColumnWidth?: number
     controlColumn?: boolean
+    controlColumnWidth?: number
     pagination?: Ref<{
         page: number
         pageSize: number
@@ -127,7 +129,9 @@ export default (props: TableUseColumnsProps) => {
         columnsEmptyText,
         controlColumnBtns,
         indexColumn,
+        indexColumnWidth,
         controlColumn,
+        controlColumnWidth,
         openCUModalForm,
         columnsTitleNoWrap,
         cuFormModel,
@@ -141,7 +145,6 @@ export default (props: TableUseColumnsProps) => {
         onBeforeRowDelete,
         onRowDeleteSuccess,
         onRowDeleteError,
-
         detailModalLoading,
         openDetailModal,
         detailsDataSource,
@@ -163,7 +166,7 @@ export default (props: TableUseColumnsProps) => {
             tempColumns?.unshift?.({
                 title: '序号',
                 type: 'index',
-                width: 80,
+                width: indexColumnWidth,
             })
         }
 
@@ -172,7 +175,7 @@ export default (props: TableUseColumnsProps) => {
                 title: '操作',
                 type: 'control',
                 fixed: 'right',
-                width: 220,
+                width: controlColumnWidth,
             })
         }
         const arr = tempColumns
