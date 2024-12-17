@@ -49,7 +49,7 @@ export interface TableQueryFormInstance extends FormInstance {
 export interface TableQueryFormItemProps<T extends keyof ControlMapProps = keyof ControlMapProps>
     extends FormItemProps {
     control?: T
-    controlProps?: ControlMapProps[T]
+    controlProps?: ControlMapProps[T] & { [key: string]: any }
     customControl?: (model: Reactive<any>, name: FormItemProps['name']) => VNode
     colProps?: ColProps
     formItemProps?: FormItemProps

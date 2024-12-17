@@ -50,7 +50,7 @@ export interface TableUseCUFormItemProps<T extends keyof ControlMapProps = keyof
     extends AFormItemProps {
     control?: T
     colProps?: ColProps
-    controlProps?: ControlMapProps[T]
+    controlProps?: ControlMapProps[T] & { [key: string]: any }
     sort?: number
     customControl?: (
         props: {
