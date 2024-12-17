@@ -82,6 +82,8 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         defaultValues,
     } = $(props)
 
+    const initValues =
+        defaultValues && isRef(defaultValues) ? toRaw(defaultValues) : defaultValues || {}
     const cuModalLoading = ref(false)
     const submitBtnLoading = ref(false)
     const cuModalOpen = ref(false)
@@ -89,7 +91,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
     const cuFormModel = reactive<{
         values: any
     }>({
-        values: defaultValues && isRef(defaultValues) ? toRaw(defaultValues) : defaultValues || {},
+        values: initValues,
     })
 
     const formRef = ref<FormInstance>()
@@ -109,7 +111,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                 try {
                     const res = await apis?.[cuModalFormIsEdit.value ? 'update' : 'create']?.(data)
                     cuModalOpen.value = false
-                    cuFormModel.values = {}
+                    cuFormModel.values = initValues
                     updateSource?.()
                     if (onCuFormSubmitSuccess?.(res, cuModalFormIsEdit.value) === false) {
                         return
