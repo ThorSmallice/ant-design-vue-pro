@@ -149,27 +149,29 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading'> {
      * 分页配置
      */
     ownPagin?: boolean
-    ownPaginProps?: Partial<PaginationProps>
+    ownPaginProps?: Partial<PaginationProps> & { [key: string]: any }
 
     /**
      * 内置查询表单配置
      */
     queryForm?: boolean
-    queryFormProps?: FormProps
+    queryFormProps?: FormProps & { [key: string]: any }
     queryFormItems?: TableQueryFormItemProps[]
     queryFormRowProps?: TableQueryFormProps['queryFormRowProps'] & { [key: string]: any }
     queryFormColProps?: TableQueryFormProps['queryFormColProps'] & { [key: string]: any }
     queryFormFlexProps?: TableQueryFormProps['queryFormFlexProps'] & { [key: string]: any }
     queryFormSubmitBtn?: TableQueryFormProps['queryFormSubmitBtn']
-    queryFormSubmitBtnProps?: TableQueryFormProps['queryFormSubmitBtnProps']
+    queryFormSubmitBtnProps?: TableQueryFormProps['queryFormSubmitBtnProps'] & {
+        [key: string]: any
+    }
     queryFormResetBtn?: TableQueryFormProps['queryFormResetBtn']
-    queryFormResetBtnProps?: TableQueryFormProps['queryFormResetBtnProps']
+    queryFormResetBtnProps?: TableQueryFormProps['queryFormResetBtnProps'] & { [key: string]: any }
     queryFormSubmitWithReset?: TableQueryFormProps['queryFormSubmitWithReset']
 
     /**
      * 新增 编辑表单配置
      */
-    cuFormProps?: TableUseCUFormProps['cuFormProps']
+    cuFormProps?: TableUseCUFormProps['cuFormProps'] & { [key: string]: any }
     cuFormRules?: TableUseCUFormProps['cuFormRules']
     cuFormDefaultValues?: TableUseCUFormProps['defaultValues']
     cuFormModalProps?: TableUseCUFormProps['cuFormModalProps'] & { [key: string]: any }
@@ -182,7 +184,7 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading'> {
      */
     detailBackFillByGetDetail?: TableUseColumnsProps['detailBackFillByGetDetail']
     detailDescItemEmptyText?: TableUseDetailProps['detailDescItemEmptyText']
-    detailDescItemProps?: TableUseDetailProps['detailDescItemProps']
+    detailDescItemProps?: TableUseDetailProps['detailDescItemProps'] & { [key: string]: any }
     detailDescItemTimeFormat?: TableUseDetailProps['detailDescItemTimeFormat']
     detailModalProps?: TableUseDetailProps['detailModalProps'] & { [key: string]: any }
     detailDescProps?: TableUseDetailProps['detailDescProps'] & { [key: string]: any }
