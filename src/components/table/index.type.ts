@@ -156,7 +156,7 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading'> {
      */
     queryForm?: boolean
     queryFormProps?: FormProps
-    queryFormItem?: TableQueryFormItemProps[]
+    queryFormItems?: TableQueryFormItemProps[]
     queryFormRowProps?: TableQueryFormProps['queryFormRowProps'] & { [key: string]: any }
     queryFormColProps?: TableQueryFormProps['queryFormColProps'] & { [key: string]: any }
     queryFormFlexProps?: TableQueryFormProps['queryFormFlexProps'] & { [key: string]: any }

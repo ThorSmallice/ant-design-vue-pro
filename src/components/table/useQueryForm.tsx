@@ -65,7 +65,7 @@ export type UseFormOptions = {
 }
 
 export interface TableQueryFormProps {
-    queryFormItem?: TableQueryFormItemProps[]
+    queryFormItems?: TableQueryFormItemProps[]
     queryFormProps?: FormProps
     queryFormRowProps?: RowProps
     queryFormColProps?: ColProps
@@ -84,7 +84,7 @@ export interface TableQueryFormProps {
 
 const useQueryForm = (props: TableQueryFormProps) => {
     const {
-        queryFormItem,
+        queryFormItems,
         queryFormProps,
         queryFormRowProps,
         queryFormColProps,
@@ -163,7 +163,7 @@ const useQueryForm = (props: TableQueryFormProps) => {
         >
             <Flex justify="space-between" {...queryFormFlexProps}>
                 <Row gutter={[10, 10]} class={['flex-1']} {...queryFormRowProps}>
-                    {queryFormItem?.map((item, i) => {
+                    {queryFormItems?.map((item, i) => {
                         const {
                             label,
                             name,

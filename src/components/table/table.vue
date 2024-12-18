@@ -101,7 +101,7 @@ const {
     ownPaginProps = config.table.ownPaginProps,
 
     queryForm = config.table.queryForm,
-    queryFormItem,
+    queryFormItems,
     queryFormProps = config.table.queryFormProps,
     queryFormSubmitWithReset = config.table.queryFormSubmitWithReset,
     queryFormRowProps = config.table.queryFormRowProps,
@@ -161,7 +161,7 @@ const { ExportBtn } = $$(useExport())
 
 const { QueryForm, QueryFormInstance, queryFormParams } = $$(
     useQueryForm({
-        queryFormItem,
+        queryFormItems,
         queryFormProps,
         queryFormSubmitWithReset,
         queryFormRowProps,
