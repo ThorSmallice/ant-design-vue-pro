@@ -264,11 +264,13 @@ watch(
     }
 )
 defineExpose({
+    source,
+    updateSource,
     QueryForm,
     QueryFormInstance,
-    updateSource,
     Pagination,
     cuModalFormIsEdit,
+    cuFormModel,
     CreateBtn,
     ImportBtn,
     ExportBtn,
