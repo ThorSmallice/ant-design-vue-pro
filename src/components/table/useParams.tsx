@@ -1,7 +1,7 @@
 import dayjs, { Dayjs } from 'dayjs'
 import { isFunction } from 'es-toolkit/predicate'
 import qs from 'qs'
-import { computed, reactive, unref } from 'vue'
+import { computed, reactive, toRaw, unref } from 'vue'
 import { TableProps } from './index.type'
 export interface TableUseParmasProps {
     ownPagin: boolean
@@ -48,7 +48,7 @@ export default (props: TableUseParmasProps) => {
         })
 
         return isFunction(requestParamsFormatter)
-            ? requestParamsFormatter?.(requestParams)
+            ? requestParamsFormatter?.(JSON.parse(JSON.stringify(requestParams)))
             : qs.parse(requestParams)
     })
 
