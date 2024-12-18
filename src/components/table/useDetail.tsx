@@ -1,4 +1,4 @@
-import { Descriptions, Modal, ModalProps } from 'ant-design-vue'
+import { Descriptions, Modal, ModalProps, Skeleton } from 'ant-design-vue'
 import {
     DescriptionsItem,
     DescriptionsItemProp,
@@ -106,15 +106,17 @@ export default (props: TableUseDetailProps): TableUseDetailReturnOptions => {
                 maskClosable={false}
                 {...detailModalProps}
             >
-                <Descriptions bordered {...detailDescProps}>
-                    {descItems?.value?.map?.(({ label, key, chidlren, hidden, ...props }) => {
-                        return (
-                            <DescriptionsItem key={key} label={label} {...props}>
-                                {chidlren}
-                            </DescriptionsItem>
-                        )
-                    })}
-                </Descriptions>
+                <Skeleton active loading={detailModalLoading.value}>
+                    <Descriptions bordered {...detailDescProps}>
+                        {descItems?.value?.map?.(({ label, key, chidlren, hidden, ...props }) => {
+                            return (
+                                <DescriptionsItem key={key} label={label} {...props}>
+                                    {chidlren}
+                                </DescriptionsItem>
+                            )
+                        })}
+                    </Descriptions>
+                </Skeleton>
             </Modal>
         )
     }
