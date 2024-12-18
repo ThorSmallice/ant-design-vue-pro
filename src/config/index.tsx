@@ -50,8 +50,11 @@ export const TableConfig: TableProps = {
 
     indexColumn: true,
     indexColumnWidth: 80,
+    indexColumnProps: {},
+
     controlColumn: true,
     controlColumnWidth: 220,
+    controlColumnWidthProps: {},
     columnsAlign: 'left',
     columnsTitleNoWrap: true,
     columnsTimeFormat: 'YYYY-MM-DD HH:mm:ss',
@@ -107,7 +110,8 @@ export const TableConfig: TableProps = {
     detailDescItemEmptyText: '-',
     detailDescItemProps: null,
     detailDescItemTimeFormat: 'YYYY-MM-DD HH:mm:ss',
-
+    detailModalProps: {},
+    detailDescProps: {},
     ciesBtns: true,
     ciesBtnsInQueryForm: false,
     createBtn: {

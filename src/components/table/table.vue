@@ -115,8 +115,10 @@ const {
     columns,
     indexColumn = config.table.indexColumn,
     indexColumnWidth = config.table.indexColumnWidth,
+    indexColumnProps = config.table.indexColumnProps,
     controlColumn = config.table.controlColumn,
     controlColumnWidth = config.table.controlColumnWidth,
+    controlColumnWidthProps = config.table.controlColumnWidthProps,
     columnsAlign = config.table.columnsAlign,
     columnsTitleNoWrap = config.table.columnsTitleNoWrap,
     columnsTimeFormat = config.table.columnsTimeFormat,
@@ -136,6 +138,8 @@ const {
     detailDescItemEmptyText = config.table.detailDescItemEmptyText,
     detailDescItemProps = config.table.detailDescItemProps,
     detailDescItemTimeFormat = config.table.detailDescItemTimeFormat,
+    detailModalProps = config.table.detailModalProps,
+    detailDescProps = config.table.detailDescProps,
 
     ciesBtns = config.table.ciesBtns,
     ciesBtnsInQueryForm = config.table.ciesBtnsInQueryForm,
@@ -218,6 +222,8 @@ const { openDetailModal, detailModalLoading, detailsDataSource, DetailModal } = 
         detailDescItemProps,
         detailDescItemTimeFormat,
         tableTextConfig,
+        detailModalProps,
+        detailDescProps,
     })
 )
 
@@ -249,6 +255,8 @@ const { resColumns }: any = $$(
         detailsDataSource,
         detailBackFillByGetDetail,
         tableTextConfig,
+        indexColumnProps,
+        controlColumnWidthProps,
     })
 )
 

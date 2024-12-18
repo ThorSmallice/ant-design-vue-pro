@@ -97,8 +97,10 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading'> {
     columnsTitleNoWrap?: TableUseColumnsProps['columnsTitleNoWrap']
     indexColumn?: TableUseColumnsProps['indexColumn']
     indexColumnWidth?: TableUseColumnsProps['indexColumnWidth']
+    indexColumnProps?: TableUseColumnsProps['indexColumnProps']
     controlColumn?: TableUseColumnsProps['controlColumn']
     controlColumnWidth?: TableUseColumnsProps['controlColumnWidth']
+    controlColumnWidthProps?: TableUseColumnsProps['controlColumnWidthProps']
 
     columnsAlign?: TableColumnProps['align']
     columnsTimeFormat?: TableUseColumnsProps['columnsTimeFormat']
@@ -155,9 +157,9 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading'> {
     queryForm?: boolean
     queryFormProps?: FormProps
     queryFormItem?: TableQueryFormItemProps[]
-    queryFormRowProps?: TableQueryFormProps['queryFormRowProps']
-    queryFormColProps?: TableQueryFormProps['queryFormColProps']
-    queryFormFlexProps?: TableQueryFormProps['queryFormFlexProps']
+    queryFormRowProps?: TableQueryFormProps['queryFormRowProps'] & { [key: string]: any }
+    queryFormColProps?: TableQueryFormProps['queryFormColProps'] & { [key: string]: any }
+    queryFormFlexProps?: TableQueryFormProps['queryFormFlexProps'] & { [key: string]: any }
     queryFormSubmitBtn?: TableQueryFormProps['queryFormSubmitBtn']
     queryFormSubmitBtnProps?: TableQueryFormProps['queryFormSubmitBtnProps']
     queryFormResetBtn?: TableQueryFormProps['queryFormResetBtn']
@@ -170,9 +172,9 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading'> {
     cuFormProps?: TableUseCUFormProps['cuFormProps']
     cuFormRules?: TableUseCUFormProps['cuFormRules']
     cuFormDefaultValues?: TableUseCUFormProps['defaultValues']
-    cuFormModalProps?: TableUseCUFormProps['cuFormModalProps']
-    cuFormRowProps?: TableUseCUFormProps['cuFormRowProps']
-    cuFormColProps?: TableUseCUFormProps['cuFormColProps']
+    cuFormModalProps?: TableUseCUFormProps['cuFormModalProps'] & { [key: string]: any }
+    cuFormRowProps?: TableUseCUFormProps['cuFormRowProps'] & { [key: string]: any }
+    cuFormColProps?: TableUseCUFormProps['cuFormColProps'] & { [key: string]: any }
     cuFormBackFillByGetDetail?: TableUseColumnsProps['cuFormBackFillByGetDetail']
 
     /**
@@ -182,7 +184,8 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading'> {
     detailDescItemEmptyText?: TableUseDetailProps['detailDescItemEmptyText']
     detailDescItemProps?: TableUseDetailProps['detailDescItemProps']
     detailDescItemTimeFormat?: TableUseDetailProps['detailDescItemTimeFormat']
-
+    detailModalProps?: TableUseDetailProps['detailModalProps'] & { [key: string]: any }
+    detailDescProps?: TableUseDetailProps['detailDescProps'] & { [key: string]: any }
     ciesBtns?: boolean
     ciesBtnsInQueryForm?: boolean
 

@@ -71,8 +71,10 @@ export interface TableUseColumnsProps {
     columnsAlign?: TableColumnProps['align']
     indexColumn?: boolean
     indexColumnWidth?: number
+    indexColumnProps?: TableColumnProps
     controlColumn?: boolean
     controlColumnWidth?: number
+    controlColumnWidthProps?: TableColumnProps
     pagination?: Ref<{
         page: number
         pageSize: number
@@ -130,8 +132,10 @@ export default (props: TableUseColumnsProps) => {
         controlColumnBtns,
         indexColumn,
         indexColumnWidth,
+        indexColumnProps,
         controlColumn,
         controlColumnWidth,
+        controlColumnWidthProps,
         openCUModalForm,
         columnsTitleNoWrap,
         cuFormModel,
@@ -166,7 +170,9 @@ export default (props: TableUseColumnsProps) => {
             tempColumns?.unshift?.({
                 title: '序号',
                 type: 'index',
+                align: 'center',
                 width: indexColumnWidth,
+                ...indexColumnProps,
             })
         }
 
@@ -175,7 +181,9 @@ export default (props: TableUseColumnsProps) => {
                 title: '操作',
                 type: 'control',
                 fixed: 'right',
+                align: 'center',
                 width: controlColumnWidth,
+                ...controlColumnWidthProps,
             })
         }
         const arr = tempColumns
@@ -189,15 +197,17 @@ export default (props: TableUseColumnsProps) => {
                     align,
                     numberFormat,
                     numberComputed,
+                    width,
                     ...o
                 } = col
+
                 const resCol: ATableColumnProps = {
                     title: (
                         <div class={[(nowrap ?? columnsTitleNoWrap) && 'whitespace-nowrap']}>
                             {title}
                         </div>
                     ),
-                    width: computedTitleWidth(titleArr[i]) || String(title)?.length * 16,
+                    width: width || computedTitleWidth(titleArr[i]) || String(title)?.length * 16,
                     align: columnsAlign,
                     customRender: (...args) =>
                         getCustomRender(...args, col, pagination, {
