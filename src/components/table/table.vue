@@ -214,6 +214,7 @@ const { ExportBtn } = $$(
         tableTextConfig,
         onExportSuccess,
         onExportError,
+        onExportRequestSuccess,
     })
 )
 const { source, loading, total, updateSource }: any = $$(
