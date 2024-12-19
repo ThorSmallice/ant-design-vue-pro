@@ -1,4 +1,5 @@
 import { TableProps } from '@src/components'
+import { ExportOutlined, ImportOutlined } from '@ant-design/icons-vue'
 
 export const TableConfig: TableProps = {
     full: false,
@@ -12,6 +13,7 @@ export const TableConfig: TableProps = {
         pageSize: 'pageSize',
         total: 'total',
         detail: 'data',
+        export: 'data',
     },
     onSourceSuccess: null,
     onSourceError: null,
@@ -23,6 +25,10 @@ export const TableConfig: TableProps = {
     onBeforeRowDelete: null,
     onRowDeleteSuccess: null,
     onRowDeleteError: null,
+    onExportRequestSuccess: null,
+    onExportSuccess: null,
+    onExportError: null,
+    importFileParamsFormat: null,
 
     ownPagin: true,
     ownPaginProps: {
@@ -103,6 +109,10 @@ export const TableConfig: TableProps = {
             updateError: '编辑失败!',
             deleteSuccess: '删除成功!',
             deleteError: '删除失败!',
+            exportSuccess: '导出成功!',
+            exportError: '导出失败!',
+            importSuccess: '导入成功!',
+            importError: '导入失败!',
         },
     },
 
@@ -119,10 +129,15 @@ export const TableConfig: TableProps = {
     },
     importBtn: {
         children: '导入',
+        icon: <ImportOutlined />,
     },
     exportBtn: {
         children: '导出',
+        icon: <ExportOutlined />,
     },
+
+    exportFileByParams: true,
+    importUploadProps: null,
 }
 
 const GlobalComponentDefalutPropsConfig = {

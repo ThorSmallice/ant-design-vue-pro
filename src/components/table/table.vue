@@ -150,14 +150,30 @@ const {
     tableLayout = config.table.tableLayout,
     dataSource,
 
+    exportFileByParams = config.table.exportFileByParams,
+    exportFileParamsFormat,
+    exportFileName,
+    onExportRequestSuccess = config.table.onExportRequestSuccess,
+    onExportSuccess = config.table.onExportSuccess,
+    onExportError = config.table.onExportError,
+
+    importUploadProps = config.table.importUploadProps,
+    importFileParamsFormat = config.table.importFileParamsFormat,
     showHeader,
 
     ...o
 } = defineProps<TableProps>()
 
 const ciesBtnsVNode = ref({})
-const { ImportBtn } = $$(useImport())
-const { ExportBtn } = $$(useExport())
+const { ImportBtn } = $$(
+    useImport({
+        apis,
+        tableTextConfig,
+        importBtn,
+        importUploadProps,
+        importFileParamsFormat,
+    })
+)
 
 const { QueryForm, QueryFormInstance, queryFormParams } = $$(
     useQueryForm({
@@ -175,6 +191,7 @@ const { QueryForm, QueryFormInstance, queryFormParams } = $$(
         ciesBtnsVNode,
     })
 )
+
 const { resultParams, pagination } = $$(
     useParams({
         params,
@@ -182,6 +199,21 @@ const { resultParams, pagination } = $$(
         requestParamsFormatter,
         fieldsNames,
         queryFormParams,
+    })
+)
+
+const { ExportBtn } = $$(
+    useExport({
+        apis,
+        fieldsNames,
+        exportBtn,
+        resultParams,
+        exportFileByParams,
+        exportFileName,
+        exportFileParamsFormat,
+        tableTextConfig,
+        onExportSuccess,
+        onExportError,
     })
 )
 const { source, loading, total, updateSource }: any = $$(

@@ -73,6 +73,11 @@ export const base = defineConfig({
                     changeOrigin: true,
                     rewrite: (path) => path.replace(/^\/api/, '/hnz/admin-api'),
                 },
+                '/admin-api': {
+                    target: 'http://10.10.1.217:48081',
+                    changeOrigin: true,
+                    rewrite: (path) => path.replace(/^\/api/, '/admin-api'),
+                },
             },
         },
     },

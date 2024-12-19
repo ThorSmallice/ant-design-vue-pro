@@ -17,6 +17,8 @@ import {
 } from './useQueryForm'
 import { JSX } from 'vue/jsx-runtime'
 import { arrayType, booleanType, functionType, objectType } from '@src/tools/type'
+import { TableUseExportProps } from './useExport'
+import { TableUseImportProps } from './useImport'
 
 type TableFieldNames = string | string[]
 
@@ -56,6 +58,11 @@ export type TableTextConfig = Partial<{
         updateError: string
         deleteSuccess: string
         deleteError: string
+        exportSuccess: string
+        exportError: string
+        importSuccess: string
+        importError: string
+        [key: string]: any
     }
 }>
 export type ciesBtnsVNode = Ref<
@@ -143,6 +150,7 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading'> {
         list: TableFieldNames //  apis.list 返回值中获取数据集合的field
         total: TableFieldNames //  apis.list 返回值中获取数据总数的field
         detail: TableFieldNames
+        export: TableFieldNames
     }>
 
     /**
@@ -198,11 +206,17 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading'> {
         | (ButtonProps & {
               children?: string | VNode
           })
-    exportBtn?:
-        | false
-        | (ButtonProps & {
-              children?: string | VNode
-          })
+    exportBtn?: TableUseExportProps['exportBtn']
+
+    exportFileByParams?: TableUseExportProps['exportFileByParams']
+    exportFileParamsFormat?: null | TableUseExportProps['exportFileParamsFormat']
+    exportFileName?: TableUseExportProps['exportFileName']
+    onExportRequestSuccess?: null | TableUseExportProps['onExportRequestSuccess']
+    onExportSuccess?: null | TableUseExportProps['onExportSuccess']
+    onExportError?: null | TableUseExportProps['onExportError']
+
+    importUploadProps?: TableUseImportProps['importUploadProps']
+    importFileParamsFormat?: null | TableUseImportProps['importFileParamsFormat']
 }
 
 export type TableSlots = {
