@@ -159,6 +159,8 @@ const {
 
     importUploadProps = config.table.importUploadProps,
     importFileParamsFormat = config.table.importFileParamsFormat,
+    onImportSuccess = config.table.onImportSuccess,
+    onImportError = config.table.onImportError,
     showHeader,
 
     ...o
@@ -172,6 +174,8 @@ const { ImportBtn } = $$(
         importBtn,
         importUploadProps,
         importFileParamsFormat,
+        onImportSuccess,
+        onImportError,
     })
 )
 

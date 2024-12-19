@@ -217,6 +217,8 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading'> {
 
     importUploadProps?: TableUseImportProps['importUploadProps']
     importFileParamsFormat?: null | TableUseImportProps['importFileParamsFormat']
+    onImportSuccess?: null | TableUseImportProps['onImportSuccess']
+    onImportError?: null | TableUseImportProps['onImportError']
 }
 
 export type TableSlots = {

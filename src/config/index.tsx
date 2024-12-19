@@ -29,6 +29,8 @@ export const TableConfig: TableProps = {
     onExportSuccess: null,
     onExportError: null,
     importFileParamsFormat: null,
+    onImportSuccess: null,
+    onImportError: null,
 
     ownPagin: true,
     ownPaginProps: {

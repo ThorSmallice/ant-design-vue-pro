@@ -67,13 +67,16 @@ export default (props: TableUseExportProps) => {
             })
 
             window?.URL?.revokeObjectURL?.(thumbUrl)
+            exportBtnLoading.value = false
 
-            if (isFunction(onExportSuccess) && onExportSuccess?.(downloadRes) === false) {
+            if (isFunction(onExportSuccess) && (await onExportSuccess?.(downloadRes)) === false) {
                 return
             }
             message.success(tableTextConfig?.message?.exportSuccess)
         } catch (error) {
-            if (isFunction(onExportError) && onExportError?.(error) === false) {
+            exportBtnLoading.value = false
+
+            if (isFunction(onExportError) && (await onExportError?.(error)) === false) {
                 return
             }
 
@@ -97,6 +100,7 @@ export default (props: TableUseExportProps) => {
 
         return (
             <Button
+                disabled={exportBtnLoading.value}
                 loading={exportBtnLoading.value}
                 class="flex items-center"
                 onClick={() => exportFile()}

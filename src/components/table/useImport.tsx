@@ -45,24 +45,34 @@ export default (props: TableUseImportProps) => {
 
         try {
             const res = await apis?.import(requestData)
+            importBtnLoading.value = false
 
             if (isFunction(onImportSuccess) && (await onImportSuccess?.(res)) === false) {
                 return
             }
             message.success(tableTextConfig?.message?.importSuccess)
         } catch (error) {
-            if (isFunction(onImportError) && onImportError?.(error) === false) {
+            importBtnLoading.value = false
+
+            if (isFunction(onImportError) && (await onImportError?.(error)) === false) {
                 return
             }
             message.error(tableTextConfig?.message?.importError)
         }
+
+        importBtnLoading.value = false
     }
     const ImportBtn = () => {
         const { children, ...btnProps } = importBtn || {}
 
         return (
             <Upload showUploadList={false} customRequest={importFile} {...importUploadProps}>
-                <Button loading={importBtnLoading.value} class="flex items-center" {...btnProps}>
+                <Button
+                    disabled={importBtnLoading.value}
+                    loading={importBtnLoading.value}
+                    class="flex items-center"
+                    {...btnProps}
+                >
                     {importBtnLoading?.value ? `正在${children}...` : children}
                 </Button>
             </Upload>

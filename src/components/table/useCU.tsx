@@ -147,7 +147,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
 
     const cancelCUModalForm = () => {
         cuModalOpen.value = false
-        cuFormModel.values = {}
+        cuFormModel.values = initValues
     }
     const CreateBtn = () => {
         const { children, ...btnProps } = createBtn || {}
