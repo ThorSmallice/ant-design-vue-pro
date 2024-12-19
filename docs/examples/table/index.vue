@@ -9,6 +9,7 @@
             :queryFormColProps="{
                 span: 24 / queryFormItem.length,
             }"
+            :control-column-width="300"
             :queryFormResetBtn="open"
             :queryFormSubmitBtn="open"
             :colResizable="open"
@@ -117,17 +118,21 @@ onMounted(() => {
 
                 formItemProps: {
                     control: 'Select',
-                    controlProps: {
-                        options: [
-                            {
-                                label: '泽库县',
-                                value: 3,
-                            },
-                            {
-                                label: '尖扎县',
-                                value: 2,
-                            },
-                        ],
+                    controlProps: ({ model, isEdit }) => {
+                        console.log(isEdit)
+                        return {
+                            options: [
+                                {
+                                    label: '泽库县',
+                                    value: 3,
+                                },
+                                {
+                                    label: '尖扎县',
+                                    value: 2,
+                                },
+                            ],
+                            disabled: isEdit,
+                        }
                     },
                 },
                 customRender: ({ record }: any) => {

@@ -27,8 +27,8 @@ export interface TableUseCUReturnOptions {
     CUModalForm: () => JSX.Element
     cuFormModel: Reactive<{ values: any }>
     cuModalLoading: Ref<boolean>
-    submitBtnLoading: Ref<boolean>
-    cuModalFormIsEdit: Ref<boolean>
+    submitBtnLoading: boolean
+    cuModalFormIsEdit: boolean
     openCUModalForm: (isEdit: boolean) => void
     CUModalFormInstance: TableCUFormInstance
 }
@@ -46,11 +46,14 @@ export interface TableUseCUFormProps {
     defaultValues?: any
     [key: string]: any
 }
+
 export interface TableUseCUFormItemProps<T extends keyof ControlMapProps = keyof ControlMapProps>
     extends AFormItemProps {
     control?: T
     colProps?: ColProps
-    controlProps?: ControlMapProps[T] & { [key: string]: any }
+    controlProps?:
+        | ((opt: { model: any; isEdit: boolean }) => ControlMapProps[T] & { [key: string]: any })
+        | (ControlMapProps[T] & { [key: string]: any })
     sort?: number
     customControl?: (
         props: {
@@ -190,6 +193,15 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                                         customControl,
                                         ...oths
                                     } = formItemProps || {}
+
+                                    const resControlProps = (
+                                        controlProps && isFunction(controlProps)
+                                            ? controlProps?.({
+                                                  model: cuFormModel.values,
+                                                  isEdit: cuModalFormIsEdit.value,
+                                              })
+                                            : controlProps || {}
+                                    ) as TableUseCUFormItemProps['controlProps']
                                     return (
                                         <Col
                                             key={
@@ -221,7 +233,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                                                             type={control}
                                                             model={cuFormModel.values}
                                                             name={name || dataIndex}
-                                                            {...controlProps}
+                                                            {...resControlProps}
                                                         ></FormItemControl>
                                                     )}
                                                 </Form.Item>
@@ -242,8 +254,8 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         CUModalForm,
         cuFormModel,
         cuModalLoading,
-        submitBtnLoading,
-        cuModalFormIsEdit,
+        submitBtnLoading: submitBtnLoading.value,
+        cuModalFormIsEdit: cuModalFormIsEdit.value,
         openCUModalForm,
         CUModalFormInstance,
     }

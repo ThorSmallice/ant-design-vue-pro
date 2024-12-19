@@ -256,6 +256,8 @@ const { resColumns }: any = $$(
         detailBackFillByGetDetail,
         tableTextConfig,
         indexColumnProps,
+        indexColumnWidth,
+        controlColumnWidth,
         controlColumnWidthProps,
     })
 )
