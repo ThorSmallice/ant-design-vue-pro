@@ -14,7 +14,7 @@ import {
     Skeleton,
 } from 'ant-design-vue'
 import { isFunction } from 'es-toolkit'
-import { computed, isRef, Reactive, reactive, Ref, ref, toRaw, VNode } from 'vue'
+import { computed, isRef, Reactive, reactive, Ref, ref, toRaw, VNode, watch } from 'vue'
 import { JSX } from 'vue/jsx-runtime'
 import { ControlMapProps, FormItemControl } from './control'
 import { ownBtnProps, TableProps, TableTextConfig } from './index.type'
@@ -83,6 +83,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         onCuFormSubmitError,
         updateSource,
         defaultValues,
+        emits,
     } = $(props)
 
     const initValues =
@@ -97,6 +98,16 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         values: initValues,
     })
 
+    watch(
+        () => cuFormModel.values,
+        (currentModel, prevModel) => {
+            emits('cuFormModelChange', currentModel, prevModel)
+        },
+        {
+            deep: true,
+        }
+    )
+
     const formRef = ref<FormInstance>()
 
     const openCUModalForm = async (isEdit: boolean = false, record?: any) => {
@@ -109,7 +120,11 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         formRef.value
             .validate?.()
             .then(async (vals) => {
-                const data = (await onBeforeCuFormSubmit?.(vals)) || vals
+                const data =
+                    (await onBeforeCuFormSubmit?.(
+                        vals,
+                        JSON.parse(JSON.stringify(cuFormModel.values))
+                    )) || vals
 
                 try {
                     const res = await apis?.[cuModalFormIsEdit.value ? 'update' : 'create']?.(data)

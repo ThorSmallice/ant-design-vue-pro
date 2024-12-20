@@ -42,7 +42,8 @@ export type ParamsFormatter = (
         | {
               [key: string]: any
           }
-        | unknown
+        | unknown,
+    metaValues?: any
 ) => Promise<{ [key: string]: any } | unknown>
 
 export type TableTextConfig = Partial<{

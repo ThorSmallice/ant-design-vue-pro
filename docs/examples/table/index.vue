@@ -1,5 +1,6 @@
 <template>
     <Table
+        ref="tableRef"
         :cu-form-default-values="initalValues"
         :cu-form-props="{
             labelCol: {
@@ -16,6 +17,7 @@
         }"
         @before-row-edit-back-fill="beforeEdit"
         :params="params"
+        @cu-form-model-change="onModelChange"
     ></Table>
 </template>
 
@@ -24,6 +26,12 @@ import { ControlMapType, Table, TableProps } from 'antd-vue-dbthor'
 import dayjs, { Dayjs } from 'dayjs'
 import { computed, ref, toRaw } from 'vue'
 import request from 'axios'
+const tableRef = ref()
+const abc = ref()
+const onModelChange = (a) => {
+    console.log('🚀 ~ onModelChange ~ a:', a)
+    abc.value = a.status
+}
 
 const axios = request.create()
 axios.interceptors.request.use(async (req) => {
@@ -73,6 +81,7 @@ defineOptions({
 })
 
 const columns = computed((): TableProps['columns'] => {
+    console.log(tableRef.value?.cuFormModel?.values)
     return [
         {
             title: 'id',

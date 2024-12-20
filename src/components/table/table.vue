@@ -50,7 +50,7 @@
 <script setup lang="tsx" async>
 import config from '@config/index'
 import { Table as ATable, Space, TableColumnProps } from 'ant-design-vue'
-import { computed, ref, watch } from 'vue'
+import { computed, readonly, ref, watch } from 'vue'
 import { ATableSlotsWhiteList, TableProps, TableSlots } from './index.type'
 import useColumns from './useColumns'
 import useCU from './useCU'
@@ -61,6 +61,7 @@ import useImport from './useImport'
 import usePagination from './usePagination'
 import useParams from './useParams'
 import useQueryForm from './useQueryForm'
+import { toRaw } from 'vue'
 
 defineOptions({
     name: 'DbTable',
@@ -70,7 +71,9 @@ const tableRef = ref<HTMLDivElement>()
 
 const slots = defineSlots<TableSlots>()
 
-const emits = defineEmits<{}>()
+const emits = defineEmits<{
+    (e: 'cuFormModelChange', currentModel: any, prevModel: any): void
+}>()
 const aTableSlots = computed(() => {
     return Object?.keys?.(slots)?.filter?.(
         (key: string) => ATableSlotsWhiteList?.indexOf(key) !== -1
@@ -250,6 +253,7 @@ const { CreateBtn, CUModalForm, openCUModalForm, cuFormModel, cuModalLoading, cu
             updateSource,
             tableTextConfig,
             defaultValues: cuFormDefaultValues,
+            emits,
         })
     )
 const { openDetailModal, detailModalLoading, detailsDataSource, DetailModal } = $$(
@@ -316,8 +320,8 @@ defineExpose({
     QueryForm,
     QueryFormInstance,
     Pagination,
-    cuModalFormIsEdit,
-    cuFormModel,
+    cuModalFormIsEdit: readonly(cuModalFormIsEdit),
+    cuFormModel: readonly(cuFormModel),
     CreateBtn,
     ImportBtn,
     ExportBtn,
