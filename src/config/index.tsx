@@ -5,6 +5,7 @@ export const TableConfig: TableProps = {
     full: false,
     scroll: {
         x: 'max-content',
+        y: 'auto',
     },
     tableLayout: 'fixed',
     fieldsNames: {

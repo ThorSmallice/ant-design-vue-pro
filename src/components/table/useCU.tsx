@@ -13,7 +13,7 @@ import {
     RowProps,
     Skeleton,
 } from 'ant-design-vue'
-import { isFunction } from 'es-toolkit'
+import { cloneDeep, isFunction } from 'es-toolkit'
 import { computed, isRef, Reactive, reactive, Ref, ref, toRaw, VNode, watch } from 'vue'
 import { JSX } from 'vue/jsx-runtime'
 import { ControlMapProps, FormItemControl } from './control'
@@ -86,8 +86,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         emits,
     } = $(props)
 
-    const initValues =
-        defaultValues && isRef(defaultValues) ? toRaw(defaultValues) : defaultValues || {}
+    const initValues = defaultValues ? toRaw(defaultValues) : {}
     const cuModalLoading = ref(false)
     const submitBtnLoading = ref(false)
     const cuModalOpen = ref(false)
@@ -95,7 +94,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
     const cuFormModel = reactive<{
         values: any
     }>({
-        values: initValues,
+        values: cloneDeep(initValues),
     })
 
     watch(
@@ -128,8 +127,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
 
                 try {
                     const res = await apis?.[cuModalFormIsEdit.value ? 'update' : 'create']?.(data)
-                    cuModalOpen.value = false
-                    cuFormModel.values = initValues
+                    cancelCUModalForm()
                     updateSource?.()
                     if (onCuFormSubmitSuccess?.(res, cuModalFormIsEdit.value) === false) {
                         return
@@ -161,8 +159,8 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
     }
 
     const cancelCUModalForm = () => {
+        cuFormModel.values = cloneDeep(initValues)
         cuModalOpen.value = false
-        cuFormModel.values = initValues
     }
     const CreateBtn = () => {
         const { children, ...btnProps } = createBtn || {}

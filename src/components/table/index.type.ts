@@ -88,7 +88,11 @@ export type queryFormBtnVNode = {
     SubmitBtn: VNode | JSX.Element
     ResetBtn: VNode | JSX.Element
 }
-export interface TableProps extends Omit<ATableProps, 'columns' | 'loading'> {
+export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 'scroll'> {
+    scroll?: {
+        x: true | string | number
+        y: boolean | number | 'auto'
+    }
     full?: boolean // 高度100%
     tableTextConfig?: TableTextConfig
     /**

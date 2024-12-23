@@ -29,7 +29,7 @@
                 :data-source="source"
                 :loading="loading"
                 @resize-column="onResizeColumn"
-                :scroll="scroll"
+                :scroll="resScroll"
                 :table-layout="tableLayout"
                 v-bind="o"
             >
@@ -50,7 +50,7 @@
 <script setup lang="tsx" async>
 import config from '@config/index'
 import { Table as ATable, Space, TableColumnProps } from 'ant-design-vue'
-import { computed, readonly, ref, watch } from 'vue'
+import { computed, onMounted, readonly, ref, unref, watch } from 'vue'
 import { ATableSlotsWhiteList, TableProps, TableSlots } from './index.type'
 import useColumns from './useColumns'
 import useCU from './useCU'
@@ -62,6 +62,7 @@ import usePagination from './usePagination'
 import useParams from './useParams'
 import useQueryForm from './useQueryForm'
 import { toRaw } from 'vue'
+import useAutoSize from './useAutoSize'
 
 defineOptions({
     name: 'DbTable',
@@ -169,6 +170,18 @@ const {
     ...o
 } = defineProps<TableProps>()
 
+const { x, y } = $$(
+    useAutoSize({
+        scroll,
+    })
+)
+
+const resScroll = computed(() => {
+    return {
+        x: unref(x?.value),
+        y: unref(y?.value),
+    }
+})
 const ciesBtnsVNode = ref({})
 const { ImportBtn } = $$(
     useImport({

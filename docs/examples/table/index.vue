@@ -18,6 +18,7 @@
         @before-row-edit-back-fill="beforeEdit"
         :params="params"
         @cu-form-model-change="onModelChange"
+        @source-success="onsuccess"
     ></Table>
 </template>
 
@@ -29,10 +30,14 @@ import request from 'axios'
 const tableRef = ref()
 const abc = ref()
 const onModelChange = (a) => {
-    console.log('🚀 ~ onModelChange ~ a:', a)
     abc.value = a.status
 }
-
+const onsuccess = async (res) => {
+    return {
+        list: res?.data?.data?.list,
+        total: res?.data?.data?.total,
+    }
+}
 const axios = request.create()
 axios.interceptors.request.use(async (req) => {
     req.headers['Authorization'] = 'Bearer 14724419e5ba41efaae64d91bed10d7b'
@@ -81,7 +86,6 @@ defineOptions({
 })
 
 const columns = computed((): TableProps['columns'] => {
-    console.log(tableRef.value?.cuFormModel?.values)
     return [
         {
             title: 'id',
