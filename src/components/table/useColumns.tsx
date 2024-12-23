@@ -407,17 +407,16 @@ const getCustomRender = (
         return (
             <Space>
                 {slots?.customControlColumnBtns && isFunction(slots?.customControlColumnBtns) ? (
-                    slots?.customControlColumnBtns?.(
-                        {
-                            DetailBtn,
-                            EditBtn,
-                            DeleteBtn,
-                            deleteRow,
-                            editRow,
-                            openRowDetails,
-                        },
-                        { opt, metaColumn }
-                    )
+                    slots?.customControlColumnBtns?.({
+                        DetailBtn,
+                        EditBtn,
+                        DeleteBtn,
+                        deleteRow,
+                        editRow,
+                        openRowDetails,
+                        rowInfo: opt,
+                        metaColumnInfo: metaColumn,
+                    })
                 ) : (
                     <>
                         {DetailBtn}

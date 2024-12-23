@@ -204,7 +204,7 @@ const useQueryForm = (props: TableQueryFormProps) => {
                 <Form.Item class={['ml-2']}>
                     <Space>
                         {customQueryFormBtns && isFunction(customQueryFormBtns) ? (
-                            customQueryFormBtns?.({ SubmitBtn, ResetBtn }, QueryFormInstance)
+                            customQueryFormBtns?.({ SubmitBtn, ResetBtn, QueryFormInstance })
                         ) : (
                             <>
                                 {SubmitBtn}

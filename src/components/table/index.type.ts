@@ -73,20 +73,23 @@ export type ciesBtnsVNode = Ref<
         ExportBtn: VNode | JSX.Element
     }>
 >
-export type controlColumnBtnVNode = {
-    DetailBtn: VNode | JSX.Element
-    EditBtn: VNode | JSX.Element
-    DeleteBtn: VNode | JSX.Element
-}
+
 export type controlColumnMethods = {
     deleteRow: (record: any) => Promise<any>
     editRow: (record: any) => Promise<any>
     openRowDetails: (record: any) => Promise<any>
 }
+export type controlColumnSlotOptions = {
+    DetailBtn: VNode | JSX.Element
+    EditBtn: VNode | JSX.Element
+    DeleteBtn: VNode | JSX.Element
+} & controlColumnMethods &
+    controlColumnInfo
 
-export type queryFormBtnVNode = {
+export type queryFormSlotOptions = {
     SubmitBtn: VNode | JSX.Element
     ResetBtn: VNode | JSX.Element
+    QueryFormInstance: TableQueryFormInstance
 }
 export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 'scroll'> {
     scroll?: {
@@ -226,6 +229,11 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     onImportError?: null | TableUseImportProps['onImportError']
 }
 
+interface controlColumnInfo {
+    rowInfo: TableColumnCustomRenderArgs
+    metaColumnInfo: TableColumnProps
+}
+
 export type TableSlots = {
     emptyText?: any
     expandIcon?: RenderExpandIconProps<any>
@@ -245,17 +253,11 @@ export type TableSlots = {
     customFilterIcon?: any
     customFilterDropdown?: any
     default?: any
-    customQueryFormBtns?: (
-        originNode: queryFormBtnVNode,
-        form: TableQueryFormInstance
-    ) => VNode[] | JSX.Element[]
+    customQueryFormBtns?: (options: queryFormSlotOptions) => VNode[] | JSX.Element[]
 
     customControlColumnBtns?: (
-        originNode: controlColumnBtnVNode & controlColumnMethods,
-        obj: {
-            opt: TableColumnCustomRenderArgs
-            metaColumn: TableColumnProps
-        }
+        options: controlColumnSlotOptions,
+        info: controlColumnInfo
     ) => VNode[] | JSX.Element[]
 
     customCiesBtns?: (orgNode: {

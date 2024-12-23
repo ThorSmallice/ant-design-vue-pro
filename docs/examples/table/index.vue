@@ -19,7 +19,17 @@
         :params="params"
         @cu-form-model-change="onModelChange"
         @source-success="onsuccess"
-    ></Table>
+    >
+        <template #customControlColumnBtns="{ DetailBtn, EditBtn, rowInfo }">
+            <Popconfirm
+                @confirm="() => console.log(rowInfo)"
+                title="温馨提示"
+                description="确定停用？"
+            >
+                <Button class="p-0" type="link" danger>停用</Button>
+            </Popconfirm>
+        </template>
+    </Table>
 </template>
 
 <script setup lang="tsx">
@@ -319,6 +329,7 @@ const requestParamsFormatter = async ({ effectiveStartTime, ...vals }) => {
         ...vals,
     }
 }
+const stopTasks = async ({ id }: any) => {}
 </script>
 
 <style scoped></style>
