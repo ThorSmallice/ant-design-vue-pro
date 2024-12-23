@@ -185,17 +185,6 @@ const resScroll = computed(() => {
     }
 })
 const ciesBtnsVNode = ref({})
-const { ImportBtn } = $$(
-    useImport({
-        apis,
-        tableTextConfig,
-        importBtn,
-        importUploadProps,
-        importFileParamsFormat,
-        onImportSuccess,
-        onImportError,
-    })
-)
 
 const { QueryForm, QueryFormInstance, queryFormParams } = $$(
     useQueryForm({
@@ -249,6 +238,19 @@ const { source, loading, total, updateSource }: any = $$(
         dataSource,
     })
 )
+const { ImportBtn } = $$(
+    useImport({
+        apis,
+        tableTextConfig,
+        importBtn,
+        importUploadProps,
+        importFileParamsFormat,
+        onImportSuccess,
+        onImportError,
+        updateSource,
+    })
+)
+
 const { CreateBtn, CUModalForm, openCUModalForm, cuFormModel, cuModalLoading, cuModalFormIsEdit } =
     $$(
         useCU({

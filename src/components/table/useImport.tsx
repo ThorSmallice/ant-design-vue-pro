@@ -28,6 +28,7 @@ export default (props: TableUseImportProps) => {
         onImportError,
         importUploadProps,
         importFileParamsFormat,
+        updateSource,
     } = $(props)
 
     const importBtnLoading = ref(false)
@@ -47,6 +48,7 @@ export default (props: TableUseImportProps) => {
             const res = await apis?.import(requestData)
             importBtnLoading.value = false
 
+            updateSource?.()
             if (isFunction(onImportSuccess) && (await onImportSuccess?.(res)) === false) {
                 return
             }
