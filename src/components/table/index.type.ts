@@ -147,7 +147,7 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     onBeforeRowEditBackFill?: null | TableUseColumnsProps['onBeforeRowEditBackFill']
     onCuFormSubmitSuccess?: null | CRUDRequestFinish
     onCuFormSubmitError?: null | CRUDRequestFinish
-
+    onCuFormCancel?: null | TableUseCUFormProps['onCuFormCancel']
     onBeforeRowDelete?: null | ParamsFormatter
     onRowDeleteSuccess?: null | CRUDRequestFinish
     onRowDeleteError?: null | CRUDRequestFinish

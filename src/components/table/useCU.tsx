@@ -44,6 +44,7 @@ export interface TableUseCUFormProps {
     cuFormColProps?: ColProps
     tableTextConfig?: TableTextConfig
     defaultValues?: any
+    onCuFormCancel?: () => boolean | void
     [key: string]: any
 }
 
@@ -80,7 +81,9 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         tableRef,
         onBeforeCuFormSubmit,
         onCuFormSubmitSuccess,
+
         onCuFormSubmitError,
+        onCuFormCancel,
         updateSource,
         defaultValues,
         emits,
@@ -107,6 +110,9 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         }
     )
 
+    watch(cuModalFormIsEdit, () => {
+        emits('cuFormEditStatusChange', cuModalFormIsEdit.value)
+    })
     const formRef = ref<FormInstance>()
 
     const openCUModalForm = async (isEdit: boolean = false, record?: any) => {
@@ -159,6 +165,10 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
     }
 
     const cancelCUModalForm = () => {
+        if (onCuFormCancel?.() === false) {
+            return
+        }
+        onCuFormCancel?.()
         cuFormModel.values = cloneDeep(initValues)
         cuModalOpen.value = false
     }

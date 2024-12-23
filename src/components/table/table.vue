@@ -74,6 +74,7 @@ const slots = defineSlots<TableSlots>()
 
 const emits = defineEmits<{
     (e: 'cuFormModelChange', currentModel: any, prevModel: any): void
+    (e: 'cuFormEditStatusChange', cuFormEditStatus: boolean): void
 }>()
 const aTableSlots = computed(() => {
     return Object?.keys?.(slots)?.filter?.(
@@ -97,6 +98,7 @@ const {
     onBeforeCuFormSubmit = config.table.onBeforeCuFormSubmit,
     onCuFormSubmitSuccess = config.table.onCuFormSubmitSuccess,
     onCuFormSubmitError = config.table.onCuFormSubmitError,
+    onCuFormCancel,
     onBeforeRowDelete = config.table.onBeforeRowDelete,
     onRowDeleteSuccess = config.table.onRowDeleteSuccess,
     onRowDeleteError = config.table.onRowDeleteError,
@@ -254,7 +256,7 @@ const { CreateBtn, CUModalForm, openCUModalForm, cuFormModel, cuModalLoading, cu
             createBtn,
             columns,
             cuFormProps,
-
+            onCuFormCancel,
             cuFormRules,
             cuFormModalProps,
             cuFormRowProps,
