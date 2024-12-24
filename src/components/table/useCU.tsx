@@ -175,7 +175,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
     const CreateBtn = () => {
         const { children, ...btnProps } = createBtn || {}
         return (
-            <Button onClick={() => openCUModalForm(false)} {...btnProps}>
+            <Button class="flex items-center" onClick={() => openCUModalForm(false)} {...btnProps}>
                 {children}
             </Button>
         )

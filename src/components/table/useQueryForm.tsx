@@ -70,6 +70,7 @@ export interface TableQueryFormProps {
     queryFormRowProps?: RowProps
     queryFormColProps?: ColProps
     queryFormFlexProps?: FlexProps
+    queryFormTimeFormat?: string
     queryFormSubmitBtn?: boolean | ((form: TableQueryFormInstance) => VNode)
     queryFormSubmitBtnProps?: OwnBtnProps
     queryFormResetBtn?: boolean | ((form: TableQueryFormInstance) => VNode)

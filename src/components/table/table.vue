@@ -11,13 +11,15 @@
                         name="customCiesBtns"
                         :CreateBtn="CreateBtn"
                         :ImportBtn="ImportBtn"
-                        :ExportBtn="ExportBtn"
+                        :ExportDropDown="ExportDropDown"
+                        :ExportCurrentPageBtn="ExportCurrentPageBtn"
+                        :ExportAllBtn="ExportAllBtn"
                     ></slot>
                 </template>
                 <template v-else>
                     <CreateBtn v-if="createBtn"></CreateBtn>
                     <ImportBtn v-if="importBtn"></ImportBtn>
-                    <ExportBtn v-if="exportBtn"></ExportBtn>
+                    <ExportDropDown v-if="exportDropdown"></ExportDropDown>
                 </template>
             </Space>
         </div>
@@ -50,8 +52,9 @@
 <script setup lang="tsx" async>
 import config from '@config/index'
 import { Table as ATable, Space, TableColumnProps } from 'ant-design-vue'
-import { computed, onMounted, readonly, ref, unref, watch } from 'vue'
+import { computed, ref, toRaw, unref, watch } from 'vue'
 import { ATableSlotsWhiteList, TableProps, TableSlots } from './index.type'
+import useAutoSize from './useAutoSize'
 import useColumns from './useColumns'
 import useCU from './useCU'
 import useDataSource from './useDataSource'
@@ -61,8 +64,6 @@ import useImport from './useImport'
 import usePagination from './usePagination'
 import useParams from './useParams'
 import useQueryForm from './useQueryForm'
-import { toRaw } from 'vue'
-import useAutoSize from './useAutoSize'
 
 defineOptions({
     name: 'DbTable',
@@ -117,6 +118,7 @@ const {
     queryFormResetBtn = config.table.queryFormResetBtn,
     queryFormSubmitBtnProps = config.table.queryFormSubmitBtnProps,
     queryFormResetBtnProps = config.table.queryFormResetBtnProps,
+    queryFormTimeFormat = config.table.queryFormTimeFormat,
 
     columns,
     indexColumn = config.table.indexColumn,
@@ -151,13 +153,15 @@ const {
     ciesBtnsInQueryForm = config.table.ciesBtnsInQueryForm,
     createBtn = config.table.createBtn,
     importBtn = config.table.importBtn,
-    exportBtn = config.table.exportBtn,
+    exportDropdown = config.table.exportDropdown,
+    exportCurrentPageBtn = config.table.exportCurrentPageBtn,
+    exportAllBtn = config.table.exportAllBtn,
     scroll = config.table.scroll,
     tableLayout = config.table.tableLayout,
     dataSource,
 
     exportFileByParams = config.table.exportFileByParams,
-    exportFileParamsFormat,
+    exportFileParamsFormat = config.table.exportFileParamsFormat,
     exportFileName,
     onExportRequestSuccess = config.table.onExportRequestSuccess,
     onExportSuccess = config.table.onExportSuccess,
@@ -209,15 +213,20 @@ const { resultParams, pagination } = $$(
         ownPagin,
         requestParamsFormatter,
         fieldsNames,
+        queryFormTimeFormat,
         queryFormParams,
     })
 )
 
-const { ExportBtn } = $$(
+const { ExportDropDown, ExportCurrentPageBtn, ExportAllBtn } = $$(
     useExport({
         apis,
         fieldsNames,
-        exportBtn,
+        pagination,
+
+        exportDropdown,
+        exportCurrentPageBtn,
+        exportAllBtn,
         resultParams,
         exportFileByParams,
         exportFileName,
@@ -323,9 +332,15 @@ const { resColumns }: any = $$(
 const Pagination = $$(usePagination({ pagination, total, ownPaginProps }))
 
 watch(
-    [CreateBtn, ImportBtn, ExportBtn],
+    [CreateBtn, ImportBtn, ExportDropDown, ExportCurrentPageBtn, ExportAllBtn],
     () => {
-        ciesBtnsVNode.value = { CreateBtn, ImportBtn, ExportBtn }
+        ciesBtnsVNode.value = {
+            CreateBtn,
+            ImportBtn,
+            ExportDropDown,
+            ExportCurrentPageBtn,
+            ExportAllBtn,
+        }
     },
     {
         immediate: true,
@@ -341,7 +356,9 @@ defineExpose({
     cuFormModel: toRaw(cuFormModel),
     CreateBtn,
     ImportBtn,
-    ExportBtn,
+    ExportDropDown,
+    ExportCurrentPageBtn,
+    ExportAllBtn,
 })
 </script>
 

@@ -1,26 +1,33 @@
-import { Button, message } from 'ant-design-vue'
-import { ownBtnProps, TableProps } from './index.type'
-import { ref } from 'vue'
-import { isFunction } from 'es-toolkit'
+import { Button, ButtonProps, Dropdown, Menu, message } from 'ant-design-vue'
 import { AxiosResponse } from 'axios'
-import JsFileDownloader, { OptionalParams } from 'js-file-downloader'
-import { get } from 'es-toolkit/compat'
 import dayjs from 'dayjs'
+import { isFunction } from 'es-toolkit'
+import { get } from 'es-toolkit/compat'
+import JsFileDownloader, { OptionalParams } from 'js-file-downloader'
 import mime from 'mime'
+import { ref } from 'vue'
+import { ownBtnProps, ownDropDownProps, TableProps } from './index.type'
+import { LoadingOutlined } from '@ant-design/icons-vue'
 export type ExportResponse = {
     thumbUrl: string
     filename?: string
     config?: OptionalParams
 }
+
+export type ExportDataType = 'currentPage' | 'allPage'
 export interface TableUseExportProps {
     apis?: TableProps['apis']
+    fieldsNames?: TableProps['fieldsNames']
     resultParams?: any
     exportFileByParams?: boolean
     exportFileName?: string
-    exportFileParamsFormat?: null | ((vals: any) => Promise<any>)
-    exportBtn?: ownBtnProps
+    exportFileParamsFormat?: null | ((vals?: any, type?: ExportDataType) => Promise<any>)
+    exportDropdown?: ownDropDownProps
+    exportCurrentPageBtn?: ownBtnProps
+    exportAllBtn?: ownBtnProps
     onExportRequestSuccess?: null | ((res: AxiosResponse) => Promise<ExportResponse | false>)
-    fieldsNames?: TableProps['fieldsNames']
+    onExportSuccess?: null | ((res: any) => Promise<false | void>)
+    onExportError?: null | ((error: Error) => Promise<false | void>)
     [key: string]: any
 }
 
@@ -28,61 +35,93 @@ export default (props: TableUseExportProps) => {
     const {
         apis,
         resultParams,
+        pagination,
         fieldsNames,
         exportFileByParams,
         exportFileName,
         exportFileParamsFormat,
         onExportRequestSuccess,
-        exportBtn,
         onExportSuccess,
         onExportError,
+        exportDropdown,
+        exportCurrentPageBtn,
+        exportAllBtn,
+
         tableTextConfig,
     } = $(props)
 
-    const exportBtnLoading = ref(false)
-
-    const exportFile = async () => {
-        exportBtnLoading.value = true
+    const exportCurrentPageBtnLoading = ref(false)
+    const exportAllBtnLoading = ref(false)
+    const exportFile = async (type: 'currentPage' | 'allPage' = 'currentPage') => {
+        let exportDataParams: any = null
+        if (type === 'currentPage') {
+            exportCurrentPageBtnLoading.value = true
+            exportDataParams = {
+                [fieldsNames.page]: pagination.page,
+                [fieldsNames.pageSize]: pagination.pageSize,
+            }
+        } else {
+            exportAllBtnLoading.value = true
+            exportDataParams = {
+                [fieldsNames.pageSize]: -1,
+            }
+        }
 
         const resParams = exportFileByParams
             ? exportFileParamsFormat && isFunction(exportFileParamsFormat)
-                ? exportFileParamsFormat?.(resultParams)
-                : resultParams
-            : {}
-        try {
-            const res = await apis?.export?.(resParams)
+                ? exportFileParamsFormat?.(
+                      {
+                          ...resultParams,
+                          ...exportDataParams,
+                      },
+                      type
+                  )
+                : {
+                      ...resultParams,
+                      ...exportDataParams,
+                  }
+            : exportDataParams
 
-            const opt = isFunction(onExportRequestSuccess)
-                ? await onExportRequestSuccess(res)
-                : transFormBlob(res)
+        await apis
+            ?.export?.(resParams)
+            .then(async (res) => {
+                const opt = isFunction(onExportRequestSuccess)
+                    ? await onExportRequestSuccess(res)
+                    : transFormBlob(res)
+                if (opt === false) return
+                const { thumbUrl, filename, config } = opt as ExportResponse
+                const downloadRes = await new JsFileDownloader({
+                    url: thumbUrl,
+                    timeout: null,
+                    filename: filename || exportFileName || `${dayjs().valueOf()}`,
+                    autoStart: true,
+                    ...(config || {}),
+                })
 
-            if (opt === false) return
-            const { thumbUrl, filename, config } = opt as ExportResponse
-            const downloadRes = await new JsFileDownloader({
-                url: thumbUrl,
-                timeout: null,
-                filename: filename || exportFileName || `${dayjs().valueOf()}`,
-                autoStart: true,
-                ...(config || {}),
+                window?.URL?.revokeObjectURL?.(thumbUrl)
+
+                if (
+                    isFunction(onExportSuccess) &&
+                    (await onExportSuccess?.(downloadRes)) === false
+                ) {
+                    return
+                }
+                message.success(tableTextConfig?.message?.exportSuccess)
             })
+            .catch(async (error) => {
+                if (isFunction(onExportError) && (await onExportError?.(error)) === false) {
+                    return
+                }
 
-            window?.URL?.revokeObjectURL?.(thumbUrl)
-            exportBtnLoading.value = false
-
-            if (isFunction(onExportSuccess) && (await onExportSuccess?.(downloadRes)) === false) {
-                return
-            }
-            message.success(tableTextConfig?.message?.exportSuccess)
-        } catch (error) {
-            exportBtnLoading.value = false
-
-            if (isFunction(onExportError) && (await onExportError?.(error)) === false) {
-                return
-            }
-
-            message.error(tableTextConfig?.message?.exportError)
-        }
-        exportBtnLoading.value = false
+                message.error(tableTextConfig?.message?.exportError)
+            })
+            .finally(() => {
+                if (type === 'currentPage') {
+                    exportCurrentPageBtnLoading.value = false
+                } else {
+                    exportAllBtnLoading.value = false
+                }
+            })
     }
 
     const transFormBlob = (res: AxiosResponse): ExportResponse => {
@@ -95,23 +134,85 @@ export default (props: TableUseExportProps) => {
             config: null,
         }
     }
-    const ExportBtn = () => {
-        const { children, ...btnProps } = exportBtn || {}
+
+    const ExportCurrentPageBtn = (props?: ButtonProps) => {
+        const { children, ...btnProps } = exportCurrentPageBtn || {}
 
         return (
             <Button
-                disabled={exportBtnLoading.value}
-                loading={exportBtnLoading.value}
-                class="flex items-center"
-                onClick={() => exportFile()}
+                disabled={exportCurrentPageBtnLoading.value}
+                loading={exportCurrentPageBtnLoading.value}
                 {...btnProps}
+                {...props}
             >
-                {exportBtnLoading?.value ? `正在${children}` : children}
+                {children}
             </Button>
         )
     }
+    const ExportAllBtn = (props?: ButtonProps) => {
+        const { children, ...btnProps } = exportAllBtn || {}
+
+        return (
+            <Button
+                disabled={exportAllBtnLoading.value}
+                loading={exportAllBtnLoading.value}
+                {...btnProps}
+                {...props}
+            >
+                {children}
+            </Button>
+        )
+    }
+
+    const onMenuClick = ({ key }) => {
+        exportFile(key)
+    }
+    const ExportDropDown = () => {
+        const { children, buttonProps, ...dropProps } = exportDropdown || {}
+        const { children: currentPageChildren } = exportCurrentPageBtn || {}
+        const { children: allPageChildren } = exportAllBtn || {}
+        return (
+            <Dropdown
+                overlay={
+                    <Menu
+                        onClick={onMenuClick}
+                        items={[
+                            {
+                                label: currentPageChildren || '导出当前页',
+                                key: 'currentPage',
+                                disabled: exportCurrentPageBtnLoading.value,
+                                icon: exportCurrentPageBtnLoading.value ? (
+                                    <LoadingOutlined />
+                                ) : null,
+                            },
+                            {
+                                label: allPageChildren || '导出全部',
+                                key: 'allPage',
+                                icon: exportAllBtnLoading.value ? <LoadingOutlined /> : null,
+                                disabled: exportAllBtnLoading.value,
+                            },
+                        ]}
+                    ></Menu>
+                }
+                {...(dropProps || {})}
+            >
+                <Button
+                    loading={exportCurrentPageBtnLoading.value || exportAllBtnLoading.value}
+                    class="flex items-center"
+                    {...(buttonProps || {})}
+                    {...(props || {})}
+                >
+                    {exportCurrentPageBtnLoading?.value || exportAllBtnLoading?.value
+                        ? `正在${children}`
+                        : children}
+                </Button>
+            </Dropdown>
+        )
+    }
     return {
-        ExportBtn,
+        ExportDropDown,
+        ExportCurrentPageBtn,
+        ExportAllBtn,
         exportFile,
     }
 }

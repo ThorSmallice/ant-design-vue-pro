@@ -34,8 +34,10 @@ export default defineConfig({
             name: pkg.name,
             fileName: (format) => `lib/index.${format}.js`,
         },
+
         rollupOptions: {
             plugins: [terser()],
+
             external: ['vue', 'ant-design-vue', 'dayjs', 'numeral', 'es-toolkit', 'big.js', 'qs'],
             output: {
                 exports: 'named',

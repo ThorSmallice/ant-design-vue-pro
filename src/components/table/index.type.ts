@@ -19,14 +19,19 @@ import { JSX } from 'vue/jsx-runtime'
 import { arrayType, booleanType, functionType, objectType } from '@src/tools/type'
 import { TableUseExportProps } from './useExport'
 import { TableUseImportProps } from './useImport'
+import { DropdownButtonProps, DropdownProps } from 'ant-design-vue/es/dropdown'
 
 type TableFieldNames = string | string[]
 
 export interface OwnBtnProps extends ButtonProps {
     children?: string | VNode | JSX.Element
 }
-export type ownBtnProps = OwnBtnProps | false
-
+export interface OwnDropProps extends DropdownProps {
+    children?: string | VNode | JSX.Element
+    buttonProps?: ButtonProps
+}
+export type ownBtnProps = false | OwnBtnProps
+export type ownDropDownProps = false | OwnDropProps
 export type TablePropsApi = (
     params?: AxiosRequestConfig['params'],
     config?: AxiosRequestConfig
@@ -137,11 +142,8 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     requestParamsFormatter?: null | RequestParamsFormatter
     onSourceSuccess?: null | TableUseDataSourceProps['onSourceSuccess']
     onSourceError?: null | TableUseDataSourceProps['onSourceError']
-    onGetRowDetail?:
-        | null
-        | ((res: AxiosResponse) => Promise<{
-              [key: string]: any
-          }>)
+    onGetRowDetail?: null | TableUseColumnsProps['onGetRowDetail']
+
     onBeforeCuFormSubmit?: null | ParamsFormatter
 
     onBeforeRowEditBackFill?: null | TableUseColumnsProps['onBeforeRowEditBackFill']
@@ -183,6 +185,7 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     queryFormResetBtn?: TableQueryFormProps['queryFormResetBtn']
     queryFormResetBtnProps?: TableQueryFormProps['queryFormResetBtnProps'] & { [key: string]: any }
     queryFormSubmitWithReset?: TableQueryFormProps['queryFormSubmitWithReset']
+    queryFormTimeFormat?: TableQueryFormProps['queryFormTimeFormat']
 
     /**
      * 新增 编辑表单配置
@@ -207,14 +210,13 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     ciesBtns?: boolean
     ciesBtnsInQueryForm?: boolean
 
-    createBtn?: TableUseCUFormProps['createBtn']
+    createBtn?: false | TableUseCUFormProps['createBtn']
 
-    importBtn?:
-        | false
-        | (ButtonProps & {
-              children?: string | VNode
-          })
-    exportBtn?: TableUseExportProps['exportBtn']
+    importBtn?: TableUseImportProps['importBtn']
+
+    exportDropdown?: TableUseExportProps['exportDropdown']
+    exportCurrentPageBtn?: TableUseExportProps['exportCurrentPageBtn']
+    exportAllBtn?: TableUseExportProps['exportAllBtn']
 
     exportFileByParams?: TableUseExportProps['exportFileByParams']
     exportFileParamsFormat?: null | TableUseExportProps['exportFileParamsFormat']
@@ -263,7 +265,9 @@ export type TableSlots = {
     customCiesBtns?: (orgNode: {
         CreateBtn: VNode
         ImportBtn: VNode
-        ExportBtn: VNode
+        ExportDropDown: VNode
+        ExportCurrentPageBtn: VNode
+        ExportAllBtn: VNode
     }) => VNode | JSX.Element
 }
 export const ATableSlotsWhiteList = [

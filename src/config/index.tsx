@@ -1,5 +1,5 @@
 import { TableProps } from '@src/components'
-import { ExportOutlined, ImportOutlined } from '@ant-design/icons-vue'
+import { ExportOutlined, ImportOutlined, PlusOutlined } from '@ant-design/icons-vue'
 
 export const TableConfig: TableProps = {
     full: false,
@@ -30,6 +30,7 @@ export const TableConfig: TableProps = {
     onExportSuccess: null,
     onExportError: null,
     importFileParamsFormat: null,
+    exportFileParamsFormat: null,
     onImportSuccess: null,
     onImportError: null,
 
@@ -49,6 +50,7 @@ export const TableConfig: TableProps = {
     queryFormFlexProps: null,
     queryFormSubmitBtn: true,
     queryFormResetBtn: true,
+    queryFormTimeFormat: 'YYYY-MM-DD HH:mm:ss',
     queryFormSubmitBtnProps: {
         type: 'primary',
         children: '查询',
@@ -129,17 +131,27 @@ export const TableConfig: TableProps = {
     ciesBtnsInQueryForm: false,
     createBtn: {
         children: '新增',
+        icon: <PlusOutlined />,
     },
     importBtn: {
         children: '导入',
         icon: <ImportOutlined />,
     },
-    exportBtn: {
+    exportDropdown: {
         children: '导出',
-        icon: <ExportOutlined />,
+        buttonProps: {
+            icon: <ExportOutlined />,
+        },
     },
 
-    exportFileByParams: true,
+    exportCurrentPageBtn: {
+        children: '导出当前页',
+    },
+    exportAllBtn: {
+        children: '导出全部',
+    },
+
+    exportFileByParams: false,
     importUploadProps: null,
 }
 

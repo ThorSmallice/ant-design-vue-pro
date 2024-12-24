@@ -104,6 +104,9 @@ export interface TableUseColumnsProps {
     detailModalLoading?: Ref<boolean> | Reactive<boolean>
     detailBackFillByGetDetail?: boolean
     tableTextConfig?: TableTextConfig
+    onGetRowDetail?: (res: AxiosResponse) => Promise<{
+        [key: string]: any
+    }>
     [key: string]: any
 }
 

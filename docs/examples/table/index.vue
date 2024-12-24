@@ -1,6 +1,8 @@
 <template>
     <Table
         ref="tableRef"
+        full
+        export-file-name="测试.xlsx"
         :cu-form-default-values="initalValues"
         :cu-form-props="{
             labelCol: {
@@ -53,6 +55,7 @@ const getContractManagePageApi = async (params?: any, config?: any) =>
     await axios.get('/admin-api/wms/contract/page', { params })
 
 const exportApi = async (params) => {
+    console.log('🚀 ~ exportApi ~ params:', params)
     return axios.get('/admin-api/wms/contract/export-excel', { params, responseType: 'blob' })
 }
 
