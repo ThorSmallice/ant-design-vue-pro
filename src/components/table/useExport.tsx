@@ -86,7 +86,7 @@ export default (props: TableUseExportProps) => {
             ?.export?.(resParams)
             .then(async (res) => {
                 const opt = isFunction(onExportRequestSuccess)
-                    ? await onExportRequestSuccess(res)
+                    ? await onExportRequestSuccess?.(res)
                     : transFormBlob(res)
                 if (opt === false) return
                 const { thumbUrl, filename, config } = opt as ExportResponse

@@ -125,11 +125,18 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         formRef.value
             .validate?.()
             .then(async (vals) => {
-                const data =
+                let data: any = null
+
+                const cbres =
+                    isFunction(onBeforeCuFormSubmit) &&
                     (await onBeforeCuFormSubmit?.(
                         vals,
                         JSON.parse(JSON.stringify(cuFormModel.values))
-                    )) || vals
+                    ))
+                if (cbres === false) {
+                    return
+                }
+                data = cbres || vals
 
                 try {
                     const res = await apis?.[cuModalFormIsEdit.value ? 'update' : 'create']?.(data)

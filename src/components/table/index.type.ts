@@ -49,7 +49,7 @@ export type ParamsFormatter = (
           }
         | unknown,
     metaValues?: any
-) => Promise<{ [key: string]: any } | unknown>
+) => Promise<{ [key: string]: any } | unknown | false>
 
 export type TableTextConfig = Partial<{
     modalTitle: {
