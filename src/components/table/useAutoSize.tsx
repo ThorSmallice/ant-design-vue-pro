@@ -37,6 +37,17 @@ const useAutoSize = (props: TableUseAutoSizeProps) => {
         )
     })
 
+    watch(
+        y,
+        (cur, pre) => {
+            if (pre !== cur) {
+                console.info(`高度已重置 -- height : ${cur}`)
+            }
+        },
+        {
+            deep: true,
+        }
+    )
     const onResize = debounce(
         async (entries) => {
             await nextTick()
