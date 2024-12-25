@@ -24,8 +24,9 @@
             </Space>
         </div>
 
-        <div :class="['db-table-wrap']">
+        <div :class="['db-table-wrap']" ref="tableWrapRef">
             <ATable
+                :rowKey="rowKey"
                 :pagination="false"
                 :columns="resColumns"
                 :data-source="source"
@@ -33,6 +34,7 @@
                 @resize-column="onResizeColumn"
                 :scroll="resScroll"
                 :table-layout="tableLayout"
+                :showHeader="showHeader"
                 v-bind="o"
             >
                 <template v-for="slot in aTableSlots" :key="slot" v-slot:[slot]="temp">
@@ -52,7 +54,7 @@
 <script setup lang="tsx" async>
 import config from '@config/index'
 import { Table as ATable, Space, TableColumnProps } from 'ant-design-vue'
-import { computed, ref, toRaw, unref, watch } from 'vue'
+import { computed, reactive, ref, toRaw, unref, useTemplateRef, watch } from 'vue'
 import { ATableSlotsWhiteList, TableProps, TableSlots } from './index.type'
 import useAutoSize from './useAutoSize'
 import useColumns from './useColumns'
@@ -69,8 +71,8 @@ defineOptions({
     name: 'DbTable',
 })
 
-const tableRef = ref<HTMLDivElement>()
-
+const tableRef = ref()
+const tableWrapRef = ref()
 const slots = defineSlots<TableSlots>()
 
 const emits = defineEmits<{
@@ -90,6 +92,7 @@ const {
     apis,
     full = config.table.full,
     params,
+    rowKey = 'id',
     requestParamsFormatter = config.table.requestParamsFormatter,
     fieldsNames = config.table.fieldsNames,
     onSourceSuccess = config.table.onSourceSuccess,
@@ -127,6 +130,8 @@ const {
     controlColumn = config.table.controlColumn,
     controlColumnWidth = config.table.controlColumnWidth,
     controlColumnWidthProps = config.table.controlColumnWidthProps,
+
+    columnsEllipsis = config.table.columnsEllipsis,
     columnsAlign = config.table.columnsAlign,
     columnsTitleNoWrap = config.table.columnsTitleNoWrap,
     columnsTimeFormat = config.table.columnsTimeFormat,
@@ -171,23 +176,31 @@ const {
     importFileParamsFormat = config.table.importFileParamsFormat,
     onImportSuccess = config.table.onImportSuccess,
     onImportError = config.table.onImportError,
-    showHeader,
+    showHeader = null,
 
+    autoSizeConfig = config.table.autoSizeConfig,
+    minScollHeight = config.table.minScollHeight,
     ...o
 } = defineProps<TableProps>()
 
 const { x, y } = $$(
     useAutoSize({
         scroll,
+        autoSizeConfig,
+        minScollHeight,
+        wrapContainer: tableWrapRef,
+        subtractEleClasses: [
+            '.ant-table-title',
+            '.ant-table-thead',
+            '.ant-table-footer',
+            '.ant-table-summary',
+        ],
     })
 )
-
-const resScroll = computed(() => {
-    return {
-        x: unref(x?.value),
-        y: unref(y?.value),
-    }
+const resScroll = computed((): { x: any; y: any } => {
+    return { x: x.value, y: y.value }
 })
+
 const ciesBtnsVNode = ref({})
 
 const { QueryForm, QueryFormInstance, queryFormParams } = $$(
@@ -223,7 +236,6 @@ const { ExportDropDown, ExportCurrentPageBtn, ExportAllBtn } = $$(
         apis,
         fieldsNames,
         pagination,
-
         exportDropdown,
         exportCurrentPageBtn,
         exportAllBtn,
@@ -298,6 +310,7 @@ const { resColumns }: any = $$(
     useColumns({
         columns,
         columnsAlign,
+        columnsEllipsis,
         columnsTitleNoWrap,
         pagination,
         columnsTimeFormat,

@@ -38,10 +38,10 @@ function nav(): DefaultTheme.NavItem[] {
     return [
         { text: 'documents', link: '/en/documents/install', activeMatch: '/en/documents' },
         { text: 'components', link: '/en/components/Table', activeMatch: '/en/components' },
-        {
-            text: pkg.version,
-            items: [],
-        },
+        // {
+        //     text: pkg.version,
+        //     items: [],
+        // },
     ]
 }
 

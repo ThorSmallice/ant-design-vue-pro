@@ -6,7 +6,7 @@ import { get } from 'es-toolkit/compat'
 import JsFileDownloader, { OptionalParams } from 'js-file-downloader'
 import mime from 'mime'
 import { ref } from 'vue'
-import { ownBtnProps, ownDropDownProps, TableProps } from './index.type'
+import { ownBtnProps, ownDropDownProps, OwnDropProps, TableProps } from './index.type'
 import { LoadingOutlined } from '@ant-design/icons-vue'
 export type ExportResponse = {
     thumbUrl: string
@@ -21,13 +21,13 @@ export interface TableUseExportProps {
     resultParams?: any
     exportFileByParams?: boolean
     exportFileName?: string
-    exportFileParamsFormat?: null | ((vals?: any, type?: ExportDataType) => Promise<any>)
+    exportFileParamsFormat?: (vals?: any, type?: ExportDataType) => Promise<any>
     exportDropdown?: ownDropDownProps
     exportCurrentPageBtn?: ownBtnProps
     exportAllBtn?: ownBtnProps
-    onExportRequestSuccess?: null | ((res: AxiosResponse) => Promise<ExportResponse | false>)
-    onExportSuccess?: null | ((res: any) => Promise<false | void>)
-    onExportError?: null | ((error: Error) => Promise<false | void>)
+    onExportRequestSuccess?: (res: AxiosResponse) => Promise<ExportResponse | false>
+    onExportSuccess?: (res: any) => Promise<false | void>
+    onExportError?: (error: Error) => Promise<false | void>
     [key: string]: any
 }
 
@@ -171,6 +171,7 @@ export default (props: TableUseExportProps) => {
         const { children, buttonProps, ...dropProps } = exportDropdown || {}
         const { children: currentPageChildren } = exportCurrentPageBtn || {}
         const { children: allPageChildren } = exportAllBtn || {}
+
         return (
             <Dropdown
                 overlay={
@@ -200,7 +201,6 @@ export default (props: TableUseExportProps) => {
                     loading={exportCurrentPageBtnLoading.value || exportAllBtnLoading.value}
                     class="flex items-center"
                     {...(buttonProps || {})}
-                    {...(props || {})}
                 >
                     {exportCurrentPageBtnLoading?.value || exportAllBtnLoading?.value
                         ? `正在${children}`

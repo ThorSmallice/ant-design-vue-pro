@@ -49,6 +49,7 @@ export interface TableColumnProps extends ATableColumnProps {
 
     formItemProps?: TableUseCUFormItemProps
     descItemProps?: TableDescItemsProps
+    columnsEllipsis?: boolean
 }
 
 export type TableColumnCustomRenderArgs = {
@@ -141,6 +142,7 @@ export default (props: TableUseColumnsProps) => {
         controlColumnWidthProps,
         openCUModalForm,
         columnsTitleNoWrap,
+        columnsEllipsis,
         cuFormModel,
         emits,
         cuModalLoading,
@@ -197,6 +199,7 @@ export default (props: TableUseColumnsProps) => {
                     nowrap,
                     type,
                     emptyText,
+                    ellipsis,
                     align,
                     numberFormat,
                     numberComputed,
@@ -206,12 +209,18 @@ export default (props: TableUseColumnsProps) => {
 
                 const resCol: ATableColumnProps = {
                     title: (
-                        <div class={[(nowrap ?? columnsTitleNoWrap) && 'whitespace-nowrap']}>
+                        <span
+                            class={[
+                                (nowrap ?? columnsTitleNoWrap) &&
+                                    'block whitespace-nowrap overflow-hidden text-ellipsis',
+                            ]}
+                        >
                             {title}
-                        </div>
+                        </span>
                     ),
                     width: width || computedTitleWidth(titleArr[i]) || String(title)?.length * 16,
                     align: columnsAlign,
+                    ellipsis: columnsEllipsis ?? ellipsis,
                     customRender: (...args) =>
                         getCustomRender(...args, col, pagination, {
                             columnsTimeFormat,

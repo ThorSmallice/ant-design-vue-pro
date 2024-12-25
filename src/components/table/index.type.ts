@@ -20,6 +20,7 @@ import { arrayType, booleanType, functionType, objectType } from '@src/tools/typ
 import { TableUseExportProps } from './useExport'
 import { TableUseImportProps } from './useImport'
 import { DropdownButtonProps, DropdownProps } from 'ant-design-vue/es/dropdown'
+import { TableUseAutoSizeProps } from './useAutoSize'
 
 type TableFieldNames = string | string[]
 
@@ -123,6 +124,7 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     controlColumnWidthProps?: TableUseColumnsProps['controlColumnWidthProps']
 
     columnsAlign?: TableColumnProps['align']
+    columnsEllipsis?: TableColumnProps['columnsEllipsis']
     columnsTimeFormat?: TableUseColumnsProps['columnsTimeFormat']
     columnsEmptyText?: TableUseColumnsProps['columnsEmptyText']
     controlColumnBtns?: TableUseColumnsProps['controlColumnBtns']
@@ -229,6 +231,9 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     importFileParamsFormat?: null | TableUseImportProps['importFileParamsFormat']
     onImportSuccess?: null | TableUseImportProps['onImportSuccess']
     onImportError?: null | TableUseImportProps['onImportError']
+
+    autoSizeConfig?: TableUseAutoSizeProps['autoSizeConfig']
+    minScollHeight?: TableUseAutoSizeProps['minScollHeight']
 }
 
 interface controlColumnInfo {

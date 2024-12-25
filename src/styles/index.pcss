@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .db-table {
-    @apply w-full flex flex-col relative bg-white overflow-hidden;
+    @apply w-full flex flex-col relative   overflow-hidden;
 
     .db-table-cies-btns-wrap {
         @apply p-2;
@@ -32,7 +32,18 @@
         }
     }
     .db-table-wrap {
-        @apply p-2 overflow-hidden;
+        @apply p-2 overflow-hidden flex flex-col;
+        .ant-table-wrapper,
+        .ant-spin-nested-loading,
+        .ant-spin-container,
+        .ant-table {
+            @apply h-full;
+        }
+        .ant-table {
+            .ant-table-body {
+                @apply !overflow-auto;
+            }
+        }
     }
     .db-table-query-form {
         @apply p-2 pt-4;

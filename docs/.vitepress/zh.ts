@@ -63,10 +63,10 @@ function nav(): DefaultTheme.NavItem[] {
     return [
         { text: '文档', link: '/documents/install', activeMatch: '/documents' },
         { text: '组件', link: '/components/Table', activeMatch: '/components' },
-        {
-            text: pkg.version,
-            items: [],
-        },
+        // {
+        //     text: pkg.version,
+        //     // items: [],
+        // },
     ]
 }
 

@@ -55,7 +55,6 @@ const getContractManagePageApi = async (params?: any, config?: any) =>
     await axios.get('/admin-api/wms/contract/page', { params })
 
 const exportApi = async (params) => {
-    console.log('🚀 ~ exportApi ~ params:', params)
     return axios.get('/admin-api/wms/contract/export-excel', { params, responseType: 'blob' })
 }
 
@@ -106,7 +105,7 @@ const columns = computed((): TableProps['columns'] => {
         {
             title: '签署乙方',
             dataIndex: 'signatory',
-            width: 240,
+            width: 80,
             formItemProps: {
                 sort: 0,
                 rules: [

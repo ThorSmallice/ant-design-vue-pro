@@ -4,7 +4,7 @@ import { ExportOutlined, ImportOutlined, PlusOutlined } from '@ant-design/icons-
 export const TableConfig: TableProps = {
     full: false,
     scroll: {
-        x: 'max-content',
+        x: 'true',
         y: 'auto',
     },
     tableLayout: 'fixed',
@@ -67,6 +67,7 @@ export const TableConfig: TableProps = {
     controlColumnWidth: 220,
     controlColumnWidthProps: {},
     columnsAlign: 'left',
+    columnsEllipsis: true,
     columnsTitleNoWrap: true,
     columnsTimeFormat: 'YYYY-MM-DD HH:mm:ss',
     columnsEmptyText: '-',
@@ -153,6 +154,8 @@ export const TableConfig: TableProps = {
 
     exportFileByParams: false,
     importUploadProps: null,
+    autoSizeConfig: null,
+    minScollHeight: 50,
 }
 
 const GlobalComponentDefalutPropsConfig = {
