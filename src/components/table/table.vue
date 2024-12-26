@@ -26,6 +26,7 @@
 
         <div :class="['db-table-wrap']" ref="tableWrapRef">
             <ATable
+                :sticky="true"
                 :rowKey="rowKey"
                 :pagination="false"
                 :columns="resColumns"
@@ -35,6 +36,7 @@
                 :scroll="resScroll"
                 :table-layout="tableLayout"
                 :showHeader="showHeader"
+                :showSorterTooltip="showSorterTooltip"
                 v-bind="o"
             >
                 <template v-for="slot in aTableSlots" :key="slot" v-slot:[slot]="temp">
@@ -89,6 +91,7 @@ const onResizeColumn = (w: number, col: TableColumnProps) => {
 }
 
 const {
+    showSorterTooltip = config.table.showSorterTooltip,
     apis,
     full = config.table.full,
     params,

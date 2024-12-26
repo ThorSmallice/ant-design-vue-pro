@@ -2,6 +2,7 @@ import { TableProps } from '@src/components'
 import { ExportOutlined, ImportOutlined, PlusOutlined } from '@ant-design/icons-vue'
 
 export const TableConfig: TableProps = {
+    showSorterTooltip: true,
     full: false,
     scroll: {
         x: 'max-content',

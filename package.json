@@ -40,6 +40,7 @@
         "@types/mime-types": "^2.1.4",
         "@types/node": "^20.17.8",
         "@types/numeral": "^2.0.5",
+        "@types/pinyin": "^2.10.2",
         "@types/qs": "^6.9.17",
         "@vitejs/plugin-vue": "^5.2.0",
         "@vitejs/plugin-vue-jsx": "^4.1.0",
@@ -54,6 +55,7 @@
         "mime": "^4.0.6",
         "numeral": "^2.0.6",
         "path": "^0.12.7",
+        "pinyin-pro": "^3.26.0",
         "postcss": "^8.4.49",
         "qs": "^6.13.1",
         "rimraf": "^6.0.1",
@@ -73,12 +75,14 @@
     "peerDependencies": {
         "@ant-design/icons-vue": "^7.0.1",
         "ant-design-vue": "4.x",
+        "axios": "^1.7.8",
         "big.js": "^6.2.2",
         "dayjs": "^1.11.13",
         "es-toolkit": "^1.27.0",
         "js-file-downloader": "^1.1.25",
         "mime": "^4.0.6",
         "numeral": "^2.0.6",
+        "pinyin-pro": "^3.26.0",
         "qs": "^6.13.1",
         "vue": "^3.5.12"
     }

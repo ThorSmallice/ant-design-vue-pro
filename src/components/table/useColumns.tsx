@@ -9,18 +9,20 @@ import {
 import { AxiosResponse } from 'axios'
 import Big from 'big.js'
 import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { cloneDeep, isFunction } from 'es-toolkit'
 import { get, isObject } from 'es-toolkit/compat'
 import numeral from 'numeral'
+import { pinyin } from 'pinyin-pro'
 import { createSSRApp, EmitFn, Reactive, Ref, ref, useSlots, VNode, watch } from 'vue'
 import { renderToString } from 'vue/server-renderer'
 import { TableProps, TableSlots, TableTextConfig } from './index.type'
 import { TableUseCUFormItemProps, TableUseCUReturnOptions } from './useCU'
-import customParseFormat from 'dayjs/plugin/customParseFormat'
-import { JSX } from 'vue/jsx-runtime'
 import { TableDescItemsProps } from './useDetail'
+
 dayjs.extend(customParseFormat)
 
+const excludesSortColumnTypes = ['index', 'control']
 export const formatterObjValueWithDate = (
     obj: { [key: string]: any },
     columns: TableColumnProps[]
@@ -210,6 +212,7 @@ export default (props: TableUseColumnsProps) => {
                 width,
                 hidden,
                 fixed,
+                sorter,
                 ...o
             } = col
             if (hidden) return
@@ -228,6 +231,8 @@ export default (props: TableUseColumnsProps) => {
                 align: columnsAlign,
                 fixed,
                 ellipsis: columnsEllipsis ?? ellipsis,
+                defaultSortOrder: 'ascend',
+                sorter: localSort(col),
                 customRender: (...args) =>
                     getCustomRender(...args, col, pagination, {
                         columnsTimeFormat,
@@ -456,6 +461,19 @@ const getCustomRender = (
 
     return text || emptyText || columnsEmptyText
 }
+
+const localSort = ({ type, dataIndex }: TableColumnProps) => {
+    if (excludesSortColumnTypes?.includes?.(type)) return false
+
+    return (a: any, b: any, sortType: string) => {
+        const aVal = get(a, dataIndex)
+        const bVal = get(b, dataIndex)
+
+        // return false
+        return compareValues(aVal, bVal)
+    }
+    // return false
+}
 const possibleFormats = [
     'YYYY-MM-DD',
     'DD/MM/YYYY',
@@ -473,4 +491,36 @@ const isDate = (str: number | string) => {
         return possibleFormats?.some?.((format) => dayjs?.(str, format, true)?.isValid?.())
     }
     return false
+}
+
+// 工具函数：处理字符为英文首字符
+// 转换为首字母
+function toEnglishFirstChar(str) {
+    if (!str) return ''
+    const firstChar = str.trim().charAt(0)
+    return pinyin(firstChar, { pattern: 'first' })
+}
+
+// 工具函数：处理日期为时间戳
+function toTimestamp(value) {
+    return new Date(value).getTime()
+}
+
+// 工具函数：转为数字
+function toNumber(value) {
+    if (typeof value === 'number') return value
+    const num = parseFloat(value)
+    return isNaN(num) ? 0 : num // 无法转为数字时返回 0
+}
+
+// 通用比较器
+function compareValues(a, b) {
+    if (typeof a === 'number' && typeof b === 'number') return a - b // 数字比较
+    if (!isNaN(a) && !isNaN(b)) return toNumber(a) - toNumber(b) // 字符串数字与数字混合比较
+    if (Date.parse(a) && Date.parse(b)) return toTimestamp(a) - toTimestamp(b) // 日期比较
+
+    // 字符串比较（中文/英文/混合）
+    const firstA = toEnglishFirstChar(a)
+    const firstB = toEnglishFirstChar(b)
+    return firstA.localeCompare(firstB) // 按英文顺序比较
 }
