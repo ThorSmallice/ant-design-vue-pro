@@ -126,6 +126,7 @@ const columns = computed((): TableProps['columns'] => {
             title: '合同名称',
             dataIndex: 'name',
             width: 220,
+            fixed: 'left',
             formItemProps: {
                 sort: 2,
                 rules: [
@@ -151,6 +152,7 @@ const columns = computed((): TableProps['columns'] => {
         },
         {
             title: '履约状态',
+            width: 120,
             dataIndex: 'performanceStatus',
             formItemProps: {
                 hidden: true,
@@ -249,6 +251,7 @@ const columns = computed((): TableProps['columns'] => {
                     span: 3,
                 },
             },
+            fixed: 'right',
         },
         {
             title: '附件',

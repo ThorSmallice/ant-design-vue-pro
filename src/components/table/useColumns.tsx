@@ -175,6 +175,7 @@ export default (props: TableUseColumnsProps) => {
             tempColumns?.unshift?.({
                 title: '序号',
                 type: 'index',
+                fixed: 'left',
                 align: 'center',
                 width: indexColumnWidth,
                 ...indexColumnProps,
@@ -191,67 +192,80 @@ export default (props: TableUseColumnsProps) => {
                 ...controlColumnWidthProps,
             })
         }
-        const arr = tempColumns
-            ?.filter?.(({ hidden }) => !hidden)
-            ?.map?.((col: TableColumnProps, i: number) => {
-                const {
-                    title,
-                    nowrap,
-                    type,
-                    emptyText,
-                    ellipsis,
-                    align,
-                    numberFormat,
-                    numberComputed,
-                    width,
-                    ...o
-                } = col
 
-                const resCol: ATableColumnProps = {
-                    title: (
-                        <span
-                            class={[
-                                (nowrap ?? columnsTitleNoWrap) &&
-                                    'block whitespace-nowrap overflow-hidden text-ellipsis',
-                            ]}
-                        >
-                            {title}
-                        </span>
-                    ),
-                    width: width || computedTitleWidth(titleArr[i]) || String(title)?.length * 16,
-                    align: columnsAlign,
-                    ellipsis: columnsEllipsis ?? ellipsis,
-                    customRender: (...args) =>
-                        getCustomRender(...args, col, pagination, {
-                            columnsTimeFormat,
-                            columnsEmptyText,
-                            controlColumnBtns,
-                            apis,
-                            slots,
-                            openCUModalForm,
-                            cuFormModel,
-                            emits,
-                            _cuModalLoading,
-                            cuFormBackFillByGetDetail,
-                            columns,
-                            onBeforeRowEditBackFill,
-                            fieldsNames,
-                            onGetRowDetail,
-                            updateSource,
-                            onBeforeRowDelete,
-                            onRowDeleteSuccess,
-                            onRowDeleteError,
-                            deleteRow,
-                            getDetails,
-                            editRow,
-                            openRowDetails,
-                        }),
-                    ...o,
-                }
-                return resCol
-            })
+        const fixedLeftColumns = []
+        const fixedRightColumns = []
+        const centerColumns = []
 
-        return arr
+        tempColumns?.forEach?.((col: TableColumnProps, i: number) => {
+            const {
+                title,
+                nowrap,
+                type,
+                emptyText,
+                ellipsis,
+                align,
+                numberFormat,
+                numberComputed,
+                width,
+                hidden,
+                fixed,
+                ...o
+            } = col
+            if (hidden) return
+            const resCol: ATableColumnProps = {
+                title: (
+                    <span
+                        class={[
+                            (nowrap ?? columnsTitleNoWrap) &&
+                                'block whitespace-nowrap overflow-hidden text-ellipsis',
+                        ]}
+                    >
+                        {title}
+                    </span>
+                ),
+                width: width || computedTitleWidth(titleArr[i]) || String(title)?.length * 16,
+                align: columnsAlign,
+                fixed,
+                ellipsis: columnsEllipsis ?? ellipsis,
+                customRender: (...args) =>
+                    getCustomRender(...args, col, pagination, {
+                        columnsTimeFormat,
+                        columnsEmptyText,
+                        controlColumnBtns,
+                        apis,
+                        slots,
+                        openCUModalForm,
+                        cuFormModel,
+                        emits,
+                        _cuModalLoading,
+                        cuFormBackFillByGetDetail,
+                        columns,
+                        onBeforeRowEditBackFill,
+                        fieldsNames,
+                        onGetRowDetail,
+                        updateSource,
+                        onBeforeRowDelete,
+                        onRowDeleteSuccess,
+                        onRowDeleteError,
+                        deleteRow,
+                        getDetails,
+                        editRow,
+                        openRowDetails,
+                    }),
+                ...o,
+            }
+            if (fixed === 'left') {
+                return fixedLeftColumns.push(resCol)
+            }
+            if (fixed === 'right') {
+                return fixedRightColumns.push(resCol)
+            }
+
+            centerColumns.push(resCol)
+        })
+
+        return [...fixedLeftColumns, ...centerColumns, ...fixedRightColumns]
     }
 
     const openRowDetails = async (record: any) => {

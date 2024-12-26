@@ -195,6 +195,7 @@ const { x, y } = $$(
             '.ant-table-footer',
             '.ant-table-summary',
         ],
+        tableRealRegionClasses: ['.ant-table-tbody'],
     })
 )
 const resScroll = computed((): { x: any; y: any } => {

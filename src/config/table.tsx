@@ -4,7 +4,7 @@ import { ExportOutlined, ImportOutlined, PlusOutlined } from '@ant-design/icons-
 export const TableConfig: TableProps = {
     full: false,
     scroll: {
-        x: 'true',
+        x: 'max-content',
         y: 'auto',
     },
     tableLayout: 'fixed',

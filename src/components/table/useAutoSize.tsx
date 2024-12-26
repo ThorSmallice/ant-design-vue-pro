@@ -16,6 +16,7 @@ export interface TableUseAutoSizeProps {
         }
     }>
     subtractEleClasses?: string[]
+    tableRealRegionClasses?: string[]
 }
 const useAutoSize = (props: TableUseAutoSizeProps) => {
     const {
@@ -23,11 +24,11 @@ const useAutoSize = (props: TableUseAutoSizeProps) => {
         wrapContainer,
         autoSizeConfig,
         subtractEleClasses,
+        tableRealRegionClasses,
         minScollHeight = 50,
     } = $(props)
     const y = ref<any>(null)
     const x = ref(scroll?.x)
-
     const resizeConfig = computed((): TableUseAutoSizeProps['autoSizeConfig'] => {
         return merge(
             {
@@ -60,14 +61,22 @@ const useAutoSize = (props: TableUseAutoSizeProps) => {
 
             const eles_height = subtractEleClasses?.map?.((className) =>
                 computedHeight(wrapContainer?.querySelector(`${className}`))
-            )
+            ) || [0]
 
             const height = eles_height?.reduce?.(
                 (prev, current) => prev - current,
                 wrapEffectiveHeight
             )
 
-            y.value = Math?.max?.(height, minScollHeight || 0)
+            const tableRegion_eles_height = tableRealRegionClasses?.map?.((className) =>
+                computedHeight(wrapContainer?.querySelector(`${className}`))
+            )
+
+            const tableRealHeight = tableRegion_eles_height?.reduce?.((prev, cur) => prev + cur, 0)
+
+            const maxHeight = Math?.max?.(height, minScollHeight)
+
+            y.value = tableRealHeight > maxHeight ? Math?.max?.(height, minScollHeight) : null
         },
         resizeConfig?.value?.wait,
         resizeConfig?.value?.options
