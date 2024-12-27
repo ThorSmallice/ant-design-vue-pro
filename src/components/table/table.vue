@@ -45,6 +45,7 @@
                 :table-layout="tableLayout"
                 :showHeader="showHeader"
                 :showSorterTooltip="showSorterTooltip"
+                @expanded-rows-change="onExpandedRowChange"
                 v-bind="o"
             >
                 <template v-for="slot in aTableSlots" :key="slot" v-slot:[slot]="temp">
@@ -372,7 +373,7 @@ const { resColumns, ColumnSettingBtn }: any = $$(
 
 const Pagination = $$(usePagination({ pagination, total, ownPaginProps }))
 
-const { x, y } = $$(
+const { x, y, onResize } = $$(
     useAutoSize({
         scroll,
         autoSizeConfig,
@@ -388,6 +389,10 @@ const { x, y } = $$(
         source,
     })
 )
+
+const onExpandedRowChange = () => {
+    onResize?.value?.()
+}
 const resScroll = computed((): { x: any; y: any } => {
     return { x: x.value, y: y.value }
 })
@@ -431,6 +436,7 @@ defineExpose({
     ExportDropDown,
     ExportCurrentPageBtn,
     ExportAllBtn,
+    onResize,
 })
 </script>
 

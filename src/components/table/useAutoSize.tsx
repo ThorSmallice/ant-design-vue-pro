@@ -124,6 +124,7 @@ const useAutoSize = (props: TableUseAutoSizeProps) => {
     return {
         x,
         y,
+        onResize,
     }
 }
 export default useAutoSize
