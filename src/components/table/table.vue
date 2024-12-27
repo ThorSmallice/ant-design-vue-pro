@@ -45,7 +45,6 @@
                 :table-layout="tableLayout"
                 :showHeader="showHeader"
                 :showSorterTooltip="showSorterTooltip"
-                @expanded-rows-change="onExpandedRowChange"
                 v-bind="o"
             >
                 <template v-for="slot in aTableSlots" :key="slot" v-slot:[slot]="temp">
@@ -202,6 +201,7 @@ const {
 
     autoSizeConfig = config.table.autoSizeConfig,
     minScollHeight = config.table.minScollHeight,
+
     ...o
 } = defineProps<TableProps>()
 
@@ -390,9 +390,6 @@ const { x, y, onResize } = $$(
     })
 )
 
-const onExpandedRowChange = () => {
-    onResize?.value?.()
-}
 const resScroll = computed((): { x: any; y: any } => {
     return { x: x.value, y: y.value }
 })

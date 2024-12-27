@@ -118,7 +118,6 @@ const useAutoSize = (props: TableUseAutoSizeProps) => {
         (cur, pre) => {
             if (cur?.length === pre?.length) return
             onResize?.()
-            console.log(cur, pre)
         }
     )
     return {
