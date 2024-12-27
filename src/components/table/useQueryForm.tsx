@@ -15,7 +15,7 @@ import { FieldNamesType } from 'ant-design-vue/es/cascader'
 import { Callbacks, RuleError, RuleObject } from 'ant-design-vue/es/form/interface'
 import { Props, ValidateInfo, validateInfos, validateOptions } from 'ant-design-vue/es/form/useForm'
 import { isFunction, omit } from 'es-toolkit'
-import { computed, h, Reactive, reactive, ref, Ref, useSlots, VNode } from 'vue'
+import { computed, h, Reactive, reactive, ref, Ref, unref, useSlots, VNode } from 'vue'
 import { ControlMapProps, FormItemControl } from './control'
 import { ciesBtnsVNode, OwnBtnProps } from './index.type'
 import { TableUseCUReturnOptions } from './useCU'
@@ -80,6 +80,7 @@ export interface TableQueryFormProps {
     ciesBtnsVNode?: ciesBtnsVNode
     CreateBtn?: Ref<TableUseCUReturnOptions['CreateBtn']>
     ImportBtn?: TableUseCUReturnOptions
+    queryFormControlFormItemProps?: TableQueryFormItemProps
     [key: string]: any
 }
 
@@ -95,6 +96,7 @@ const useQueryForm = (props: TableQueryFormProps) => {
         queryFormSubmitWithReset,
         queryFormSubmitBtnProps,
         queryFormResetBtnProps,
+        queryFormControlFormItemProps,
         ciesBtnsInQueryForm,
         ciesBtnsVNode,
     } = $(props)
@@ -132,6 +134,7 @@ const useQueryForm = (props: TableQueryFormProps) => {
             queryFormSubmitBtn?.(QueryFormInstance)
         ) : (
             <Button
+                class="flex items-center"
                 type="primary"
                 htmlType="submit"
                 {...omit(queryFormSubmitBtnProps, ['children'])}
@@ -145,7 +148,11 @@ const useQueryForm = (props: TableQueryFormProps) => {
         isFunction(queryFormResetBtn) ? (
             queryFormResetBtn?.(QueryFormInstance)
         ) : (
-            <Button onClick={onQueryFormReset} {...omit(queryFormResetBtnProps, ['children'])}>
+            <Button
+                class="flex items-center"
+                onClick={onQueryFormReset}
+                {...omit(queryFormResetBtnProps, ['children'])}
+            >
                 {queryFormResetBtnProps?.children}
             </Button>
         )
@@ -153,7 +160,10 @@ const useQueryForm = (props: TableQueryFormProps) => {
 
     const CreateBtn = $(computed(() => h(ciesBtnsVNode?.CreateBtn)))
     const ImportBtn = $(computed(() => h(ciesBtnsVNode?.ImportBtn)))
-    const ExportBtn = $(computed(() => h(ciesBtnsVNode?.ExportBtn)))
+    const ExportDropDown = $(computed(() => h(ciesBtnsVNode?.ExportDropDown)))
+    const ExportCurrentPageBtn = $(computed(() => h(ciesBtnsVNode?.ExportCurrentPageBtn)))
+    const ExportAllBtn = $(computed(() => h(ciesBtnsVNode?.ExportAllBtn)))
+    const ColumnSettingBtn = $(computed(() => h(ciesBtnsVNode?.ColumnSettingBtn)))
 
     const QueryForm = () => (
         <Form
@@ -202,33 +212,44 @@ const useQueryForm = (props: TableQueryFormProps) => {
                         )
                     })}
                 </Row>
-                <Form.Item class={['ml-2']}>
-                    <Space>
-                        {customQueryFormBtns && isFunction(customQueryFormBtns) ? (
-                            customQueryFormBtns?.({ SubmitBtn, ResetBtn, QueryFormInstance })
-                        ) : (
-                            <>
-                                {SubmitBtn}
-                                {ResetBtn}
-                                {ciesBtnsInQueryForm ? (
-                                    customCiesBtns && isFunction(customCiesBtns) ? (
-                                        customCiesBtns?.({
-                                            CreateBtn,
-                                            ImportBtn,
-                                            ExportBtn,
-                                        })
-                                    ) : (
-                                        <>
-                                            {CreateBtn}
-                                            {ImportBtn}
-                                            {ExportBtn}
-                                        </>
-                                    )
-                                ) : null}
-                            </>
-                        )}
-                    </Space>
-                </Form.Item>
+                {customQueryFormBtns && isFunction(customQueryFormBtns) ? (
+                    customQueryFormBtns?.({
+                        SubmitBtn,
+                        ResetBtn,
+                        QueryFormInstance,
+                        CreateBtn,
+                        ImportBtn,
+                        ExportDropDown,
+                        ExportCurrentPageBtn,
+                        ExportAllBtn,
+                        ColumnSettingBtn,
+                    })
+                ) : (
+                    <Form.Item class={['ml-2']} {...queryFormControlFormItemProps}>
+                        <Flex gap={8} wrap={'wrap'} justify="flex-end">
+                            {SubmitBtn}
+                            {ResetBtn}
+                            {ciesBtnsInQueryForm ? (
+                                customCiesBtns && isFunction(customCiesBtns) ? (
+                                    customCiesBtns?.({
+                                        CreateBtn,
+                                        ImportBtn,
+                                        ExportDropDown,
+                                        ExportCurrentPageBtn,
+                                        ExportAllBtn,
+                                        ColumnSettingBtn,
+                                    })
+                                ) : (
+                                    <>
+                                        {CreateBtn}
+                                        {ImportBtn}
+                                        {ExportDropDown}
+                                    </>
+                                )
+                            ) : null}
+                        </Flex>
+                    </Form.Item>
+                )}
             </Flex>
         </Form>
     )

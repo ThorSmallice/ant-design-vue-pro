@@ -4,24 +4,30 @@
             <QueryForm></QueryForm>
         </div>
 
-        <div :class="['db-table-cies-btns-wrap']" v-if="ciesBtns">
-            <Space>
-                <template v-if="slots?.customCiesBtns">
-                    <slot
-                        name="customCiesBtns"
-                        :CreateBtn="CreateBtn"
-                        :ImportBtn="ImportBtn"
-                        :ExportDropDown="ExportDropDown"
-                        :ExportCurrentPageBtn="ExportCurrentPageBtn"
-                        :ExportAllBtn="ExportAllBtn"
-                    ></slot>
-                </template>
-                <template v-else>
-                    <CreateBtn v-if="createBtn"></CreateBtn>
-                    <ImportBtn v-if="importBtn"></ImportBtn>
-                    <ExportDropDown v-if="exportDropdown"></ExportDropDown>
-                </template>
-            </Space>
+        <div :class="['db-table-cies-btns-wrap']" v-if="ciesBtns || columnSettingBtn">
+            <template v-if="slots?.customCiesBtns">
+                <slot
+                    name="customCiesBtns"
+                    :CreateBtn="CreateBtn"
+                    :ImportBtn="ImportBtn"
+                    :ExportDropDown="ExportDropDown"
+                    :ExportCurrentPageBtn="ExportCurrentPageBtn"
+                    :ExportAllBtn="ExportAllBtn"
+                    :ColumnSettingBtn="ColumnSettingBtn"
+                ></slot>
+            </template>
+            <template v-else>
+                <Flex justify="space-between">
+                    <Space>
+                        <CreateBtn v-if="createBtn"></CreateBtn>
+                        <ImportBtn v-if="importBtn"></ImportBtn>
+                        <ExportDropDown v-if="exportDropdown"></ExportDropDown>
+                    </Space>
+                    <Space>
+                        <ColumnSettingBtn v-if="columnSettingBtn"></ColumnSettingBtn>
+                    </Space>
+                </Flex>
+            </template>
         </div>
 
         <div :class="['db-table-wrap']" ref="tableWrapRef">
@@ -55,7 +61,7 @@
 
 <script setup lang="tsx" async>
 import config from '@config/index'
-import { Table as ATable, Space, TableColumnProps } from 'ant-design-vue'
+import { Table as ATable, Button, Flex, Input, Space, TableColumnProps } from 'ant-design-vue'
 import { computed, reactive, ref, toRaw, unref, useTemplateRef, watch } from 'vue'
 import { ATableSlotsWhiteList, TableProps, TableSlots } from './index.type'
 import useAutoSize from './useAutoSize'
@@ -68,6 +74,7 @@ import useImport from './useImport'
 import usePagination from './usePagination'
 import useParams from './useParams'
 import useQueryForm from './useQueryForm'
+import { SearchOutlined } from '@ant-design/icons-vue'
 
 defineOptions({
     name: 'DbTable',
@@ -96,6 +103,7 @@ const {
     full = config.table.full,
     params,
     rowKey = 'id',
+    columnSettingBtn = config.table.columnSettingBtn,
     requestParamsFormatter = config.table.requestParamsFormatter,
     fieldsNames = config.table.fieldsNames,
     onSourceSuccess = config.table.onSourceSuccess,
@@ -124,6 +132,7 @@ const {
     queryFormResetBtn = config.table.queryFormResetBtn,
     queryFormSubmitBtnProps = config.table.queryFormSubmitBtnProps,
     queryFormResetBtnProps = config.table.queryFormResetBtnProps,
+    queryFormControlFormItemProps = config.table.queryFormControlFormItemProps,
     queryFormTimeFormat = config.table.queryFormTimeFormat,
 
     columns,
@@ -219,11 +228,21 @@ const { QueryForm, QueryFormInstance, queryFormParams } = $$(
         queryFormResetBtn,
         queryFormSubmitBtnProps,
         queryFormResetBtnProps,
+        queryFormControlFormItemProps,
         ciesBtnsInQueryForm,
         ciesBtnsVNode,
     })
 )
 
+const state = reactive({
+    values: {},
+})
+const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm()
+}
+const handleReset = (clearFilters) => {
+    clearFilters({ confirm: true })
+}
 const { resultParams, pagination } = $$(
     useParams({
         params,
@@ -310,7 +329,7 @@ const { openDetailModal, detailModalLoading, detailsDataSource, DetailModal } = 
     })
 )
 
-const { resColumns }: any = $$(
+const { resColumns, ColumnSettingBtn }: any = $$(
     useColumns({
         columns,
         columnsAlign,
@@ -343,13 +362,14 @@ const { resColumns }: any = $$(
         indexColumnWidth,
         controlColumnWidth,
         controlColumnWidthProps,
+        columnSettingBtn,
     })
 )
 
 const Pagination = $$(usePagination({ pagination, total, ownPaginProps }))
 
 watch(
-    [CreateBtn, ImportBtn, ExportDropDown, ExportCurrentPageBtn, ExportAllBtn],
+    [CreateBtn, ImportBtn, ExportDropDown, ExportCurrentPageBtn, ExportAllBtn, ColumnSettingBtn],
     () => {
         ciesBtnsVNode.value = {
             CreateBtn,
@@ -357,6 +377,7 @@ watch(
             ExportDropDown,
             ExportCurrentPageBtn,
             ExportAllBtn,
+            ColumnSettingBtn,
         }
     },
     {

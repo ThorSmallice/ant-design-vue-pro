@@ -1,9 +1,17 @@
 import { TableProps } from '@src/components'
-import { ExportOutlined, ImportOutlined, PlusOutlined } from '@ant-design/icons-vue'
+import {
+    ExportOutlined,
+    ImportOutlined,
+    PlusOutlined,
+    SearchOutlined,
+    SettingOutlined,
+    UndoOutlined,
+} from '@ant-design/icons-vue'
 
 export const TableConfig: TableProps = {
     showSorterTooltip: true,
     full: false,
+
     scroll: {
         x: 'max-content',
         y: 'auto',
@@ -55,11 +63,15 @@ export const TableConfig: TableProps = {
     queryFormSubmitBtnProps: {
         type: 'primary',
         children: '查询',
+        icon: <SearchOutlined />,
     },
     queryFormResetBtnProps: {
         children: '重置',
+        icon: <UndoOutlined />,
     },
-
+    queryFormControlFormItemProps: {
+        class: 'w-auto',
+    },
     indexColumn: true,
     indexColumnWidth: 80,
     indexColumnProps: {},
@@ -152,7 +164,13 @@ export const TableConfig: TableProps = {
     exportAllBtn: {
         children: '导出全部',
     },
-
+    columnSettingBtn: {
+        children: '',
+        buttonProps: {
+            title: '列配置',
+            icon: <SettingOutlined />,
+        },
+    },
     exportFileByParams: false,
     importUploadProps: null,
     autoSizeConfig: null,

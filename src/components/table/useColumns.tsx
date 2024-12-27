@@ -2,8 +2,13 @@ import {
     TableColumnProps as ATableColumnProps,
     Button,
     ButtonProps,
+    Checkbox,
+    Col,
+    Flex,
     message,
     Popconfirm,
+    Popover,
+    Row,
     Space,
 } from 'ant-design-vue'
 import { AxiosResponse } from 'axios'
@@ -11,18 +16,27 @@ import Big from 'big.js'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { cloneDeep, isFunction } from 'es-toolkit'
-import { get, isObject } from 'es-toolkit/compat'
+import { get, isEmpty, isObject } from 'es-toolkit/compat'
 import numeral from 'numeral'
 import { pinyin } from 'pinyin-pro'
-import { createSSRApp, EmitFn, Reactive, Ref, ref, useSlots, VNode, watch } from 'vue'
+import { computed, createSSRApp, EmitFn, Reactive, Ref, ref, useSlots, VNode, watch } from 'vue'
 import { renderToString } from 'vue/server-renderer'
-import { TableProps, TableSlots, TableTextConfig } from './index.type'
+import {
+    ownBtnProps,
+    OwnPopoverProps,
+    ownPopoverProps,
+    TableProps,
+    TableSlots,
+    TableTextConfig,
+} from './index.type'
 import { TableUseCUFormItemProps, TableUseCUReturnOptions } from './useCU'
 import { TableDescItemsProps } from './useDetail'
 
 dayjs.extend(customParseFormat)
 
-const excludesSortColumnTypes = ['index', 'control']
+const excludesBaseColumns = ['index', 'control']
+const excludesSortColumnTypes = [...excludesBaseColumns]
+const exculdesFilterColumnTypes = [...excludesBaseColumns]
 export const formatterObjValueWithDate = (
     obj: { [key: string]: any },
     columns: TableColumnProps[]
@@ -52,6 +66,7 @@ export interface TableColumnProps extends ATableColumnProps {
     formItemProps?: TableUseCUFormItemProps
     descItemProps?: TableDescItemsProps
     columnsEllipsis?: boolean
+    filterPlaceholder?: string
 }
 
 export type TableColumnCustomRenderArgs = {
@@ -110,6 +125,7 @@ export interface TableUseColumnsProps {
     onGetRowDetail?: (res: AxiosResponse) => Promise<{
         [key: string]: any
     }>
+    columnSettingBtn?: ownPopoverProps
     [key: string]: any
 }
 
@@ -127,6 +143,7 @@ const computedTitleWidth = (title: string): number => {
     return title?.length ? title?.length * Math.floor(rootFontSize) : rootFontSize * 6
 }
 
+type TransedColumns = ATableColumnProps & { show?: boolean; filterPlaceholder?: string }
 export default (props: TableUseColumnsProps) => {
     const {
         apis,
@@ -161,17 +178,20 @@ export default (props: TableUseColumnsProps) => {
         detailsDataSource,
         detailBackFillByGetDetail,
         tableTextConfig,
+        columnSettingBtn,
     } = $(props)
     const _cuModalLoading = $$(cuModalLoading)
     const _detailModalLoading = $$(detailModalLoading)
     const columnsTitleString = ref([])
-    const resColumns = ref([])
+    const transedColumns = ref([])
+
+    const resColumns = computed(() => transedColumns?.value?.filter?.(({ show }) => show))
 
     const slots = useSlots()
     const transformColumns = (
         columns: TableColumnProps[],
         titleArr: string[]
-    ): ATableColumnProps[] => {
+    ): TransedColumns[] => {
         const tempColumns = cloneDeep(columns)
         if (indexColumn) {
             tempColumns?.unshift?.({
@@ -213,10 +233,12 @@ export default (props: TableUseColumnsProps) => {
                 hidden,
                 fixed,
                 sorter,
+                filterPlaceholder,
+                customFilterDropdown = false,
                 ...o
             } = col
             if (hidden) return
-            const resCol: ATableColumnProps = {
+            const resCol: TransedColumns = {
                 title: (
                     <span
                         class={[
@@ -231,8 +253,11 @@ export default (props: TableUseColumnsProps) => {
                 align: columnsAlign,
                 fixed,
                 ellipsis: columnsEllipsis ?? ellipsis,
+                filterPlaceholder: filterPlaceholder || `请输入${title}`,
                 defaultSortOrder: 'ascend',
                 sorter: localSort(col),
+                customFilterDropdown:
+                    customFilterDropdown ?? !exculdesFilterColumnTypes?.includes(col?.type),
                 customRender: (...args) =>
                     getCustomRender(...args, col, pagination, {
                         columnsTimeFormat,
@@ -258,6 +283,7 @@ export default (props: TableUseColumnsProps) => {
                         editRow,
                         openRowDetails,
                     }),
+                show: true,
                 ...o,
             }
             if (fixed === 'left') {
@@ -343,9 +369,42 @@ export default (props: TableUseColumnsProps) => {
     const updateColumns = async (columns: TableColumnProps[]) => {
         const title_arr = await updateColumnsTitleString(columns)
         const arr = transformColumns(columns, title_arr)
-        resColumns.value = arr
+        transedColumns.value = arr
     }
 
+    const ColumnSettingBtn = (props: OwnPopoverProps) => {
+        const { children, buttonProps, ...popverProps } = !isEmpty(props)
+            ? props
+            : ((columnSettingBtn || {}) as OwnPopoverProps)
+
+        const content = (
+            <Flex vertical>
+                {transedColumns.value?.map?.((col: TableColumnProps & { show }, i) => {
+                    const { dataIndex, title } = col
+                    return (
+                        <Space key={JSON.stringify(dataIndex) || i}>
+                            <Checkbox v-model:checked={col.show} />
+                            <span>{title}</span>
+                        </Space>
+                    )
+                })}
+            </Flex>
+        )
+
+        return (
+            <Popover
+                placement="leftTop"
+                arrow={false}
+                title="列配置"
+                {...popverProps}
+                content={content}
+            >
+                <Button class="flex justify-center items-center" {...buttonProps}>
+                    {children}
+                </Button>
+            </Popover>
+        )
+    }
     watch(
         [() => columns],
         () => {
@@ -354,7 +413,7 @@ export default (props: TableUseColumnsProps) => {
         { immediate: true }
     )
 
-    return { resColumns }
+    return { resColumns, ColumnSettingBtn }
 }
 
 const getCustomRender = (
@@ -469,10 +528,8 @@ const localSort = ({ type, dataIndex }: TableColumnProps) => {
         const aVal = get(a, dataIndex)
         const bVal = get(b, dataIndex)
 
-        // return false
         return compareValues(aVal, bVal)
     }
-    // return false
 }
 const possibleFormats = [
     'YYYY-MM-DD',

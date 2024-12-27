@@ -2,11 +2,11 @@ import { Button, ButtonProps, Dropdown, Menu, message } from 'ant-design-vue'
 import { AxiosResponse } from 'axios'
 import dayjs from 'dayjs'
 import { isFunction } from 'es-toolkit'
-import { get } from 'es-toolkit/compat'
+import { get, isEmpty } from 'es-toolkit/compat'
 import JsFileDownloader, { OptionalParams } from 'js-file-downloader'
 import mime from 'mime'
 import { ref } from 'vue'
-import { ownBtnProps, ownDropDownProps, OwnDropProps, TableProps } from './index.type'
+import { OwnBtnProps, ownBtnProps, ownDropDownProps, OwnDropProps, TableProps } from './index.type'
 import { LoadingOutlined } from '@ant-design/icons-vue'
 export type ExportResponse = {
     thumbUrl: string
@@ -135,29 +135,31 @@ export default (props: TableUseExportProps) => {
         }
     }
 
-    const ExportCurrentPageBtn = (props?: ButtonProps) => {
-        const { children, ...btnProps } = exportCurrentPageBtn || {}
+    const ExportCurrentPageBtn = (props?: OwnBtnProps) => {
+        const { children, ...btnProps } = !isEmpty(props)
+            ? props
+            : ((exportCurrentPageBtn || {}) as OwnBtnProps)
 
         return (
             <Button
                 disabled={exportCurrentPageBtnLoading.value}
                 loading={exportCurrentPageBtnLoading.value}
                 {...btnProps}
-                {...props}
             >
                 {children}
             </Button>
         )
     }
-    const ExportAllBtn = (props?: ButtonProps) => {
-        const { children, ...btnProps } = exportAllBtn || {}
+    const ExportAllBtn = (props?: OwnBtnProps) => {
+        const { children, ...btnProps } = !isEmpty(props)
+            ? props
+            : ((exportAllBtn || {}) as OwnBtnProps)
 
         return (
             <Button
                 disabled={exportAllBtnLoading.value}
                 loading={exportAllBtnLoading.value}
                 {...btnProps}
-                {...props}
             >
                 {children}
             </Button>
@@ -167,8 +169,11 @@ export default (props: TableUseExportProps) => {
     const onMenuClick = ({ key }) => {
         exportFile(key)
     }
-    const ExportDropDown = () => {
-        const { children, buttonProps, ...dropProps } = exportDropdown || {}
+    const ExportDropDown = (props?: OwnDropProps) => {
+        const { children, buttonProps, ...dropProps } = !isEmpty(props)
+            ? props
+            : ((exportDropdown || {}) as OwnDropProps)
+
         const { children: currentPageChildren } = exportCurrentPageBtn || {}
         const { children: allPageChildren } = exportAllBtn || {}
 

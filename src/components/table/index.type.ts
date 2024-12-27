@@ -1,38 +1,50 @@
-import { TableProps as ATableProps, ButtonProps, FormProps, PaginationProps } from 'ant-design-vue'
+import {
+    TableProps as ATableProps,
+    ButtonProps,
+    FormProps,
+    PaginationProps,
+    PopoverProps,
+} from 'ant-design-vue'
 
+import { DropdownProps } from 'ant-design-vue/es/dropdown'
 import { ColumnType } from 'ant-design-vue/es/table'
 import { RenderExpandIconProps } from 'ant-design-vue/es/vc-table/interface'
 import { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { cloneDeep } from 'es-toolkit'
 import { isArray, isObject } from 'es-toolkit/compat'
-import { inject, Ref, SetupContext, VNode } from 'vue'
+import { Ref, SetupContext, VNode } from 'vue'
+import { JSX } from 'vue/jsx-runtime'
+import { TableUseAutoSizeProps } from './useAutoSize'
 import { TableColumnCustomRenderArgs, TableColumnProps, TableUseColumnsProps } from './useColumns'
 import { TableUseCUFormProps } from './useCU'
 import { TableUseDataSourceProps } from './useDataSource'
 import { TableUseDetailProps } from './useDetail'
+import { TableUseExportProps } from './useExport'
+import { TableUseImportProps } from './useImport'
 import {
     TableQueryFormInstance,
     TableQueryFormItemProps,
     TableQueryFormProps,
 } from './useQueryForm'
-import { JSX } from 'vue/jsx-runtime'
-import { arrayType, booleanType, functionType, objectType } from '@src/tools/type'
-import { TableUseExportProps } from './useExport'
-import { TableUseImportProps } from './useImport'
-import { DropdownButtonProps, DropdownProps } from 'ant-design-vue/es/dropdown'
-import { TableUseAutoSizeProps } from './useAutoSize'
 
 type TableFieldNames = string | string[]
 
 export interface OwnBtnProps extends ButtonProps {
-    children?: string | VNode | JSX.Element
+    children?: JSX.Element[] | VNode[] | string
 }
 export interface OwnDropProps extends DropdownProps {
-    children?: string | VNode | JSX.Element
+    children?: JSX.Element[] | VNode[] | string
+    buttonProps?: ButtonProps
+}
+
+export interface OwnPopoverProps extends Omit<PopoverProps, 'children'> {
+    children?: JSX.Element[] | VNode[] | string
     buttonProps?: ButtonProps
 }
 export type ownBtnProps = false | OwnBtnProps
 export type ownDropDownProps = false | OwnDropProps
+export type ownPopoverProps = false | OwnPopoverProps
+
 export type TablePropsApi = (
     params?: AxiosRequestConfig['params'],
     config?: AxiosRequestConfig
@@ -76,7 +88,10 @@ export type ciesBtnsVNode = Ref<
     Partial<{
         CreateBtn: VNode | JSX.Element
         ImportBtn: VNode | JSX.Element
-        ExportBtn: VNode | JSX.Element
+        ExportDropDown: VNode | JSX.Element
+        ExportCurrentPageBtn: VNode | JSX.Element
+        ExportAllBtn: VNode | JSX.Element
+        ColumnSettingBtn: VNode | JSX.Element
     }>
 >
 
@@ -96,7 +111,7 @@ export type queryFormSlotOptions = {
     SubmitBtn: VNode | JSX.Element
     ResetBtn: VNode | JSX.Element
     QueryFormInstance: TableQueryFormInstance
-}
+} & ciesBtnsVNode
 export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 'scroll'> {
     scroll?: {
         x: true | string | number
@@ -104,6 +119,7 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     }
     full?: boolean // 高度100%
     tableTextConfig?: TableTextConfig
+    columnSettingBtn?: TableUseColumnsProps['columnSettingBtn']
     /**
      * 额外的请求参数
      * 会覆盖重名的参数
@@ -186,6 +202,9 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     }
     queryFormResetBtn?: TableQueryFormProps['queryFormResetBtn']
     queryFormResetBtnProps?: TableQueryFormProps['queryFormResetBtnProps'] & { [key: string]: any }
+    queryFormControlFormItemProps?: TableQueryFormProps['queryFormControlFormItemProps'] & {
+        [key: string]: any
+    }
     queryFormSubmitWithReset?: TableQueryFormProps['queryFormSubmitWithReset']
     queryFormTimeFormat?: TableQueryFormProps['queryFormTimeFormat']
 

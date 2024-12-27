@@ -21,7 +21,7 @@
         :params="params"
         @cu-form-model-change="onModelChange"
         @source-success="onsuccess"
-        :control-column="false"
+        :cies-btns-in-query-form="true"
     >
     </Table>
 </template>
@@ -125,7 +125,7 @@ const columns = computed((): TableProps['columns'] => {
         {
             title: '合同名称',
             dataIndex: 'name',
-            width: 220,
+            width: 240,
             fixed: 'left',
             formItemProps: {
                 sort: 2,

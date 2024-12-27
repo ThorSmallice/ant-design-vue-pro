@@ -2,8 +2,9 @@ import { Button, message, Upload, UploadProps } from 'ant-design-vue'
 import { UploadRequestOption } from 'ant-design-vue/es/vc-upload/interface'
 import { isFunction } from 'es-toolkit'
 import { ref } from 'vue'
-import { ownBtnProps, TableProps } from './index.type'
+import { OwnBtnProps, ownBtnProps, TableProps } from './index.type'
 import { AxiosResponse } from 'axios'
+import { isEmpty } from 'es-toolkit/compat'
 
 export interface ImportFileParmas {
     file: File
@@ -64,11 +65,17 @@ export default (props: TableUseImportProps) => {
 
         importBtnLoading.value = false
     }
-    const ImportBtn = () => {
-        const { children, ...btnProps } = importBtn || {}
+    const ImportBtn = (props?: OwnBtnProps) => {
+        const { children, ...btnProps } = !isEmpty(props)
+            ? props
+            : ((importBtn || {}) as OwnBtnProps)
 
         return (
-            <Upload showUploadList={false} customRequest={importFile} {...importUploadProps}>
+            <Upload
+                showUploadList={false}
+                customRequest={importFile}
+                {...(importUploadProps || {})}
+            >
                 <Button
                     disabled={importBtnLoading.value}
                     loading={importBtnLoading.value}

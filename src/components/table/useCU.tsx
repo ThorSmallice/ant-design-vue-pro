@@ -14,16 +14,17 @@ import {
     Skeleton,
 } from 'ant-design-vue'
 import { cloneDeep, isFunction } from 'es-toolkit'
-import { computed, isRef, Reactive, reactive, Ref, ref, toRaw, VNode, watch } from 'vue'
+import { isEmpty } from 'es-toolkit/compat'
+import { computed, Reactive, reactive, Ref, ref, toRaw, VNode, watch } from 'vue'
 import { JSX } from 'vue/jsx-runtime'
 import { ControlMapProps, FormItemControl } from './control'
-import { ownBtnProps, TableProps, TableTextConfig } from './index.type'
-import { FormInstance, UseFormOptions } from './useQueryForm'
+import { OwnBtnProps, ownBtnProps, TableProps, TableTextConfig } from './index.type'
+import { FormInstance } from './useQueryForm'
 
 export interface TableCUFormInstance extends FormInstance {}
 
 export interface TableUseCUReturnOptions {
-    CreateBtn: () => JSX.Element
+    CreateBtn: (props?: OwnBtnProps) => JSX.Element
     CUModalForm: () => JSX.Element
     cuFormModel: Reactive<{ values: any }>
     cuModalLoading: Ref<boolean>
@@ -179,8 +180,11 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         cuFormModel.values = cloneDeep(initValues)
         cuModalOpen.value = false
     }
-    const CreateBtn = () => {
-        const { children, ...btnProps } = createBtn || {}
+    const CreateBtn = (props?: OwnBtnProps) => {
+        const { children, ...btnProps } = !isEmpty(props)
+            ? props
+            : ((createBtn || {}) as OwnBtnProps)
+
         return (
             <Button class="flex items-center" onClick={() => openCUModalForm(false)} {...btnProps}>
                 {children}
