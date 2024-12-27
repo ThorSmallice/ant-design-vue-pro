@@ -6,7 +6,7 @@ import { merge } from 'es-toolkit/compat'
 export interface TableUseAutoSizeProps {
     scroll: TableProps['scroll']
     wrapContainer: Ref<HTMLElement>
-
+    source?: any[]
     minScollHeight?: number
     autoSizeConfig?: Partial<{
         wait?: number
@@ -21,6 +21,7 @@ export interface TableUseAutoSizeProps {
 const useAutoSize = (props: TableUseAutoSizeProps) => {
     const {
         scroll,
+        source,
         wrapContainer,
         autoSizeConfig,
         subtractEleClasses,
@@ -38,6 +39,7 @@ const useAutoSize = (props: TableUseAutoSizeProps) => {
         )
     })
 
+    const tbodyRegionHeight = ref(0)
     watch(
         y,
         (cur, pre) => {
@@ -50,7 +52,7 @@ const useAutoSize = (props: TableUseAutoSizeProps) => {
         }
     )
     const onResize = debounce(
-        async (entries) => {
+        async (entries?: any) => {
             await nextTick()
             if (!wrapContainer) return
             const wrapStyles = getComputedStyle(wrapContainer)
@@ -76,7 +78,12 @@ const useAutoSize = (props: TableUseAutoSizeProps) => {
 
             const maxHeight = Math?.max?.(height, minScollHeight)
 
-            y.value = tableRealHeight > maxHeight ? Math?.max?.(height, minScollHeight) : null
+            if (y.value === maxHeight && maxHeight === tbodyRegionHeight.value) {
+                console.warn('与更新前高度一致,已阻止高度重置!')
+                return
+            }
+            tbodyRegionHeight.value = tableRealHeight
+            y.value = tableRealHeight > maxHeight ? maxHeight : null
         },
         resizeConfig?.value?.wait,
         resizeConfig?.value?.options
@@ -106,6 +113,14 @@ const useAutoSize = (props: TableUseAutoSizeProps) => {
         wrapContainer && resizeObserver?.value?.disconnect()
     })
 
+    watch(
+        () => source,
+        (cur, pre) => {
+            if (cur?.length === pre?.length) return
+            onResize?.()
+            console.log(cur, pre)
+        }
+    )
     return {
         x,
         y,

@@ -19,15 +19,15 @@
             </template>
             <template v-else>
                 <Flex justify="space-between">
-                    <Space>
+                    <Flex :gap="8">
                         <CreateBtn></CreateBtn>
                         <ImportBtn></ImportBtn>
                         <ExportDropDown></ExportDropDown>
                         <DownloadTemplateBtn></DownloadTemplateBtn>
-                    </Space>
-                    <Space>
+                    </Flex>
+                    <Flex>
                         <ColumnSettingBtn></ColumnSettingBtn>
-                    </Space>
+                    </Flex>
                 </Flex>
             </template>
         </div>
@@ -204,25 +204,6 @@ const {
     ...o
 } = defineProps<TableProps>()
 
-const { x, y } = $$(
-    useAutoSize({
-        scroll,
-        autoSizeConfig,
-        minScollHeight,
-        wrapContainer: tableWrapRef,
-        subtractEleClasses: [
-            '.ant-table-title',
-            '.ant-table-thead',
-            '.ant-table-footer',
-            '.ant-table-summary',
-        ],
-        tableRealRegionClasses: ['.ant-table-tbody'],
-    })
-)
-const resScroll = computed((): { x: any; y: any } => {
-    return { x: x.value, y: y.value }
-})
-
 const ciesBtnsVNode = ref({})
 
 const { QueryForm, QueryFormInstance, queryFormParams } = $$(
@@ -391,6 +372,26 @@ const { resColumns, ColumnSettingBtn }: any = $$(
 
 const Pagination = $$(usePagination({ pagination, total, ownPaginProps }))
 
+const { x, y } = $$(
+    useAutoSize({
+        scroll,
+        autoSizeConfig,
+        minScollHeight,
+        wrapContainer: tableWrapRef,
+        subtractEleClasses: [
+            '.ant-table-title',
+            '.ant-table-thead',
+            '.ant-table-footer',
+            '.ant-table-summary',
+        ],
+        tableRealRegionClasses: ['.ant-table-tbody'],
+        source,
+    })
+)
+const resScroll = computed((): { x: any; y: any } => {
+    return { x: x.value, y: y.value }
+})
+
 watch(
     [
         CreateBtn,
@@ -416,6 +417,7 @@ watch(
         immediate: true,
     }
 )
+
 defineExpose({
     source,
     updateSource,

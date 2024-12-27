@@ -60,7 +60,7 @@ axios.interceptors.response.use(async (res) => {
     return res
 })
 const getContractManagePageApi = async (params?: any, config?: any) =>
-    await axios.get('/admin-api/wms/contract/page', { params })
+    await axios.get('/admin-api/wms/task-plan/page', { params })
 
 const exportApi = async (params) => {
     return axios.get('/admin-api/wms/contract/export-excel', { params, responseType: 'blob' })
