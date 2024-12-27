@@ -9,13 +9,12 @@ import {
     FormProps,
     Row,
     RowProps,
-    Space,
 } from 'ant-design-vue'
 import { FieldNamesType } from 'ant-design-vue/es/cascader'
 import { Callbacks, RuleError, RuleObject } from 'ant-design-vue/es/form/interface'
 import { Props, ValidateInfo, validateInfos, validateOptions } from 'ant-design-vue/es/form/useForm'
 import { isFunction, omit } from 'es-toolkit'
-import { computed, h, Reactive, reactive, ref, Ref, unref, useSlots, VNode } from 'vue'
+import { computed, h, Reactive, reactive, ref, Ref, useSlots, VNode } from 'vue'
 import { ControlMapProps, FormItemControl } from './control'
 import { ciesBtnsVNode, OwnBtnProps } from './index.type'
 import { TableUseCUReturnOptions } from './useCU'
@@ -164,6 +163,7 @@ const useQueryForm = (props: TableQueryFormProps) => {
     const ExportCurrentPageBtn = $(computed(() => h(ciesBtnsVNode?.ExportCurrentPageBtn)))
     const ExportAllBtn = $(computed(() => h(ciesBtnsVNode?.ExportAllBtn)))
     const ColumnSettingBtn = $(computed(() => h(ciesBtnsVNode?.ColumnSettingBtn)))
+    const DownloadTemplateBtn = $(computed(() => h(ciesBtnsVNode?.DownloadTemplateBtn)))
 
     const QueryForm = () => (
         <Form
@@ -223,6 +223,7 @@ const useQueryForm = (props: TableQueryFormProps) => {
                         ExportCurrentPageBtn,
                         ExportAllBtn,
                         ColumnSettingBtn,
+                        DownloadTemplateBtn,
                     })
                 ) : (
                     <Form.Item class={['ml-2']} {...queryFormControlFormItemProps}>
@@ -238,12 +239,14 @@ const useQueryForm = (props: TableQueryFormProps) => {
                                         ExportCurrentPageBtn,
                                         ExportAllBtn,
                                         ColumnSettingBtn,
+                                        DownloadTemplateBtn,
                                     })
                                 ) : (
                                     <>
                                         {CreateBtn}
                                         {ImportBtn}
                                         {ExportDropDown}
+                                        {DownloadTemplateBtn}
                                     </>
                                 )
                             ) : null}

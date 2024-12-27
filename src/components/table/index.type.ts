@@ -26,6 +26,7 @@ import {
     TableQueryFormItemProps,
     TableQueryFormProps,
 } from './useQueryForm'
+import { TableUseDownloadTemplateProps } from './useDownloadTemplate'
 
 type TableFieldNames = string | string[]
 
@@ -53,7 +54,7 @@ export type TablePropsApi = (
 export type RequestParams = {
     [key: string]: any
 }
-export type RequestParamsFormatter = (params: RequestParams) => RequestParams
+export type RequestParamsFormatter = (params: RequestParams | any) => RequestParams | any
 export type CRUDRequestFinish = (res: AxiosResponse, info?: any) => boolean | void
 export type ParamsFormatter = (
     vals:
@@ -81,6 +82,9 @@ export type TableTextConfig = Partial<{
         exportError: string
         importSuccess: string
         importError: string
+        downloadTemplateSuccess: string
+        downloadTemplateError: string
+
         [key: string]: any
     }
 }>
@@ -92,6 +96,7 @@ export type ciesBtnsVNode = Ref<
         ExportCurrentPageBtn: VNode | JSX.Element
         ExportAllBtn: VNode | JSX.Element
         ColumnSettingBtn: VNode | JSX.Element
+        DownloadTemplateBtn: VNode | JSX.Element
     }>
 >
 
@@ -156,6 +161,7 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
         delete: TablePropsApi
         export: TablePropsApi
         import: TablePropsApi
+        template: TablePropsApi
     }>
     requestParamsFormatter?: null | RequestParamsFormatter
     onSourceSuccess?: null | TableUseDataSourceProps['onSourceSuccess']
@@ -179,6 +185,7 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
         total: TableFieldNames //  apis.list 返回值中获取数据总数的field
         detail: TableFieldNames
         export: TableFieldNames
+        template: TableFieldNames
     }>
 
     /**
@@ -250,6 +257,16 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     importFileParamsFormat?: null | TableUseImportProps['importFileParamsFormat']
     onImportSuccess?: null | TableUseImportProps['onImportSuccess']
     onImportError?: null | TableUseImportProps['onImportError']
+
+    downloadTemplateBtn?: TableUseDownloadTemplateProps['downloadTemplateBtn']
+    templateFileName?: TableUseDownloadTemplateProps['templateFileName']
+    downloadTempalteParamsFormat?:
+        | null
+        | TableUseDownloadTemplateProps['downloadTempalteParamsFormat']
+
+    onTemplateRequestSuccess?: null | TableUseDownloadTemplateProps['onTemplateRequestSuccess']
+    onTemplateDownloadSuccess?: null | TableUseDownloadTemplateProps['onTemplateDownloadSuccess']
+    onTemplateDownloadError?: null | TableUseDownloadTemplateProps['onTemplateDownloadError']
 
     autoSizeConfig?: TableUseAutoSizeProps['autoSizeConfig']
     minScollHeight?: TableUseAutoSizeProps['minScollHeight']

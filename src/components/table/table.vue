@@ -14,17 +14,19 @@
                     :ExportCurrentPageBtn="ExportCurrentPageBtn"
                     :ExportAllBtn="ExportAllBtn"
                     :ColumnSettingBtn="ColumnSettingBtn"
+                    :DownloadTemplateBtn="DownloadTemplateBtn"
                 ></slot>
             </template>
             <template v-else>
                 <Flex justify="space-between">
                     <Space>
-                        <CreateBtn v-if="createBtn"></CreateBtn>
-                        <ImportBtn v-if="importBtn"></ImportBtn>
-                        <ExportDropDown v-if="exportDropdown"></ExportDropDown>
+                        <CreateBtn></CreateBtn>
+                        <ImportBtn></ImportBtn>
+                        <ExportDropDown></ExportDropDown>
+                        <DownloadTemplateBtn></DownloadTemplateBtn>
                     </Space>
                     <Space>
-                        <ColumnSettingBtn v-if="columnSettingBtn"></ColumnSettingBtn>
+                        <ColumnSettingBtn></ColumnSettingBtn>
                     </Space>
                 </Flex>
             </template>
@@ -61,8 +63,8 @@
 
 <script setup lang="tsx" async>
 import config from '@config/index'
-import { Table as ATable, Button, Flex, Input, Space, TableColumnProps } from 'ant-design-vue'
-import { computed, reactive, ref, toRaw, unref, useTemplateRef, watch } from 'vue'
+import { Table as ATable, Flex, Space, TableColumnProps } from 'ant-design-vue'
+import { computed, reactive, ref, toRaw, watch } from 'vue'
 import { ATableSlotsWhiteList, TableProps, TableSlots } from './index.type'
 import useAutoSize from './useAutoSize'
 import useColumns from './useColumns'
@@ -74,7 +76,7 @@ import useImport from './useImport'
 import usePagination from './usePagination'
 import useParams from './useParams'
 import useQueryForm from './useQueryForm'
-import { SearchOutlined } from '@ant-design/icons-vue'
+import useDownloadTemplate from './useDownloadTemplate'
 
 defineOptions({
     name: 'DbTable',
@@ -190,6 +192,13 @@ const {
     onImportError = config.table.onImportError,
     showHeader = null,
 
+    templateFileName,
+    downloadTemplateBtn = config.table.downloadTemplateBtn,
+    downloadTempalteParamsFormat = config.table.downloadTempalteParamsFormat,
+    onTemplateRequestSuccess = config.table.onTemplateRequestSuccess,
+    onTemplateDownloadSuccess = config.table.onTemplateDownloadSuccess,
+    onTemplateDownloadError = config.table.onTemplateDownloadError,
+
     autoSizeConfig = config.table.autoSizeConfig,
     minScollHeight = config.table.minScollHeight,
     ...o
@@ -254,6 +263,20 @@ const { resultParams, pagination } = $$(
     })
 )
 
+const { DownloadTemplateBtn } = $$(
+    useDownloadTemplate({
+        apis,
+        fieldsNames,
+        templateFileName,
+        downloadTemplateBtn,
+        downloadTempalteParamsFormat,
+        onTemplateRequestSuccess,
+        onTemplateDownloadSuccess,
+        onTemplateDownloadError,
+        resultParams,
+        tableTextConfig,
+    })
+)
 const { ExportDropDown, ExportCurrentPageBtn, ExportAllBtn } = $$(
     useExport({
         apis,
@@ -369,7 +392,15 @@ const { resColumns, ColumnSettingBtn }: any = $$(
 const Pagination = $$(usePagination({ pagination, total, ownPaginProps }))
 
 watch(
-    [CreateBtn, ImportBtn, ExportDropDown, ExportCurrentPageBtn, ExportAllBtn, ColumnSettingBtn],
+    [
+        CreateBtn,
+        ImportBtn,
+        ExportDropDown,
+        ExportCurrentPageBtn,
+        ExportAllBtn,
+        ColumnSettingBtn,
+        DownloadTemplateBtn,
+    ],
     () => {
         ciesBtnsVNode.value = {
             CreateBtn,
@@ -378,6 +409,7 @@ watch(
             ExportCurrentPageBtn,
             ExportAllBtn,
             ColumnSettingBtn,
+            DownloadTemplateBtn,
         }
     },
     {

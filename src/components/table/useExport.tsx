@@ -53,6 +53,8 @@ export default (props: TableUseExportProps) => {
     const exportCurrentPageBtnLoading = ref(false)
     const exportAllBtnLoading = ref(false)
     const exportFile = async (type: 'currentPage' | 'allPage' = 'currentPage') => {
+        if (!apis?.export) return console.warn('请传递apis.export')
+
         let exportDataParams: any = null
         if (type === 'currentPage') {
             exportCurrentPageBtnLoading.value = true
@@ -84,7 +86,7 @@ export default (props: TableUseExportProps) => {
 
         await apis
             ?.export?.(resParams)
-            .then(async (res) => {
+            ?.then(async (res) => {
                 const opt = isFunction(onExportRequestSuccess)
                     ? await onExportRequestSuccess?.(res)
                     : transFormBlob(res)
@@ -108,14 +110,14 @@ export default (props: TableUseExportProps) => {
                 }
                 message.success(tableTextConfig?.message?.exportSuccess)
             })
-            .catch(async (error) => {
+            ?.catch(async (error) => {
                 if (isFunction(onExportError) && (await onExportError?.(error)) === false) {
                     return
                 }
 
                 message.error(tableTextConfig?.message?.exportError)
             })
-            .finally(() => {
+            ?.finally(() => {
                 if (type === 'currentPage') {
                     exportCurrentPageBtnLoading.value = false
                 } else {
@@ -144,6 +146,7 @@ export default (props: TableUseExportProps) => {
             <Button
                 disabled={exportCurrentPageBtnLoading.value}
                 loading={exportCurrentPageBtnLoading.value}
+                onClick={() => exportFile('currentPage')}
                 {...btnProps}
             >
                 {children}
@@ -159,6 +162,7 @@ export default (props: TableUseExportProps) => {
             <Button
                 disabled={exportAllBtnLoading.value}
                 loading={exportAllBtnLoading.value}
+                onClick={() => exportFile('allPage')}
                 {...btnProps}
             >
                 {children}
@@ -170,6 +174,7 @@ export default (props: TableUseExportProps) => {
         exportFile(key)
     }
     const ExportDropDown = (props?: OwnDropProps) => {
+        if (!exportDropdown || !apis.export) return null
         const { children, buttonProps, ...dropProps } = !isEmpty(props)
             ? props
             : ((exportDropdown || {}) as OwnDropProps)

@@ -1,5 +1,6 @@
 import { TableProps } from '@src/components'
 import {
+    CloudDownloadOutlined,
     ExportOutlined,
     ImportOutlined,
     PlusOutlined,
@@ -24,6 +25,7 @@ export const TableConfig: TableProps = {
         total: 'total',
         detail: 'data',
         export: 'data',
+        template: 'data',
     },
     onSourceSuccess: null,
     onSourceError: null,
@@ -42,6 +44,10 @@ export const TableConfig: TableProps = {
     exportFileParamsFormat: null,
     onImportSuccess: null,
     onImportError: null,
+    downloadTempalteParamsFormat: null,
+    onTemplateRequestSuccess: null,
+    onTemplateDownloadSuccess: null,
+    onTemplateDownloadError: null,
 
     ownPagin: true,
     ownPaginProps: {
@@ -132,6 +138,8 @@ export const TableConfig: TableProps = {
             exportError: '导出失败!',
             importSuccess: '导入成功!',
             importError: '导入失败!',
+            downloadTemplateSuccess: '模板下载成功!',
+            downloadTemplateError: '模板下载失败!',
         },
     },
 
@@ -163,6 +171,10 @@ export const TableConfig: TableProps = {
     },
     exportAllBtn: {
         children: '导出全部',
+    },
+    downloadTemplateBtn: {
+        children: '下载模板',
+        icon: <CloudDownloadOutlined />,
     },
     columnSettingBtn: {
         children: '',

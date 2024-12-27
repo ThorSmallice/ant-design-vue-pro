@@ -181,6 +181,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         cuModalOpen.value = false
     }
     const CreateBtn = (props?: OwnBtnProps) => {
+        if (!createBtn || !apis.create) return null
         const { children, ...btnProps } = !isEmpty(props)
             ? props
             : ((createBtn || {}) as OwnBtnProps)

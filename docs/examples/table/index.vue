@@ -16,11 +16,14 @@
             list: getContractManagePageApi,
             export: exportApi,
             import: importApi,
+            template: templateApi,
         }"
         @before-row-edit-back-fill="beforeEdit"
         :params="params"
         @cu-form-model-change="onModelChange"
         @source-success="onsuccess"
+        :downloadTempalteParamsFormat="downloadTempalteParamsFormat"
+        templateFileName="模板.xlsx"
         :cies-btns-in-query-form="true"
     >
     </Table>
@@ -42,6 +45,11 @@ const onsuccess = async (res) => {
         total: res?.data?.data?.total,
     }
 }
+const downloadTempalteParamsFormat = ({ companyId }) => {
+    return {
+        companyId,
+    }
+}
 const axios = request.create()
 axios.interceptors.request.use(async (req) => {
     req.headers['Authorization'] = 'Bearer 14724419e5ba41efaae64d91bed10d7b'
@@ -56,6 +64,9 @@ const getContractManagePageApi = async (params?: any, config?: any) =>
 
 const exportApi = async (params) => {
     return axios.get('/admin-api/wms/contract/export-excel', { params, responseType: 'blob' })
+}
+const templateApi = async (params) => {
+    return axios.get('/admin-api/basic/config/template/get', { params, responseType: 'blob' })
 }
 
 const importApi = async (data) => {
