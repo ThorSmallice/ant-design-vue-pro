@@ -309,6 +309,8 @@ export type TableSlots = {
         ExportDropDown: VNode
         ExportCurrentPageBtn: VNode
         ExportAllBtn: VNode
+        ColumnSettingBtn: VNode
+        DownloadTemplateBtn: VNode
     }) => VNode | JSX.Element
 }
 export const ATableSlotsWhiteList = [
