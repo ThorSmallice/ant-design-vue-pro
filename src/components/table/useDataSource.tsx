@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios'
 import { get } from 'es-toolkit/compat'
 import { isFunction } from 'es-toolkit/predicate'
-import { EmitFn, ref, watch } from 'vue'
+import { EmitFn, onBeforeUnmount, ref, watch } from 'vue'
 import { RequestParams, TableProps } from './index.type'
 export interface TableSourceResult {
     total: number
@@ -20,21 +20,21 @@ export interface TableUseDataSourceProps {
     dataSource?: any
 }
 
-let controller: AbortController
-
 export default (props: TableUseDataSourceProps) => {
     const { api, fieldsNames, dataSource, params, onSourceSuccess, onSourceError, emits } = $(props)
 
     const source = ref([])
     const loading = ref(false)
     const total = ref(0)
+    let controller: AbortController
 
     const getSource = async (params: RequestParams) => {
         controller?.abort?.()
         loading.value = true
+
         controller = new AbortController()
         api?.list?.(params, {
-            signal: controller.signal,
+            signal: controller?.signal,
         })
             ?.then(async (res: AxiosResponse) => {
                 const res_trans = await new Promise(async (resolve, reject) => {
@@ -78,6 +78,9 @@ export default (props: TableUseDataSourceProps) => {
             immediate: true,
         }
     )
+    onBeforeUnmount(() => {
+        controller?.abort?.()
+    })
     return {
         source,
         loading,

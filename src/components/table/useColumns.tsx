@@ -66,6 +66,7 @@ export interface TableColumnProps extends ATableColumnProps {
     formItemProps?: TableUseCUFormItemProps
     descItemProps?: TableDescItemsProps
     columnsEllipsis?: boolean
+    columnsSorter?: ATableColumnProps['sorter']
     filterPlaceholder?: string
 }
 
@@ -162,6 +163,7 @@ export default (props: TableUseColumnsProps) => {
         openCUModalForm,
         columnsTitleNoWrap,
         columnsEllipsis,
+        columnsSorter,
         cuFormModel,
         emits,
         cuModalLoading,
@@ -232,7 +234,7 @@ export default (props: TableUseColumnsProps) => {
                 width,
                 hidden,
                 fixed,
-                sorter,
+                sorter = columnsSorter,
                 filterPlaceholder,
                 customFilterDropdown = false,
                 ...o
@@ -358,6 +360,7 @@ export default (props: TableUseColumnsProps) => {
         _cuModalLoading.value = false
     }
     const updateColumnsTitleString = async (columns: TableColumnProps[]) => {
+        if (isEmpty(columns)) return []
         const str_arr = await Promise.all(
             columns?.map?.(async ({ title }) => await vnodeToString(title as VNode))
         )
@@ -521,9 +524,10 @@ const getCustomRender = (
     return text || emptyText || columnsEmptyText
 }
 
-const localSort = ({ type, dataIndex }: TableColumnProps) => {
+const localSort = ({ type, dataIndex, sorter }: TableColumnProps) => {
     if (excludesSortColumnTypes?.includes?.(type)) return false
-
+    if (sorter === false) return false
+    if (!isEmpty(sorter)) return sorter
     return (a: any, b: any, sortType: string) => {
         const aVal = get(a, dataIndex)
         const bVal = get(b, dataIndex)

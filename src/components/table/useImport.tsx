@@ -66,7 +66,7 @@ export default (props: TableUseImportProps) => {
         importBtnLoading.value = false
     }
     const ImportBtn = (props?: OwnBtnProps) => {
-        if (!importBtn || !apis.import) return null
+        if (!importBtn || !apis?.import) return null
         const { children, ...btnProps } = !isEmpty(props)
             ? props
             : ((importBtn || {}) as OwnBtnProps)

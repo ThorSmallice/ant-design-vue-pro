@@ -174,7 +174,7 @@ export default (props: TableUseExportProps) => {
         exportFile(key)
     }
     const ExportDropDown = (props?: OwnDropProps) => {
-        if (!exportDropdown || !apis.export) return null
+        if (!exportDropdown || !apis?.export) return null
         const { children, buttonProps, ...dropProps } = !isEmpty(props)
             ? props
             : ((exportDropdown || {}) as OwnDropProps)

@@ -87,6 +87,7 @@ export const TableConfig: TableProps = {
     controlColumnWidthProps: {},
     columnsAlign: 'left',
     columnsEllipsis: true,
+    columnsSorter: true,
     columnsTitleNoWrap: true,
     columnsTimeFormat: 'YYYY-MM-DD HH:mm:ss',
     columnsEmptyText: '-',

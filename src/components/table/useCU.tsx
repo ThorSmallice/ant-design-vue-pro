@@ -123,50 +123,47 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
 
     const submitCUModalForm = async () => {
         submitBtnLoading.value = true
-        formRef.value
-            .validate?.()
-            .then(async (vals) => {
-                let data: any = null
 
-                const cbres =
-                    isFunction(onBeforeCuFormSubmit) &&
-                    (await onBeforeCuFormSubmit?.(
-                        vals,
-                        JSON.parse(JSON.stringify(cuFormModel.values))
-                    ))
-                if (cbres === false) {
+        const vals = await formRef.value.validate?.()
+
+        let data: any = null
+
+        const cbres = isFunction(onBeforeCuFormSubmit)
+            ? await onBeforeCuFormSubmit?.(vals, JSON.parse(JSON.stringify(cuFormModel.values)))
+            : null
+
+        if (cbres === false) {
+            return
+        }
+        data = cbres || vals
+
+        await apis?.[cuModalFormIsEdit.value ? 'update' : 'create']?.(data)
+            .then((res) => {
+                cancelCUModalForm()
+                updateSource?.()
+                if (onCuFormSubmitSuccess?.(res, cuModalFormIsEdit.value) === false) {
                     return
                 }
-                data = cbres || vals
-
-                try {
-                    const res = await apis?.[cuModalFormIsEdit.value ? 'update' : 'create']?.(data)
-                    cancelCUModalForm()
-                    updateSource?.()
-                    if (onCuFormSubmitSuccess?.(res, cuModalFormIsEdit.value) === false) {
-                        return
-                    }
-                    message.success(
-                        `${
-                            cuModalFormIsEdit.value
-                                ? tableTextConfig?.message?.updateSuccess
-                                : tableTextConfig?.message?.createSuccess
-                        }`
-                    )
-                } catch (error) {
-                    if (onCuFormSubmitError?.(error, cuModalFormIsEdit.value) === false) {
-                        return
-                    }
-                    message.error(
-                        `${
-                            cuModalFormIsEdit.value
-                                ? tableTextConfig?.message?.updateError
-                                : tableTextConfig?.message?.createError
-                        }`
-                    )
-                }
+                message.success(
+                    `${
+                        cuModalFormIsEdit.value
+                            ? tableTextConfig?.message?.updateSuccess
+                            : tableTextConfig?.message?.createSuccess
+                    }`
+                )
             })
-            .catch(() => {})
+            .catch((error) => {
+                if (onCuFormSubmitError?.(error, cuModalFormIsEdit.value) === false) {
+                    return
+                }
+                message.error(
+                    `${
+                        cuModalFormIsEdit.value
+                            ? tableTextConfig?.message?.updateError
+                            : tableTextConfig?.message?.createError
+                    }`
+                )
+            })
             .finally(() => {
                 submitBtnLoading.value = false
             })
@@ -181,7 +178,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         cuModalOpen.value = false
     }
     const CreateBtn = (props?: OwnBtnProps) => {
-        if (!createBtn || !apis.create) return null
+        if (!createBtn || !apis?.create) return null
         const { children, ...btnProps } = !isEmpty(props)
             ? props
             : ((createBtn || {}) as OwnBtnProps)

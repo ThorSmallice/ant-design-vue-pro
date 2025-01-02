@@ -138,6 +138,7 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     columns?: TableColumnProps[]
     columnsTitleNoWrap?: TableUseColumnsProps['columnsTitleNoWrap']
     indexColumn?: TableUseColumnsProps['indexColumn']
+
     indexColumnWidth?: TableUseColumnsProps['indexColumnWidth']
     indexColumnProps?: TableUseColumnsProps['indexColumnProps']
     controlColumn?: TableUseColumnsProps['controlColumn']
@@ -145,6 +146,7 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     controlColumnWidthProps?: TableUseColumnsProps['controlColumnWidthProps']
 
     columnsAlign?: TableColumnProps['align']
+    columnsSorter?: TableColumnProps['columnsSorter']
     columnsEllipsis?: TableColumnProps['columnsEllipsis']
     columnsTimeFormat?: TableUseColumnsProps['columnsTimeFormat']
     columnsEmptyText?: TableUseColumnsProps['columnsEmptyText']

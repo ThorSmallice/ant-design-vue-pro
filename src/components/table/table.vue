@@ -147,6 +147,7 @@ const {
 
     columnsEllipsis = config.table.columnsEllipsis,
     columnsAlign = config.table.columnsAlign,
+    columnsSorter = config.table.columnsSorter,
     columnsTitleNoWrap = config.table.columnsTitleNoWrap,
     columnsTimeFormat = config.table.columnsTimeFormat,
     columnsEmptyText = config.table.columnsEmptyText,
@@ -340,6 +341,7 @@ const { resColumns, ColumnSettingBtn }: any = $$(
         columnsAlign,
         columnsEllipsis,
         columnsTitleNoWrap,
+        columnsSorter,
         pagination,
         columnsTimeFormat,
         columnsEmptyText,

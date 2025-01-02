@@ -100,7 +100,7 @@ export default (props: TableUseDownloadTemplateProps) => {
         }
     }
     const DownloadTemplateBtn = (props?: OwnBtnProps) => {
-        if (!downloadTemplateBtn || !apis.template) return null
+        if (!downloadTemplateBtn || !apis?.template) return null
 
         const { children, ...btnProps } = !isEmpty(props)
             ? props
