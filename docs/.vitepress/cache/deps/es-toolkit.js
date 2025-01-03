@@ -1,4 +1,10 @@
 import {
+  isBoolean,
+  isError,
+  isString,
+  isSymbol
+} from "./chunk-GC3QMR4O.js";
+import {
   AbortError,
   TimeoutError,
   after,
@@ -116,12 +122,6 @@ import {
   zipObject,
   zipWith
 } from "./chunk-AK7TER6B.js";
-import {
-  isBoolean,
-  isError,
-  isString,
-  isSymbol
-} from "./chunk-GC3QMR4O.js";
 import {
   isArrayBuffer,
   isBlob,

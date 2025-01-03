@@ -13,22 +13,23 @@ import {
     RowProps,
     Skeleton,
 } from 'ant-design-vue'
-import { isFunction } from 'es-toolkit'
-import { computed, Reactive, reactive, Ref, ref, VNode } from 'vue'
+import { cloneDeep, isFunction } from 'es-toolkit'
+import { isEmpty } from 'es-toolkit/compat'
+import { computed, Reactive, reactive, Ref, ref, toRaw, VNode, watch } from 'vue'
 import { JSX } from 'vue/jsx-runtime'
 import { ControlMapProps, FormItemControl } from './control'
-import { ownBtnProps, TableProps, TableTextConfig } from './index.type'
-import { FormInstance, UseFormOptions } from './useQueryForm'
+import { OwnBtnProps, ownBtnProps, TableProps, TableTextConfig } from './index.type'
+import { FormInstance } from './useQueryForm'
 
 export interface TableCUFormInstance extends FormInstance {}
 
 export interface TableUseCUReturnOptions {
-    CreateBtn: () => JSX.Element
+    CreateBtn: (props?: OwnBtnProps) => JSX.Element
     CUModalForm: () => JSX.Element
     cuFormModel: Reactive<{ values: any }>
     cuModalLoading: Ref<boolean>
-    submitBtnLoading: Ref<boolean>
-    cuModalFormIsEdit: Ref<boolean>
+    submitBtnLoading: boolean
+    cuModalFormIsEdit: boolean
     openCUModalForm: (isEdit: boolean) => void
     CUModalFormInstance: TableCUFormInstance
 }
@@ -43,14 +44,19 @@ export interface TableUseCUFormProps {
     cuFormRowProps?: RowProps
     cuFormColProps?: ColProps
     tableTextConfig?: TableTextConfig
-
+    defaultValues?: any
+    onCuFormCancel?: () => boolean | void
     [key: string]: any
 }
+
 export interface TableUseCUFormItemProps<T extends keyof ControlMapProps = keyof ControlMapProps>
     extends AFormItemProps {
     control?: T
     colProps?: ColProps
-    controlProps?: ControlMapProps[T]
+    controlProps?:
+        | ((opt: { model: any; isEdit: boolean }) => ControlMapProps[T] & { [key: string]: any })
+        | (ControlMapProps[T] & { [key: string]: any })
+    sort?: number
     customControl?: (
         props: {
             label: string
@@ -76,10 +82,15 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         tableRef,
         onBeforeCuFormSubmit,
         onCuFormSubmitSuccess,
+
         onCuFormSubmitError,
+        onCuFormCancel,
         updateSource,
+        defaultValues,
+        emits,
     } = $(props)
 
+    const initValues = defaultValues ? toRaw(defaultValues) : {}
     const cuModalLoading = ref(false)
     const submitBtnLoading = ref(false)
     const cuModalOpen = ref(false)
@@ -87,9 +98,22 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
     const cuFormModel = reactive<{
         values: any
     }>({
-        values: {},
+        values: cloneDeep(initValues),
     })
 
+    watch(
+        () => cuFormModel.values,
+        (currentModel, prevModel) => {
+            emits('cuFormModelChange', currentModel, prevModel)
+        },
+        {
+            deep: true,
+        }
+    )
+
+    watch(cuModalFormIsEdit, () => {
+        emits('cuFormEditStatusChange', cuModalFormIsEdit.value)
+    })
     const formRef = ref<FormInstance>()
 
     const openCUModalForm = async (isEdit: boolean = false, record?: any) => {
@@ -99,52 +123,68 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
 
     const submitCUModalForm = async () => {
         submitBtnLoading.value = true
-        formRef.value
-            .validate?.()
-            .then(async (vals) => {
-                const data = (await onBeforeCuFormSubmit?.(vals)) || vals
 
-                try {
-                    const res = await apis?.[cuModalFormIsEdit.value ? 'update' : 'create']?.(data)
-                    cuModalOpen.value = false
-                    updateSource?.()
-                    if (onCuFormSubmitSuccess?.(res, cuModalFormIsEdit.value) === false) {
-                        return
-                    }
-                    message.success(
-                        `${
-                            cuModalFormIsEdit.value
-                                ? tableTextConfig?.message?.updateSuccess
-                                : tableTextConfig?.message?.createSuccess
-                        }`
-                    )
-                } catch (error) {
-                    if (onCuFormSubmitError?.(error, cuModalFormIsEdit.value) === false) {
-                        return
-                    }
-                    message.error(
-                        `${
-                            cuModalFormIsEdit.value
-                                ? tableTextConfig?.message?.updateError
-                                : tableTextConfig?.message?.createError
-                        }`
-                    )
+        const vals = await formRef.value.validate?.()
+
+        let data: any = null
+
+        const cbres = isFunction(onBeforeCuFormSubmit)
+            ? await onBeforeCuFormSubmit?.(vals, JSON.parse(JSON.stringify(cuFormModel.values)))
+            : null
+
+        if (cbres === false) {
+            return
+        }
+        data = cbres || vals
+
+        await apis?.[cuModalFormIsEdit.value ? 'update' : 'create']?.(data)
+            .then((res) => {
+                cancelCUModalForm()
+                updateSource?.()
+                if (onCuFormSubmitSuccess?.(res, cuModalFormIsEdit.value) === false) {
+                    return
                 }
+                message.success(
+                    `${
+                        cuModalFormIsEdit.value
+                            ? tableTextConfig?.message?.updateSuccess
+                            : tableTextConfig?.message?.createSuccess
+                    }`
+                )
             })
-            .catch(() => {})
+            .catch((error) => {
+                if (onCuFormSubmitError?.(error, cuModalFormIsEdit.value) === false) {
+                    return
+                }
+                message.error(
+                    `${
+                        cuModalFormIsEdit.value
+                            ? tableTextConfig?.message?.updateError
+                            : tableTextConfig?.message?.createError
+                    }`
+                )
+            })
             .finally(() => {
                 submitBtnLoading.value = false
             })
     }
 
     const cancelCUModalForm = () => {
+        if (onCuFormCancel?.() === false) {
+            return
+        }
+        onCuFormCancel?.()
+        cuFormModel.values = cloneDeep(initValues)
         cuModalOpen.value = false
-        cuFormModel.values = {}
     }
-    const CreateBtn = () => {
-        const { children, ...btnProps } = createBtn || {}
+    const CreateBtn = (props?: OwnBtnProps) => {
+        if (!createBtn || !apis?.create) return null
+        const { children, ...btnProps } = !isEmpty(props)
+            ? props
+            : ((createBtn || {}) as OwnBtnProps)
+
         return (
-            <Button onClick={() => openCUModalForm(false)} {...btnProps}>
+            <Button class="flex items-center" onClick={() => openCUModalForm(false)} {...btnProps}>
                 {children}
             </Button>
         )
@@ -164,66 +204,78 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                 confirmLoading={submitBtnLoading.value}
                 getContainer={() => tableRef}
                 maskClosable={false}
+                destroyOnClose
                 {...cuFormModalProps}
             >
-                {cuModalLoading?.value ? (
-                    <Skeleton active />
-                ) : (
+                <Skeleton active loading={cuModalLoading?.value}>
                     <Form ref={formRef} model={cuFormModel.values} {...cuFormProps}>
                         <Row gutter={[24, 10]} {...cuFormRowProps}>
-                            {columns?.map?.(({ title, dataIndex, formItemProps }, i: number) => {
-                                const {
-                                    name,
-                                    label,
-                                    customRender,
-                                    control,
-                                    colProps,
-                                    controlProps,
-                                    rules,
-                                    hidden,
-                                    customControl,
-                                    ...oths
-                                } = formItemProps
-                                return (
-                                    <Col
-                                        key={
-                                            JSON.stringify(name || dataIndex || title) ||
-                                            `${i}-${title}-${dataIndex}`
-                                        }
-                                        class={[hidden && 'hidden']}
-                                        {...cuFormColProps}
-                                        {...colProps}
-                                    >
-                                        {customRender && isFunction(customRender) ? (
-                                            customRender?.(cuFormModel, CUModalFormInstance)
-                                        ) : (
-                                            <Form.Item
-                                                label={label || title}
-                                                name={name || (dataIndex as FormItemProps['name'])}
-                                                rules={rules}
-                                                {...oths}
-                                            >
-                                                {isFunction(customControl) ? (
-                                                    customControl?.(
-                                                        { name, dataIndex, label, title },
-                                                        cuFormModel
-                                                    )
-                                                ) : (
-                                                    <FormItemControl
-                                                        type={control}
-                                                        model={cuFormModel.values}
-                                                        name={name || dataIndex}
-                                                        {...controlProps}
-                                                    ></FormItemControl>
-                                                )}
-                                            </Form.Item>
-                                        )}
-                                    </Col>
-                                )
-                            })}
+                            {columns
+                                ?.sort?.((a, b) => a?.formItemProps?.sort - b?.formItemProps?.sort)
+                                ?.map?.(({ title, dataIndex, formItemProps }, i: number) => {
+                                    const {
+                                        name,
+                                        label,
+                                        customRender,
+                                        control,
+                                        colProps,
+                                        controlProps,
+                                        rules,
+                                        hidden,
+                                        customControl,
+                                        ...oths
+                                    } = formItemProps || {}
+
+                                    const resControlProps = (
+                                        controlProps && isFunction(controlProps)
+                                            ? controlProps?.({
+                                                  model: cuFormModel.values,
+                                                  isEdit: cuModalFormIsEdit.value,
+                                              })
+                                            : controlProps || {}
+                                    ) as TableUseCUFormItemProps['controlProps']
+                                    return (
+                                        <Col
+                                            key={
+                                                JSON.stringify(name || dataIndex || title) ||
+                                                `${i}-${title}-${dataIndex}`
+                                            }
+                                            class={[hidden && 'hidden']}
+                                            {...cuFormColProps}
+                                            {...colProps}
+                                        >
+                                            {customRender && isFunction(customRender) ? (
+                                                customRender?.(cuFormModel, CUModalFormInstance)
+                                            ) : (
+                                                <Form.Item
+                                                    label={label || title}
+                                                    name={
+                                                        name || (dataIndex as FormItemProps['name'])
+                                                    }
+                                                    rules={rules}
+                                                    {...oths}
+                                                >
+                                                    {isFunction(customControl) ? (
+                                                        customControl?.(
+                                                            { name, dataIndex, label, title },
+                                                            cuFormModel
+                                                        )
+                                                    ) : (
+                                                        <FormItemControl
+                                                            type={control}
+                                                            model={cuFormModel.values}
+                                                            name={name || dataIndex}
+                                                            {...resControlProps}
+                                                        ></FormItemControl>
+                                                    )}
+                                                </Form.Item>
+                                            )}
+                                        </Col>
+                                    )
+                                })}
                         </Row>
                     </Form>
-                )}
+                </Skeleton>
             </Modal>
         )
     }
@@ -234,8 +286,8 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         CUModalForm,
         cuFormModel,
         cuModalLoading,
-        submitBtnLoading,
-        cuModalFormIsEdit,
+        submitBtnLoading: submitBtnLoading.value,
+        cuModalFormIsEdit: cuModalFormIsEdit.value,
         openCUModalForm,
         CUModalFormInstance,
     }

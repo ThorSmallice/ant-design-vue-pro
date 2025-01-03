@@ -12,7 +12,7 @@ const Comp = defineComponent({
                 <Sider class="bg-black" width={200}>
                     <Menu></Menu>
                 </Sider>
-                <Content class="">
+                <Content class="bg-white p-4">
                     <router-view></router-view>
                 </Content>
             </Layout>

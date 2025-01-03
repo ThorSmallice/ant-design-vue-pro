@@ -1,11 +1,11 @@
 import dayjs, { Dayjs } from 'dayjs'
 import { isFunction } from 'es-toolkit/predicate'
 import qs from 'qs'
-import { computed, reactive, unref } from 'vue'
+import { computed, reactive, toRaw, unref } from 'vue'
 import { TableProps } from './index.type'
 export interface TableUseParmasProps {
     ownPagin: boolean
-
+    queryFormTimeFormat?: string
     queryFormParams: {
         [key: string]: any
     }
@@ -14,7 +14,14 @@ export interface TableUseParmasProps {
     requestParamsFormatter: TableProps['requestParamsFormatter']
 }
 export default (props: TableUseParmasProps) => {
-    const { params, queryFormParams, ownPagin, fieldsNames, requestParamsFormatter } = $(props)
+    const {
+        params,
+        queryFormParams,
+        ownPagin,
+        queryFormTimeFormat,
+        fieldsNames,
+        requestParamsFormatter,
+    } = $(props)
 
     const pagination = reactive({
         page: 1,
@@ -32,11 +39,11 @@ export default (props: TableUseParmasProps) => {
 
         for (let k in queryFormParamsRaw) {
             if (dayjs.isDayjs(queryFormParamsRaw[k])) {
-                queryFormParamsRaw[k] = queryFormParamsRaw[k].format('YYYY-MM-DD HH:mm:ss')
+                queryFormParamsRaw[k] = queryFormParamsRaw[k].format(queryFormTimeFormat)
             }
             if (queryFormParamsRaw[k]?.every?.((t: any) => dayjs.isDayjs(t))) {
                 queryFormParamsRaw[k] = queryFormParamsRaw[k]?.map?.((t: Dayjs) =>
-                    t?.format?.('YYYY-MM-DD HH:mm:ss')
+                    t?.format?.(queryFormTimeFormat)
                 )
             }
         }
@@ -48,7 +55,7 @@ export default (props: TableUseParmasProps) => {
         })
 
         return isFunction(requestParamsFormatter)
-            ? requestParamsFormatter?.(requestParams)
+            ? requestParamsFormatter?.(JSON.parse(JSON.stringify(requestParams)))
             : qs.parse(requestParams)
     })
 

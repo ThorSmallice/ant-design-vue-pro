@@ -4,31 +4,47 @@
             <QueryForm></QueryForm>
         </div>
 
-        <div :class="['db-table-cies-btns-wrap']" v-if="ciesBtns">
-            <Space>
-                <template v-if="slots?.customCiesBtns">
-                    <slot
-                        name="customCiesBtns"
-                        :CreateBtn="CreateBtn"
-                        :ImportBtn="ImportBtn"
-                        :ExportBtn="ExportBtn"
-                    ></slot>
-                </template>
-                <template v-else>
-                    <CreateBtn v-if="createBtn"></CreateBtn>
-                    <ImportBtn v-if="importBtn"></ImportBtn>
-                    <ExportBtn v-if="exportBtn"></ExportBtn>
-                </template>
-            </Space>
+        <div :class="['db-table-cies-btns-wrap']" v-if="ciesBtns || columnSettingBtn">
+            <template v-if="slots?.customCiesBtns">
+                <slot
+                    name="customCiesBtns"
+                    :CreateBtn="CreateBtn"
+                    :ImportBtn="ImportBtn"
+                    :ExportDropDown="ExportDropDown"
+                    :ExportCurrentPageBtn="ExportCurrentPageBtn"
+                    :ExportAllBtn="ExportAllBtn"
+                    :ColumnSettingBtn="ColumnSettingBtn"
+                    :DownloadTemplateBtn="DownloadTemplateBtn"
+                ></slot>
+            </template>
+            <template v-else>
+                <Flex justify="space-between">
+                    <Flex :gap="8">
+                        <CreateBtn></CreateBtn>
+                        <ImportBtn></ImportBtn>
+                        <ExportDropDown></ExportDropDown>
+                        <DownloadTemplateBtn></DownloadTemplateBtn>
+                    </Flex>
+                    <Flex>
+                        <ColumnSettingBtn></ColumnSettingBtn>
+                    </Flex>
+                </Flex>
+            </template>
         </div>
 
-        <div :class="['db-table-wrap']">
+        <div :class="['db-table-wrap']" ref="tableWrapRef">
             <ATable
+                :sticky="true"
+                :rowKey="rowKey"
                 :pagination="false"
                 :columns="resColumns"
                 :data-source="source"
                 :loading="loading"
                 @resize-column="onResizeColumn"
+                :scroll="resScroll"
+                :table-layout="tableLayout"
+                :showHeader="showHeader"
+                :showSorterTooltip="showSorterTooltip"
                 v-bind="o"
             >
                 <template v-for="slot in aTableSlots" :key="slot" v-slot:[slot]="temp">
@@ -44,49 +60,13 @@
         <component :is="DetailModal"></component>
     </div>
 </template>
-<!-- :row-key="rowKey"
-:sticky="sticky"
-:size="size"
-:row-class-name="rowClassName"
-:id="id"
-:indent-size="indentSize"
-:locale="locale"
-@change="onChange"
-@expand="onExpand"
-@expanded-rows-change="onExpandedRowsChange"
-:row-selection="rowSelection"
-:row-expandable="rowExpandable"
-:show-expand-column="showExpandColumn"
-:show-sorter-tooltip="showSorterTooltip"
-:sort-directions="sortDirections"
-:table-layout="tableLayout"
-:prefix-cls="prefixCls"
-:expand-fixed="expandFixed"
-:expand-icon-column-index="expandIconColumnIndex" -->
 
-<!-- rowKey,
-    rowClassName,
-    id,
-    indentSize,
-    locale,
-    onChange,
-    onExpand,
-    onExpandedRowsChange,
-    rowSelection,
-    rowExpandable,
-    showExpandColumn,
-    showSorterTooltip,
-    sortDirections,
-    tableLayout,
-    transformCellText,
-    prefixCls,
-    expandFixed,
-    expandIconColumnIndex, -->
 <script setup lang="tsx" async>
 import config from '@config/index'
-import { Table as ATable, Space, TableColumnProps } from 'ant-design-vue'
-import { computed, ref, useTemplateRef, watch } from 'vue'
+import { Table as ATable, Flex, Space, TableColumnProps } from 'ant-design-vue'
+import { computed, reactive, ref, toRaw, watch } from 'vue'
 import { ATableSlotsWhiteList, TableProps, TableSlots } from './index.type'
+import useAutoSize from './useAutoSize'
 import useColumns from './useColumns'
 import useCU from './useCU'
 import useDataSource from './useDataSource'
@@ -96,15 +76,20 @@ import useImport from './useImport'
 import usePagination from './usePagination'
 import useParams from './useParams'
 import useQueryForm from './useQueryForm'
+import useDownloadTemplate from './useDownloadTemplate'
 
 defineOptions({
     name: 'DbTable',
 })
 
-const tableRef = useTemplateRef('tableRef')
+const tableRef = ref()
+const tableWrapRef = ref()
 const slots = defineSlots<TableSlots>()
 
-const emits = defineEmits<{}>()
+const emits = defineEmits<{
+    (e: 'cuFormModelChange', currentModel: any, prevModel: any): void
+    (e: 'cuFormEditStatusChange', cuFormEditStatus: boolean): void
+}>()
 const aTableSlots = computed(() => {
     return Object?.keys?.(slots)?.filter?.(
         (key: string) => ATableSlotsWhiteList?.indexOf(key) !== -1
@@ -115,9 +100,12 @@ const onResizeColumn = (w: number, col: TableColumnProps) => {
 }
 
 const {
+    showSorterTooltip = config.table.showSorterTooltip,
     apis,
     full = config.table.full,
     params,
+    rowKey = 'id',
+    columnSettingBtn = config.table.columnSettingBtn,
     requestParamsFormatter = config.table.requestParamsFormatter,
     fieldsNames = config.table.fieldsNames,
     onSourceSuccess = config.table.onSourceSuccess,
@@ -127,6 +115,7 @@ const {
     onBeforeCuFormSubmit = config.table.onBeforeCuFormSubmit,
     onCuFormSubmitSuccess = config.table.onCuFormSubmitSuccess,
     onCuFormSubmitError = config.table.onCuFormSubmitError,
+    onCuFormCancel,
     onBeforeRowDelete = config.table.onBeforeRowDelete,
     onRowDeleteSuccess = config.table.onRowDeleteSuccess,
     onRowDeleteError = config.table.onRowDeleteError,
@@ -135,7 +124,7 @@ const {
     ownPaginProps = config.table.ownPaginProps,
 
     queryForm = config.table.queryForm,
-    queryFormItem,
+    queryFormItems,
     queryFormProps = config.table.queryFormProps,
     queryFormSubmitWithReset = config.table.queryFormSubmitWithReset,
     queryFormRowProps = config.table.queryFormRowProps,
@@ -145,11 +134,20 @@ const {
     queryFormResetBtn = config.table.queryFormResetBtn,
     queryFormSubmitBtnProps = config.table.queryFormSubmitBtnProps,
     queryFormResetBtnProps = config.table.queryFormResetBtnProps,
+    queryFormControlFormItemProps = config.table.queryFormControlFormItemProps,
+    queryFormTimeFormat = config.table.queryFormTimeFormat,
 
     columns,
     indexColumn = config.table.indexColumn,
+    indexColumnWidth = config.table.indexColumnWidth,
+    indexColumnProps = config.table.indexColumnProps,
     controlColumn = config.table.controlColumn,
+    controlColumnWidth = config.table.controlColumnWidth,
+    controlColumnWidthProps = config.table.controlColumnWidthProps,
+
+    columnsEllipsis = config.table.columnsEllipsis,
     columnsAlign = config.table.columnsAlign,
+    columnsSorter = config.table.columnsSorter,
     columnsTitleNoWrap = config.table.columnsTitleNoWrap,
     columnsTimeFormat = config.table.columnsTimeFormat,
     columnsEmptyText = config.table.columnsEmptyText,
@@ -157,6 +155,7 @@ const {
 
     cuFormProps = config.table.cuFormProps,
     cuFormRules,
+    cuFormDefaultValues,
     cuFormModalProps = config.table.cuFormModalProps,
     cuFormRowProps = config.table.cuFormRowProps,
     cuFormColProps = config.table.cuFormColProps,
@@ -167,27 +166,51 @@ const {
     detailDescItemEmptyText = config.table.detailDescItemEmptyText,
     detailDescItemProps = config.table.detailDescItemProps,
     detailDescItemTimeFormat = config.table.detailDescItemTimeFormat,
+    detailModalProps = config.table.detailModalProps,
+    detailDescProps = config.table.detailDescProps,
 
     ciesBtns = config.table.ciesBtns,
     ciesBtnsInQueryForm = config.table.ciesBtnsInQueryForm,
     createBtn = config.table.createBtn,
     importBtn = config.table.importBtn,
-    exportBtn = config.table.exportBtn,
+    exportDropdown = config.table.exportDropdown,
+    exportCurrentPageBtn = config.table.exportCurrentPageBtn,
+    exportAllBtn = config.table.exportAllBtn,
     scroll = config.table.scroll,
+    tableLayout = config.table.tableLayout,
     dataSource,
 
-    showHeader,
+    exportFileByParams = config.table.exportFileByParams,
+    exportFileParamsFormat = config.table.exportFileParamsFormat,
+    exportFileName,
+    onExportRequestSuccess = config.table.onExportRequestSuccess,
+    onExportSuccess = config.table.onExportSuccess,
+    onExportError = config.table.onExportError,
+
+    importUploadProps = config.table.importUploadProps,
+    importFileParamsFormat = config.table.importFileParamsFormat,
+    onImportSuccess = config.table.onImportSuccess,
+    onImportError = config.table.onImportError,
+    showHeader = null,
+
+    templateFileName,
+    downloadTemplateBtn = config.table.downloadTemplateBtn,
+    downloadTempalteParamsFormat = config.table.downloadTempalteParamsFormat,
+    onTemplateRequestSuccess = config.table.onTemplateRequestSuccess,
+    onTemplateDownloadSuccess = config.table.onTemplateDownloadSuccess,
+    onTemplateDownloadError = config.table.onTemplateDownloadError,
+
+    autoSizeConfig = config.table.autoSizeConfig,
+    minScollHeight = config.table.minScollHeight,
 
     ...o
 } = defineProps<TableProps>()
 
 const ciesBtnsVNode = ref({})
-const { ImportBtn } = $$(useImport())
-const { ExportBtn } = $$(useExport())
 
 const { QueryForm, QueryFormInstance, queryFormParams } = $$(
     useQueryForm({
-        queryFormItem,
+        queryFormItems,
         queryFormProps,
         queryFormSubmitWithReset,
         queryFormRowProps,
@@ -197,17 +220,62 @@ const { QueryForm, QueryFormInstance, queryFormParams } = $$(
         queryFormResetBtn,
         queryFormSubmitBtnProps,
         queryFormResetBtnProps,
+        queryFormControlFormItemProps,
         ciesBtnsInQueryForm,
         ciesBtnsVNode,
     })
 )
+
+const state = reactive({
+    values: {},
+})
+const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm()
+}
+const handleReset = (clearFilters) => {
+    clearFilters({ confirm: true })
+}
 const { resultParams, pagination } = $$(
     useParams({
         params,
         ownPagin,
         requestParamsFormatter,
         fieldsNames,
+        queryFormTimeFormat,
         queryFormParams,
+    })
+)
+
+const { DownloadTemplateBtn } = $$(
+    useDownloadTemplate({
+        apis,
+        fieldsNames,
+        templateFileName,
+        downloadTemplateBtn,
+        downloadTempalteParamsFormat,
+        onTemplateRequestSuccess,
+        onTemplateDownloadSuccess,
+        onTemplateDownloadError,
+        resultParams,
+        tableTextConfig,
+    })
+)
+const { ExportDropDown, ExportCurrentPageBtn, ExportAllBtn } = $$(
+    useExport({
+        apis,
+        fieldsNames,
+        pagination,
+        exportDropdown,
+        exportCurrentPageBtn,
+        exportAllBtn,
+        resultParams,
+        exportFileByParams,
+        exportFileName,
+        exportFileParamsFormat,
+        tableTextConfig,
+        onExportSuccess,
+        onExportError,
+        onExportRequestSuccess,
     })
 )
 const { source, loading, total, updateSource }: any = $$(
@@ -220,6 +288,19 @@ const { source, loading, total, updateSource }: any = $$(
         dataSource,
     })
 )
+const { ImportBtn } = $$(
+    useImport({
+        apis,
+        tableTextConfig,
+        importBtn,
+        importUploadProps,
+        importFileParamsFormat,
+        onImportSuccess,
+        onImportError,
+        updateSource,
+    })
+)
+
 const { CreateBtn, CUModalForm, openCUModalForm, cuFormModel, cuModalLoading, cuModalFormIsEdit } =
     $$(
         useCU({
@@ -227,7 +308,7 @@ const { CreateBtn, CUModalForm, openCUModalForm, cuFormModel, cuModalLoading, cu
             createBtn,
             columns,
             cuFormProps,
-
+            onCuFormCancel,
             cuFormRules,
             cuFormModalProps,
             cuFormRowProps,
@@ -238,6 +319,8 @@ const { CreateBtn, CUModalForm, openCUModalForm, cuFormModel, cuModalLoading, cu
             onCuFormSubmitError,
             updateSource,
             tableTextConfig,
+            defaultValues: cuFormDefaultValues,
+            emits,
         })
     )
 const { openDetailModal, detailModalLoading, detailsDataSource, DetailModal } = $$(
@@ -247,14 +330,18 @@ const { openDetailModal, detailModalLoading, detailsDataSource, DetailModal } = 
         detailDescItemProps,
         detailDescItemTimeFormat,
         tableTextConfig,
+        detailModalProps,
+        detailDescProps,
     })
 )
 
-const { resColumns }: any = $$(
+const { resColumns, ColumnSettingBtn }: any = $$(
     useColumns({
         columns,
         columnsAlign,
+        columnsEllipsis,
         columnsTitleNoWrap,
+        columnsSorter,
         pagination,
         columnsTimeFormat,
         columnsEmptyText,
@@ -278,29 +365,77 @@ const { resColumns }: any = $$(
         detailsDataSource,
         detailBackFillByGetDetail,
         tableTextConfig,
+        indexColumnProps,
+        indexColumnWidth,
+        controlColumnWidth,
+        controlColumnWidthProps,
+        columnSettingBtn,
     })
 )
 
 const Pagination = $$(usePagination({ pagination, total, ownPaginProps }))
 
+const { x, y, onResize } = $$(
+    useAutoSize({
+        scroll,
+        autoSizeConfig,
+        minScollHeight,
+        wrapContainer: tableWrapRef,
+        subtractEleClasses: [
+            '.ant-table-title',
+            '.ant-table-thead',
+            '.ant-table-footer',
+            '.ant-table-summary',
+        ],
+        tableRealRegionClasses: ['.ant-table-tbody'],
+        source,
+    })
+)
+
+const resScroll = computed((): { x: any; y: any } => {
+    return { x: x.value, y: y.value }
+})
+
 watch(
-    [CreateBtn, ImportBtn, ExportBtn],
+    [
+        CreateBtn,
+        ImportBtn,
+        ExportDropDown,
+        ExportCurrentPageBtn,
+        ExportAllBtn,
+        ColumnSettingBtn,
+        DownloadTemplateBtn,
+    ],
     () => {
-        ciesBtnsVNode.value = { CreateBtn, ImportBtn, ExportBtn }
+        ciesBtnsVNode.value = {
+            CreateBtn,
+            ImportBtn,
+            ExportDropDown,
+            ExportCurrentPageBtn,
+            ExportAllBtn,
+            ColumnSettingBtn,
+            DownloadTemplateBtn,
+        }
     },
     {
         immediate: true,
     }
 )
+
 defineExpose({
+    source,
+    updateSource,
     QueryForm,
     QueryFormInstance,
-    updateSource,
     Pagination,
-    cuModalFormIsEdit,
+    cuModalFormIsEdit: toRaw(cuModalFormIsEdit),
+    cuFormModel: toRaw(cuFormModel),
     CreateBtn,
     ImportBtn,
-    ExportBtn,
+    ExportDropDown,
+    ExportCurrentPageBtn,
+    ExportAllBtn,
+    onResize,
 })
 </script>
 

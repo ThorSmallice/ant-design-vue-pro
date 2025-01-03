@@ -1,247 +1,343 @@
 <template>
-    <div style="width: 100; height: 500px" class="flex flex-col overflow-hidden">
-        <!-- <Button @click="click">点我</Button> -->
-        <Table
-            ref="tableRef"
-            :columns="columns"
-            :apis="apis"
-            :queryFormItem="queryFormItem"
-            :queryFormColProps="{
-                span: 24 / queryFormItem.length,
-            }"
-            :queryFormResetBtn="open"
-            :queryFormSubmitBtn="open"
-            :colResizable="open"
-            :fieldsNames="fieldsNames"
-            :queryFormSubmitWithReset="true"
-            :onBeforeCuFormSubmit="onBeforeCuFormSubmit"
-            :cies-btns-in-query-form="true"
-        >
-            <template #queryFormExtraLeft>
-                <Button>left</Button>
-            </template>
-            <template #queryFormExtraCenter>
-                <Button>center</Button>
-            </template>
-            <template #queryFormExtraRight>
-                <Button>right</Button>
-            </template>
-            <template #controlColumnBtnExtraDetailStart="{ opt, metaColumn }">
-                <Button @click="() => console.log(opt, metaColumn)">start</Button>
-            </template>
-            <template #controlColumnBtnExtraEditLeft>
-                <Button>left</Button>
-            </template>
-            <template #controlColumnBtnExtraEditRight>
-                <Button>right</Button>
-            </template>
-            <template #controlColumnBtnExtraEnd>
-                <Button>end</Button>
-            </template>
-        </Table>
-    </div>
+    <Table
+        ref="tableRef"
+        full
+        export-file-name="测试.xlsx"
+        :cu-form-default-values="initalValues"
+        :cu-form-props="{
+            labelCol: {
+                span: 6,
+            },
+        }"
+        :columns="columns"
+        :query-form-items="queryFormItem"
+        @before-cu-form-submit="beforeSubmit"
+        :apis="{
+            list: getContractManagePageApi,
+            export: exportApi,
+            import: importApi,
+            template: templateApi,
+        }"
+        @before-row-edit-back-fill="beforeEdit"
+        :params="params"
+        @cu-form-model-change="onModelChange"
+        @source-success="onsuccess"
+        :downloadTempalteParamsFormat="downloadTempalteParamsFormat"
+        templateFileName="模板.xlsx"
+        :cies-btns-in-query-form="true"
+    >
+    </Table>
 </template>
 
-<script setup lang="ts">
-import { Table } from 'antd-vue-dbthor'
-
-import { ControlMapType } from '@src/components/table/control'
-import { TableQueryFormItemProps } from '@src/components/table/useQueryForm'
-import axios from 'axios'
-import { Button } from 'ant-design-vue'
-import { computed, onMounted, reactive, ref, watch } from 'vue'
-import { TableColumnProps } from '@src/components/table/useColumns'
-defineOptions({
-    inheritAttrs: true,
-})
-defineProps()
-// TableConfig.fieldsNames.default.list = ['data', 'data', 'list']
-// TableConfig.fieldsNames.default.total = ['data', 'data', 'total']
+<script setup lang="tsx">
+import { ControlMapType, Table, TableProps } from 'antd-vue-dbthor'
+import dayjs, { Dayjs } from 'dayjs'
+import { computed, ref, toRaw } from 'vue'
+import request from 'axios'
 const tableRef = ref()
-const options = ref([])
-const fieldsNames = ref({
-    page: 'page',
-    pageSize: 'pageSize',
-    detail: ['data', 'data'],
-    list: ['data', 'data', 'list'],
-    total: ['data', 'data', 'total'],
+const abc = ref()
+const onModelChange = (a) => {
+    abc.value = a.status
+}
+const onsuccess = async (res) => {
+    return {
+        list: res?.data?.data?.list,
+        total: res?.data?.data?.total,
+    }
+}
+const downloadTempalteParamsFormat = ({ companyId }) => {
+    return {
+        companyId,
+    }
+}
+const axios = request.create()
+axios.interceptors.request.use(async (req) => {
+    req.headers['Authorization'] = 'Bearer 14724419e5ba41efaae64d91bed10d7b'
+    req.headers['tenant-id'] = '1820759402696224769'
+    return req
 })
-const open = ref(true)
-const click = () => {
-    open.value = !open.value
+axios.interceptors.response.use(async (res) => {
+    return res
+})
+const getContractManagePageApi = async (params?: any, config?: any) =>
+    await axios.get('/admin-api/wms/task-plan/page', { params })
+
+const exportApi = async (params) => {
+    return axios.get('/admin-api/wms/contract/export-excel', { params, responseType: 'blob' })
+}
+const templateApi = async (params) => {
+    return axios.get('/admin-api/basic/config/template/get', { params, responseType: 'blob' })
 }
 
-const rowEdit = async (record) => {
-    console.log('🚀 ~ rowEdit ~ record:', record)
+const importApi = async (data) => {
+    return axios.post(
+        '/admin-api/basic/config/import-excel',
+        {
+            companyId: '1821098661168885761',
+            ...data,
+        },
+        {
+            headers: {
+                'content-type': 'multipart/form-data',
+            },
+        }
+    )
 }
-const queryFormItem = computed((): TableQueryFormItemProps[] => {
+
+const companyId = '1821098661168885761'
+const params = computed(() => ({
+    companyId,
+}))
+
+const initalValues = ref({
+    companyId,
+    status: '履约中',
+    reminder: 15,
+})
+
+const timeFormat = 'YYYY-MM-DD'
+defineOptions({
+    name: 'ContractManagement',
+})
+
+const columns = computed((): TableProps['columns'] => {
     return [
         {
-            label: '城市名称',
-            name: 'cityName',
-            control: ControlMapType.Select,
-            controlProps: {
-                options: options.value,
+            title: 'id',
+            dataIndex: 'id',
+            hidden: true,
+            formItemProps: {
+                hidden: true,
+            },
+            descItemProps: {
+                hidden: true,
             },
         },
         {
-            label: '农作物名称',
-            name: 'name',
+            title: '签署乙方',
+            dataIndex: 'signatory',
+            width: 80,
+            formItemProps: {
+                sort: 0,
+                rules: [
+                    {
+                        required: true,
+                    },
+                ],
+            },
+        },
+        {
+            title: '合同类型',
+            dataIndex: 'typeId',
+            width: 120,
+
+            customRender: ({ record }: any) => record?.type || '-',
+        },
+        {
+            title: '合同名称',
+            dataIndex: 'name',
+            width: 240,
+            fixed: 'left',
+            formItemProps: {
+                sort: 2,
+                rules: [
+                    {
+                        required: true,
+                    },
+                ],
+                controlProps: {
+                    maxlength: 100,
+                },
+            },
+        },
+        {
+            title: '合同编号',
+            dataIndex: 'code',
+            width: 200,
+            formItemProps: {
+                sort: 1,
+                controlProps: {
+                    maxlength: 50,
+                },
+            },
+        },
+        {
+            title: '履约状态',
+            width: 120,
+            dataIndex: 'performanceStatus',
+            formItemProps: {
+                hidden: true,
+            },
+            descItemProps: {
+                hidden: true,
+            },
+        },
+        {
+            title: '合同有效时间',
+            dataIndex: 'effectiveTime',
+            width: 240,
+            formItemProps: {
+                sort: 4,
+                control: ControlMapType.RangePicker,
+                rules: [
+                    {
+                        required: true,
+                    },
+                ],
+            },
+            customRender: ({ record }: any) => {
+                return (
+                    dayjs?.(record?.effectiveStartTime)?.format?.(timeFormat) +
+                    '~' +
+                    dayjs?.(record?.effectiveEndTime)?.format?.(timeFormat)
+                )
+            },
+        },
+        {
+            title: '签署日期',
+            dataIndex: 'signature',
+            width: 200,
+            formItemProps: {
+                sort: 5,
+                control: ControlMapType.DatePicker,
+            },
+            type: 'date',
+            timeFormat,
+        },
+        {
+            title: '合同状态',
+            dataIndex: 'status',
+            hidden: true,
+        },
+        {
+            title: '合同负责人',
+            dataIndex: 'person',
+            hidden: true,
+        },
+        {
+            title: '到期提醒',
+            dataIndex: 'reminder',
+            hidden: true,
+            formItemProps: {
+                control: ControlMapType.InputNumber,
+                controlProps: {
+                    addonAfter: '天',
+                    precision: 0,
+                    step: 1,
+                },
+            },
+        },
+        {
+            title: '负责人联系电话',
+            dataIndex: 'phone',
+            hidden: true,
+        },
+        {
+            title: '操作人员',
+            dataIndex: 'operatorName',
+            width: 200,
+            formItemProps: {
+                hidden: true,
+            },
+        },
+        {
+            title: '操作时间',
+            dataIndex: 'updateTime',
+            width: 200,
+            formItemProps: {
+                hidden: true,
+            },
+        },
+        {
+            title: '备注',
+            dataIndex: 'remark',
+            width: 200,
+            ellipsis: true,
+            formItemProps: {
+                control: ControlMapType.TextArea,
+                colProps: {
+                    span: 20,
+                },
+                labelCol: {
+                    span: 3,
+                },
+            },
+            fixed: 'right',
+        },
+        {
+            title: '附件',
+            dataIndex: 'files',
+            hidden: true,
+            formItemProps: {
+                colProps: {
+                    span: 20,
+                },
+                labelCol: {
+                    span: 3,
+                },
+            },
         },
     ]
 })
 
-axios.defaults.baseURL = '/api'
-axios.defaults.headers = {
-    Authorization: 'Bearer 9ba3f553f1f14f9d837b15f58138f715',
-} as any
-
-// const onSourceSuccess: TableProps['onSourceSuccess'] = async (res) => {
-//     return {
-//         total: res?.data?.data?.total,
-//         list: res?.data?.data?.list,
-//     }
-// }
-
-const asyncColumns = ref([])
-const columns = computed(() => {
-    return asyncColumns.value as TableColumnProps[]
+const queryFormItem = computed((): TableProps['queryFormItems'] => {
+    return [
+        {
+            label: '签署乙方',
+            name: 'signatory',
+        },
+        {
+            label: '合同开始时间',
+            name: 'effectiveStartTime',
+            control: ControlMapType.RangePicker,
+        },
+        {
+            label: '合同类型',
+            name: 'typeId',
+            control: ControlMapType.Select,
+        },
+        {
+            label: '履约状态',
+            name: 'performanceStatus',
+            control: ControlMapType.Select,
+        },
+    ]
 })
 
-onMounted(() => {
-    setTimeout(() => {
-        options.value = [
-            {
-                label: '泽库',
-                value: 1,
-            },
-            {
-                label: '同仁',
-                value: 2,
-            },
-        ]
-
-        asyncColumns.value = [
-            {
-                title: 'id',
-                dataIndex: 'id',
-                width: 80,
-                hidden: true,
-                formItemProps: {
-                    hidden: true,
-                },
-            },
-            {
-                title: '城市名称',
-                dataIndex: 'cityId',
-                width: 150,
-
-                formItemProps: {
-                    control: 'Select',
-                    controlProps: {
-                        options: [
-                            {
-                                label: '泽库县',
-                                value: 3,
-                            },
-                            {
-                                label: '尖扎县',
-                                value: 2,
-                            },
-                        ],
-                    },
-                },
-                customRender: ({ record }: any) => {
-                    return record?.cityName
-                },
-                // search: true,
-                // filterComp: 'Select',
-                // filterCompProps: {},
-
-                // render: (text, record) => {
-                //     return record?.cityName
-                // },
-            },
-            {
-                title: '农作物名称',
-                dataIndex: 'name',
-                width: 150,
-                formItemProps: {
-                    rules: [{ required: true, message: '请输入农作物名称' }],
-                    controlType: 'Input',
-                },
-                // search: true,
-            },
-            {
-                title: '农作物品种',
-                dataIndex: 'kind',
-                width: 150,
-                formItemProps: {
-                    control: 'Input',
-                    rules: [{ required: true }],
-                },
-                // search: true,
-            },
-            {
-                title: '农作物分布区域',
-                dataIndex: 'area',
-                width: 150,
-                formItemProps: {
-                    controlType: 'Input',
-                    rules: [{ required: true }],
-                },
-            },
-            {
-                title: '农作物需水量(m³/亩)',
-                dataIndex: 'waterQuantity',
-                width: 150,
-                formItemProps: {
-                    control: 'InputNumber',
-                    controlProps: {
-                        disabled: true,
-                        placeholder: '只读属性，无需填写',
-                    },
-                },
-            },
-            {
-                title: '农作物用水量(m³/亩)',
-                dataIndex: 'useWaterQuantity',
-                width: 150,
-                formItemProps: {
-                    control: 'InputNumber',
-                },
-            },
-        ] as TableColumnProps[]
-    }, 1000)
-})
-
-const onBeforeCuFormSubmit = (vals) => {
+const beforeSubmit = async ({ typeId, signature, effectiveTime, ...vals }: any) => {
     return {
         ...vals,
-        cityName: options.value?.find(({ value }) => value === vals.cityId)?.label,
+        companyId,
+        effectiveStartTime: dayjs(effectiveTime[0])?.format(timeFormat),
+        effectiveEndTime: dayjs(effectiveTime[1])?.format(timeFormat),
+        signature: dayjs(signature)?.format(timeFormat),
+        typeId: typeId?.value,
+        type: typeId?.label,
     }
 }
-const listApi = async (params?: any, config?: any) =>
-    await axios.get('/hnz/base/crop/page', { params, ...config })
-const detailsApi = async (params?: any, config?: any) =>
-    await axios.get('/hnz/base/crop/get', { params, ...config })
-const createApi = async (data?: any, config?: any) =>
-    await axios.post('/hnz/base/crop/create', data)
-const updateApi = async (data?: any, config?: any) => await axios.put('/hnz/base/crop/update', data)
-const deleteApi = async (params?: any, config?: any) =>
-    await axios.delete('/hnz/base/crop/delete', { params, ...config })
-const exportApi = async (params?: any, config?: any) => await axios.get('', { params, ...config })
-const importApi = async (params?: any, config?: any) => await axios.post('', { params, ...config })
 
-const apis = {
-    list: listApi,
-    details: detailsApi,
-    create: createApi,
-    update: updateApi,
-    delete: deleteApi,
-    export: exportApi,
-    import: importApi,
+const beforeEdit = async ({ typeId, type, effectiveStartTime, effectiveEndTime, ...vals }) => {
+    return {
+        ...vals,
+        typeId: {
+            label: type,
+            value: typeId,
+        },
+        effectiveTime: [dayjs(effectiveStartTime), dayjs(effectiveEndTime)],
+    }
 }
+
+const requestParamsFormatter = async ({ effectiveStartTime, ...vals }) => {
+    return {
+        effectivesStartTime: effectiveStartTime?.map?.((item, i) =>
+            i == 0
+                ? dayjs(item)?.startOf('day')?.format('YYYY-MM-DD HH:mm:ss')
+                : dayjs(item)?.endOf('day')?.format?.('YYYY-MM-DD HH:mm:ss')
+        ),
+        ...vals,
+    }
+}
+const stopTasks = async ({ id }: any) => {}
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped></style>

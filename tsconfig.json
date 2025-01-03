@@ -33,7 +33,8 @@
             "@config/*": ["src/config/*"],
             "@tools/*": ["src/tools/*"],
             "@examples/*": ["docs/examples/*"],
-            "antd-vue-dbthor": ["src/main.ts"],
+            "@docs/*": ["docs/*"],
+            "antd-vue-dbthor": ["src/main.ts"]
         }
     },
     "include": [

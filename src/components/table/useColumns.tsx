@@ -2,25 +2,41 @@ import {
     TableColumnProps as ATableColumnProps,
     Button,
     ButtonProps,
+    Checkbox,
+    Col,
+    Flex,
     message,
     Popconfirm,
+    Popover,
+    Row,
     Space,
 } from 'ant-design-vue'
 import { AxiosResponse } from 'axios'
 import Big from 'big.js'
 import dayjs from 'dayjs'
-import { cloneDeep, isFunction } from 'es-toolkit'
-import { get, isObject } from 'es-toolkit/compat'
-import numeral from 'numeral'
-import { createSSRApp, EmitFn, Reactive, Ref, ref, useSlots, VNode, watch } from 'vue'
-import { renderToString } from 'vue/server-renderer'
-import { TableProps, TableSlots, TableTextConfig } from './index.type'
-import { TableUseCUFormItemProps, TableUseCUReturnOptions } from './useCU'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
-import { JSX } from 'vue/jsx-runtime'
+import { cloneDeep, isFunction } from 'es-toolkit'
+import { get, isEmpty, isObject } from 'es-toolkit/compat'
+import numeral from 'numeral'
+import { pinyin } from 'pinyin-pro'
+import { computed, createSSRApp, EmitFn, Reactive, Ref, ref, useSlots, VNode, watch } from 'vue'
+import { renderToString } from 'vue/server-renderer'
+import {
+    ownBtnProps,
+    OwnPopoverProps,
+    ownPopoverProps,
+    TableProps,
+    TableSlots,
+    TableTextConfig,
+} from './index.type'
+import { TableUseCUFormItemProps, TableUseCUReturnOptions } from './useCU'
 import { TableDescItemsProps } from './useDetail'
+
 dayjs.extend(customParseFormat)
 
+const excludesBaseColumns = ['index', 'control']
+const excludesSortColumnTypes = [...excludesBaseColumns]
+const exculdesFilterColumnTypes = [...excludesBaseColumns]
 export const formatterObjValueWithDate = (
     obj: { [key: string]: any },
     columns: TableColumnProps[]
@@ -49,6 +65,9 @@ export interface TableColumnProps extends ATableColumnProps {
 
     formItemProps?: TableUseCUFormItemProps
     descItemProps?: TableDescItemsProps
+    columnsEllipsis?: boolean
+    columnsSorter?: ATableColumnProps['sorter']
+    filterPlaceholder?: string
 }
 
 export type TableColumnCustomRenderArgs = {
@@ -70,7 +89,11 @@ export interface TableUseColumnsProps {
     columns?: TableColumnProps[]
     columnsAlign?: TableColumnProps['align']
     indexColumn?: boolean
+    indexColumnWidth?: number
+    indexColumnProps?: TableColumnProps
     controlColumn?: boolean
+    controlColumnWidth?: number
+    controlColumnWidthProps?: TableColumnProps
     pagination?: Ref<{
         page: number
         pageSize: number
@@ -78,20 +101,12 @@ export interface TableUseColumnsProps {
     columnsTimeFormat?: string
     columnsEmptyText?: VNode | string
     columnsTitleNoWrap?: boolean
-    controlColumnBtns?:
-        | {
-              detail: false | (ButtonProps & { children?: VNode | string })
-              edit: false | (ButtonProps & { children?: VNode | string })
-              delete: false | (ButtonProps & { children?: VNode | string })
-          }
-        | ((
-              orgNode: {
-                  DetailBtn: VNode
-                  EditBtn: VNode
-                  DeleteBtn: VNode
-              },
-              methods: TableColumnRowMethods
-          ) => VNode | JSX.Element)
+    controlColumnBtns?: {
+        detail: false | (ButtonProps & { children?: VNode | string })
+        edit: false | (ButtonProps & { children?: VNode | string })
+        delete: false | (ButtonProps & { children?: VNode | string })
+    }
+
     slots?: TableSlots
     openCUModalForm?: TableUseCUReturnOptions['openCUModalForm'] | any
     updateSource?: () => Promise<void>
@@ -108,6 +123,10 @@ export interface TableUseColumnsProps {
     detailModalLoading?: Ref<boolean> | Reactive<boolean>
     detailBackFillByGetDetail?: boolean
     tableTextConfig?: TableTextConfig
+    onGetRowDetail?: (res: AxiosResponse) => Promise<{
+        [key: string]: any
+    }>
+    columnSettingBtn?: ownPopoverProps
     [key: string]: any
 }
 
@@ -125,6 +144,7 @@ const computedTitleWidth = (title: string): number => {
     return title?.length ? title?.length * Math.floor(rootFontSize) : rootFontSize * 6
 }
 
+type TransedColumns = ATableColumnProps & { show?: boolean; filterPlaceholder?: string }
 export default (props: TableUseColumnsProps) => {
     const {
         apis,
@@ -135,9 +155,15 @@ export default (props: TableUseColumnsProps) => {
         columnsEmptyText,
         controlColumnBtns,
         indexColumn,
+        indexColumnWidth,
+        indexColumnProps,
         controlColumn,
+        controlColumnWidth,
+        controlColumnWidthProps,
         openCUModalForm,
         columnsTitleNoWrap,
+        columnsEllipsis,
+        columnsSorter,
         cuFormModel,
         emits,
         cuModalLoading,
@@ -149,29 +175,34 @@ export default (props: TableUseColumnsProps) => {
         onBeforeRowDelete,
         onRowDeleteSuccess,
         onRowDeleteError,
-
         detailModalLoading,
         openDetailModal,
         detailsDataSource,
         detailBackFillByGetDetail,
         tableTextConfig,
+        columnSettingBtn,
     } = $(props)
     const _cuModalLoading = $$(cuModalLoading)
     const _detailModalLoading = $$(detailModalLoading)
     const columnsTitleString = ref([])
-    const resColumns = ref([])
+    const transedColumns = ref([])
+
+    const resColumns = computed(() => transedColumns?.value?.filter?.(({ show }) => show))
 
     const slots = useSlots()
     const transformColumns = (
         columns: TableColumnProps[],
         titleArr: string[]
-    ): ATableColumnProps[] => {
+    ): TransedColumns[] => {
         const tempColumns = cloneDeep(columns)
         if (indexColumn) {
             tempColumns?.unshift?.({
                 title: '序号',
                 type: 'index',
-                width: 80,
+                fixed: 'left',
+                align: 'center',
+                width: indexColumnWidth,
+                ...indexColumnProps,
             })
         }
 
@@ -180,61 +211,94 @@ export default (props: TableUseColumnsProps) => {
                 title: '操作',
                 type: 'control',
                 fixed: 'right',
-                width: 220,
+                align: 'center',
+                width: controlColumnWidth,
+                ...controlColumnWidthProps,
             })
         }
-        const arr = tempColumns
-            ?.filter?.(({ hidden }) => !hidden)
-            ?.map?.((col: TableColumnProps, i: number) => {
-                const {
-                    title,
-                    nowrap,
-                    type,
-                    emptyText,
-                    align,
-                    numberFormat,
-                    numberComputed,
-                    ...o
-                } = col
-                const resCol: ATableColumnProps = {
-                    title: (
-                        <div class={[(nowrap ?? columnsTitleNoWrap) && 'whitespace-nowrap']}>
-                            {title}
-                        </div>
-                    ),
-                    width: computedTitleWidth(titleArr[i]) || String(title)?.length * 16,
-                    align: columnsAlign,
-                    customRender: (...args) =>
-                        getCustomRender(...args, col, pagination, {
-                            columnsTimeFormat,
-                            columnsEmptyText,
-                            controlColumnBtns,
-                            apis,
-                            slots,
-                            openCUModalForm,
-                            cuFormModel,
-                            emits,
-                            _cuModalLoading,
-                            cuFormBackFillByGetDetail,
-                            columns,
-                            onBeforeRowEditBackFill,
-                            fieldsNames,
-                            onGetRowDetail,
-                            updateSource,
-                            onBeforeRowDelete,
-                            onRowDeleteSuccess,
-                            onRowDeleteError,
-                            deleteRow,
-                            getDetails,
-                            editRow,
-                            openRowDetails,
-                        }),
-                    ...o,
-                }
-                return resCol
-            })
 
-        return arr
+        const fixedLeftColumns = []
+        const fixedRightColumns = []
+        const centerColumns = []
+
+        tempColumns?.forEach?.((col: TableColumnProps, i: number) => {
+            const {
+                title,
+                nowrap,
+                type,
+                emptyText,
+                ellipsis,
+                align,
+                numberFormat,
+                numberComputed,
+                width,
+                hidden,
+                fixed,
+                sorter = columnsSorter,
+                filterPlaceholder,
+                customFilterDropdown = false,
+                ...o
+            } = col
+            if (hidden) return
+            const resCol: TransedColumns = {
+                title: (
+                    <span
+                        class={[
+                            (nowrap ?? columnsTitleNoWrap) &&
+                                'block whitespace-nowrap overflow-hidden text-ellipsis',
+                        ]}
+                    >
+                        {title}
+                    </span>
+                ),
+                width: width || computedTitleWidth(titleArr[i]) || String(title)?.length * 16,
+                align: columnsAlign,
+                fixed,
+                ellipsis: columnsEllipsis ?? ellipsis,
+                filterPlaceholder: filterPlaceholder || `请输入${title}`,
+                defaultSortOrder: 'ascend',
+                sorter: localSort(col),
+                customFilterDropdown:
+                    customFilterDropdown ?? !exculdesFilterColumnTypes?.includes(col?.type),
+                customRender: (...args) =>
+                    getCustomRender(...args, col, pagination, {
+                        columnsTimeFormat,
+                        columnsEmptyText,
+                        controlColumnBtns,
+                        apis,
+                        slots,
+                        openCUModalForm,
+                        cuFormModel,
+                        emits,
+                        _cuModalLoading,
+                        cuFormBackFillByGetDetail,
+                        columns,
+                        onBeforeRowEditBackFill,
+                        fieldsNames,
+                        onGetRowDetail,
+                        updateSource,
+                        onBeforeRowDelete,
+                        onRowDeleteSuccess,
+                        onRowDeleteError,
+                        deleteRow,
+                        getDetails,
+                        editRow,
+                        openRowDetails,
+                    }),
+                show: true,
+                ...o,
+            }
+            if (fixed === 'left') {
+                return fixedLeftColumns.push(resCol)
+            }
+            if (fixed === 'right') {
+                return fixedRightColumns.push(resCol)
+            }
+
+            centerColumns.push(resCol)
+        })
+
+        return [...fixedLeftColumns, ...centerColumns, ...fixedRightColumns]
     }
 
     const openRowDetails = async (record: any) => {
@@ -296,6 +360,7 @@ export default (props: TableUseColumnsProps) => {
         _cuModalLoading.value = false
     }
     const updateColumnsTitleString = async (columns: TableColumnProps[]) => {
+        if (isEmpty(columns)) return []
         const str_arr = await Promise.all(
             columns?.map?.(async ({ title }) => await vnodeToString(title as VNode))
         )
@@ -307,9 +372,42 @@ export default (props: TableUseColumnsProps) => {
     const updateColumns = async (columns: TableColumnProps[]) => {
         const title_arr = await updateColumnsTitleString(columns)
         const arr = transformColumns(columns, title_arr)
-        resColumns.value = arr
+        transedColumns.value = arr
     }
 
+    const ColumnSettingBtn = (props: OwnPopoverProps) => {
+        const { children, buttonProps, ...popverProps } = !isEmpty(props)
+            ? props
+            : ((columnSettingBtn || {}) as OwnPopoverProps)
+
+        const content = (
+            <Flex vertical>
+                {transedColumns.value?.map?.((col: TableColumnProps & { show }, i) => {
+                    const { dataIndex, title } = col
+                    return (
+                        <Space key={JSON.stringify(dataIndex) || i}>
+                            <Checkbox v-model:checked={col.show} />
+                            <span>{title}</span>
+                        </Space>
+                    )
+                })}
+            </Flex>
+        )
+
+        return (
+            <Popover
+                placement="leftTop"
+                arrow={false}
+                title="列配置"
+                {...popverProps}
+                content={content}
+            >
+                <Button class="flex justify-center items-center" {...buttonProps}>
+                    {children}
+                </Button>
+            </Popover>
+        )
+    }
     watch(
         [() => columns],
         () => {
@@ -318,7 +416,7 @@ export default (props: TableUseColumnsProps) => {
         { immediate: true }
     )
 
-    return { resColumns }
+    return { resColumns, ColumnSettingBtn }
 }
 
 const getCustomRender = (
@@ -401,28 +499,22 @@ const getCustomRender = (
             ) : null
         return (
             <Space>
-                {isFunction(controlColumnBtns) ? (
-                    controlColumnBtns?.(
-                        { DetailBtn, EditBtn, DeleteBtn },
-                        {
-                            deleteRow,
-                            editRow,
-                            openRowDetails,
-                        }
-                    )
+                {slots?.customControlColumnBtns && isFunction(slots?.customControlColumnBtns) ? (
+                    slots?.customControlColumnBtns?.({
+                        DetailBtn,
+                        EditBtn,
+                        DeleteBtn,
+                        deleteRow,
+                        editRow,
+                        openRowDetails,
+                        rowInfo: opt,
+                        metaColumnInfo: metaColumn,
+                    })
                 ) : (
                     <>
-                        {slots?.controlColumnBtnExtraDetailStart?.({ opt, metaColumn })}
-
                         {DetailBtn}
-                        {slots?.controlColumnBtnExtraEditLeft?.({ opt, metaColumn })}
-
                         {EditBtn}
-                        {slots?.controlColumnBtnExtraEditRight?.({ opt, metaColumn })}
-
                         {DeleteBtn}
-
-                        {slots?.controlColumnBtnExtraEnd?.({ opt, metaColumn })}
                     </>
                 )}
             </Space>
@@ -430,6 +522,18 @@ const getCustomRender = (
     }
 
     return text || emptyText || columnsEmptyText
+}
+
+const localSort = ({ type, dataIndex, sorter }: TableColumnProps) => {
+    if (excludesSortColumnTypes?.includes?.(type)) return false
+    if (sorter === false) return false
+    if (!isEmpty(sorter)) return sorter
+    return (a: any, b: any, sortType: string) => {
+        const aVal = get(a, dataIndex)
+        const bVal = get(b, dataIndex)
+
+        return compareValues(aVal, bVal)
+    }
 }
 const possibleFormats = [
     'YYYY-MM-DD',
@@ -448,4 +552,36 @@ const isDate = (str: number | string) => {
         return possibleFormats?.some?.((format) => dayjs?.(str, format, true)?.isValid?.())
     }
     return false
+}
+
+// 工具函数：处理字符为英文首字符
+// 转换为首字母
+function toEnglishFirstChar(str) {
+    if (!str) return ''
+    const firstChar = str.trim().charAt(0)
+    return pinyin(firstChar, { pattern: 'first' })
+}
+
+// 工具函数：处理日期为时间戳
+function toTimestamp(value) {
+    return new Date(value).getTime()
+}
+
+// 工具函数：转为数字
+function toNumber(value) {
+    if (typeof value === 'number') return value
+    const num = parseFloat(value)
+    return isNaN(num) ? 0 : num // 无法转为数字时返回 0
+}
+
+// 通用比较器
+function compareValues(a, b) {
+    if (typeof a === 'number' && typeof b === 'number') return a - b // 数字比较
+    if (!isNaN(a) && !isNaN(b)) return toNumber(a) - toNumber(b) // 字符串数字与数字混合比较
+    if (Date.parse(a) && Date.parse(b)) return toTimestamp(a) - toTimestamp(b) // 日期比较
+
+    // 字符串比较（中文/英文/混合）
+    const firstA = toEnglishFirstChar(a)
+    const firstB = toEnglishFirstChar(b)
+    return firstA.localeCompare(firstB) // 按英文顺序比较
 }

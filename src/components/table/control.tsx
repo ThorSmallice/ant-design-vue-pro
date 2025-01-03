@@ -16,11 +16,14 @@ import {
     RangePicker,
     Select,
     SelectProps,
+    TextAreaProps,
 } from 'ant-design-vue'
 import { RangePickerProps } from 'ant-design-vue/es/date-picker'
+const { TextArea } = Input
 const ControlMap = {
     Input,
     InputNumber,
+    TextArea,
     Select,
     DatePicker,
     RangePicker,
@@ -39,11 +42,12 @@ export enum ControlMapType {
     CheckboxGroup = 'CheckboxGroup',
     Radio = 'Radio',
     RadioGroup = 'RadioGroup',
+    TextArea = 'TextArea',
 }
 
 export interface ControlMapProps {
     Input: InputProps
-    InputNumberProps: InputNumberProps
+    InputNumber: InputNumberProps
     Select: SelectProps
     DatePicker: DatePickerProps
     RangePicker: RangePickerProps
@@ -51,6 +55,7 @@ export interface ControlMapProps {
     CheckboxGroup: CheckboxGroupProps
     Radio: RadioProps
     RadioGroup: RadioGroupProps
+    TextArea: TextAreaProps
 }
 
 const Control = ({ type = 'Input', ...props }: any) => {
@@ -68,6 +73,9 @@ export enum FormItemControlModelFields {
     CheckboxGroup = 'value',
     Radio = 'checked',
     RadioGroup = 'value',
+    RangePicker = 'value',
+    DatePicker = 'value',
+    TextArea = 'value',
 }
 
 const enum ControlModelFields {
@@ -75,18 +83,40 @@ const enum ControlModelFields {
     Checked = 'checked',
 }
 
+const ControlPlaceholder = {
+    Input: '请输入',
+    InputNumber: '请输入',
+    Select: '请选择',
+    Checkbox: '',
+    CheckboxGroup: '',
+    Radio: '',
+    RadioGroup: '',
+    RangePicker: ['开始时间', '结束时间'],
+    DatePicker: '请选择',
+    TextArea: '请输入',
+}
+
 export const FormItemControl = ({ type = 'Input', model, name, customControl, ...props }: any) => {
     const Comp = ControlMap[type]
 
+    const placeholder = ControlPlaceholder[type]
+
     switch (FormItemControlModelFields[type]) {
         case ControlModelFields.Checked:
-            return <Comp v-model:checked={model[`${name}`]} {...props}></Comp>
+            return (
+                <Comp
+                    v-model:checked={model[`${name}`]}
+                    placeholder={placeholder}
+                    {...props}
+                ></Comp>
+            )
         default:
             return (
                 <Comp
                     allowClear
                     v-model:value={model[`${name}`]}
                     class={['w-full']}
+                    placeholder={placeholder}
                     {...props}
                 ></Comp>
             )
