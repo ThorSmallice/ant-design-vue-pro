@@ -4,7 +4,10 @@
             <QueryForm></QueryForm>
         </div>
 
-        <div :class="['db-table-cies-btns-wrap']" v-if="ciesBtns || columnSettingBtn">
+        <div
+            :class="['db-table-cies-btns-wrap']"
+            v-if="!ciesBtnsInQueryForm && (ciesBtns || columnSettingBtn)"
+        >
             <template v-if="slots?.customCiesBtns">
                 <slot
                     name="customCiesBtns"
@@ -50,6 +53,7 @@
                 <template v-for="slot in aTableSlots" :key="slot" v-slot:[slot]="temp">
                     <slot :name="slot" v-bind="temp"></slot>
                 </template>
+                <slot name="default"></slot>
             </ATable>
         </div>
 
@@ -63,7 +67,14 @@
 
 <script setup lang="tsx" async>
 import config from '@config/index'
-import { Table as ATable, Flex, Space, TableColumnProps } from 'ant-design-vue'
+import {
+    Table as ATable,
+    Flex,
+    Space,
+    TableColumn,
+    TableColumnGroup,
+    TableColumnProps,
+} from 'ant-design-vue'
 import { computed, reactive, ref, toRaw, watch } from 'vue'
 import { ATableSlotsWhiteList, TableProps, TableSlots } from './index.type'
 import useAutoSize from './useAutoSize'
@@ -77,6 +88,7 @@ import usePagination from './usePagination'
 import useParams from './useParams'
 import useQueryForm from './useQueryForm'
 import useDownloadTemplate from './useDownloadTemplate'
+import { isEmpty } from 'es-toolkit/compat'
 
 defineOptions({
     name: 'DbTable',
@@ -95,6 +107,7 @@ const aTableSlots = computed(() => {
         (key: string) => ATableSlotsWhiteList?.indexOf(key) !== -1
     )
 })
+
 const onResizeColumn = (w: number, col: TableColumnProps) => {
     col['width'] = w
 }

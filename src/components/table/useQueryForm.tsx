@@ -247,6 +247,7 @@ const useQueryForm = (props: TableQueryFormProps) => {
                                         {ImportBtn}
                                         {ExportDropDown}
                                         {DownloadTemplateBtn}
+                                        {ColumnSettingBtn}
                                     </>
                                 )
                             ) : null}

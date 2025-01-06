@@ -327,7 +327,7 @@ export const ATableSlotsWhiteList = [
     'headerCell',
     'customFilterIcon',
     'customFilterDropdown',
-    'default',
+    // 'default',
 ]
 
 export interface TableSetupCtx extends Omit<SetupContext, 'slots'> {

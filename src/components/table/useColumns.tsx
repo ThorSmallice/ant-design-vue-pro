@@ -194,6 +194,9 @@ export default (props: TableUseColumnsProps) => {
         columns: TableColumnProps[],
         titleArr: string[]
     ): TransedColumns[] => {
+        if (isEmpty(columns)) {
+            return null
+        }
         const tempColumns = cloneDeep(columns)
         if (indexColumn) {
             tempColumns?.unshift?.({

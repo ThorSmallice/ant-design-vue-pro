@@ -1,10 +1,11 @@
 <template>
     <Table
         :own-pagin="true"
-        full
         :columns="columns"
+        full
         :control-column-width="150"
         :query-form-items="queryFormItems"
+        :cies-btns-in-query-form="true"
         :apis="{
             list: getUsersApi,
             details: getUserDetailsApi,
@@ -19,11 +20,12 @@
             total: ['data', 'total'],
             detail: ['data', 'data'],
         }"
-    ></Table>
+    >
+    </Table>
 </template>
 
 <script setup lang="tsx">
-import { Image } from 'ant-design-vue'
+import { Image, TableColumn, TableColumnGroup } from 'ant-design-vue'
 import { ControlMapType, Table, TableConfig, TableProps } from 'antd-vue-dbthor'
 import { ref } from 'vue'
 import axios from '@docs/apis/request'
