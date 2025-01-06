@@ -18,10 +18,20 @@ export interface TableUseDataSourceProps {
     onSourceError: (err: Error) => void
     emits?: EmitFn
     dataSource?: any
+    immediateRequest?: boolean
 }
 
 export default (props: TableUseDataSourceProps) => {
-    const { api, fieldsNames, dataSource, params, onSourceSuccess, onSourceError, emits } = $(props)
+    const {
+        api,
+        fieldsNames,
+        dataSource,
+        params,
+        onSourceSuccess,
+        onSourceError,
+        emits,
+        immediateRequest,
+    } = $(props)
 
     const source = ref([])
     const loading = ref(false)
@@ -67,17 +77,20 @@ export default (props: TableUseDataSourceProps) => {
         api?.list && getSource(params)
     }
 
-    watch(
-        () => params,
-        () => {
-            requestAnimationFrame(() => {
-                updateSource()
-            })
-        },
-        {
-            immediate: true,
-        }
-    )
+    if (immediateRequest) {
+        watch(
+            () => params,
+            () => {
+                requestAnimationFrame(() => {
+                    updateSource()
+                })
+            },
+            {
+                immediate: true,
+            }
+        )
+    }
+
     onBeforeUnmount(() => {
         controller?.abort?.()
     })

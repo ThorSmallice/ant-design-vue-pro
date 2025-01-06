@@ -114,6 +114,7 @@ const onResizeColumn = (w: number, col: TableColumnProps) => {
 
 const {
     showSorterTooltip = config.table.showSorterTooltip,
+    immediateRequest = config.table.immediateRequest,
     apis,
     full = config.table.full,
     params,
@@ -300,6 +301,7 @@ const { source, loading, total, updateSource }: any = $$(
         onSourceSuccess,
         onSourceError,
         dataSource,
+        immediateRequest,
     })
 )
 const { ImportBtn } = $$(

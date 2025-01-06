@@ -12,7 +12,7 @@ import {
 export const TableConfig: TableProps = {
     showSorterTooltip: true,
     full: false,
-
+    immediateRequest: true,
     scroll: {
         x: 'max-content',
         y: 'auto',

@@ -1,4 +1,5 @@
 <template>
+    <Button @click="click">点我</Button>
     <Table
         :own-pagin="true"
         :columns="columns"
@@ -7,7 +8,7 @@
         :query-form-items="queryFormItems"
         :cies-btns-in-query-form="true"
         :apis="{
-            list: getUsersApi,
+            list: listApi,
             details: getUserDetailsApi,
             create: createUserApi,
             delete: deleteUserApi,
@@ -15,7 +16,6 @@
         }"
         :fields-names="{
             ...TableConfig.fieldsNames,
-
             list: ['data', 'data'],
             total: ['data', 'total'],
             detail: ['data', 'data'],
@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="tsx">
-import { Image, TableColumn, TableColumnGroup } from 'ant-design-vue'
+import { Button, Image, TableColumn, TableColumnGroup } from 'ant-design-vue'
 import { ControlMapType, Table, TableConfig, TableProps } from 'antd-vue-dbthor'
 import { ref } from 'vue'
 import axios from '@docs/apis/request'
@@ -36,9 +36,13 @@ const getUserDetailsApi = async ({ id }: any, config?: any) => await axios.get(`
 const createUserApi = async (data?: any, config?: any) => await axios.post('/users', data, config)
 const deleteUserApi = async ({ id }: any, config?: any) => await axios.delete(`/api/users/${id}`)
 const updateUserApi = async ({ id, ...data }: any, config?: any) => {
-    console.log(id, data)
-
     return await axios.put(`/api/users/${id}`, data, config)
+}
+const listApi = ref(getUsersApi)
+const getContractManagePageApi = async (params?: any, config?: any) =>
+    await axios.get('/admin-api/wms/task-plan/page', { params })
+const click = () => {
+    listApi.value = getContractManagePageApi
 }
 
 const columns = ref<TableProps['columns']>([

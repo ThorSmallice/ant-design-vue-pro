@@ -15,10 +15,10 @@
 <<< @../../examples/table/base.vue
 :::
 
-<Table></Table>
+<!-- <Table></Table> -->
 
 <Modal v-model:open="open" :footer="null" width="80%" :bodyStyle="{height:'100vh'}" title="基础示例">
-    <Table :style="{width:'100%'}"></Table>
+    <!-- <Table :style="{width:'100%'}"></Table> -->
 </Modal>
 <Button :icon="h(FullscreenOutlined)" type="link" title="展开" @click="click"></Button>
 
