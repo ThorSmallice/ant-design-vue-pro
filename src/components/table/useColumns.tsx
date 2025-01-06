@@ -25,6 +25,7 @@ import {
     ownBtnProps,
     OwnPopoverProps,
     ownPopoverProps,
+    RequestParamsFormatter,
     TableProps,
     TableSlots,
     TableTextConfig,
@@ -112,6 +113,7 @@ export interface TableUseColumnsProps {
     updateSource?: () => Promise<void>
     cuFormModel?: TableUseCUReturnOptions['cuFormModel']
     emits?: EmitFn
+    detailsRequestParamsFormatter?: RequestParamsFormatter
     onBeforeRowEditBackFill?: (
         res: AxiosResponse | any,
         record?: any
@@ -178,6 +180,7 @@ export default (props: TableUseColumnsProps) => {
         detailModalLoading,
         openDetailModal,
         detailsDataSource,
+        detailsRequestParamsFormatter,
         detailBackFillByGetDetail,
         tableTextConfig,
         columnSettingBtn,
@@ -336,8 +339,12 @@ export default (props: TableUseColumnsProps) => {
 
     const getDetails = async (record: any) => {
         return new Promise(async (resolve, reject) => {
+            const params = isFunction(detailsRequestParamsFormatter)
+                ? await detailsRequestParamsFormatter?.(record)
+                : { id: record?.id }
+
             return apis
-                ?.details?.({ id: record?.id }, record)
+                ?.details?.(params, record)
                 ?.then(async (res) => {
                     return resolve(
                         (await onGetRowDetail?.(res)) || get(res, fieldsNames?.detail) || {}

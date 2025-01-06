@@ -46,9 +46,9 @@ export const proxy = {
         rewrite: (path: string) => path.replace(/^\/api/, '/hnz/admin-api'),
     },
     '/admin-api': {
-        target: 'http://10.10.1.217:48081',
+        target: 'https://iot.scet.com.cn',
         changeOrigin: true,
-        rewrite: (path: string) => path.replace(/^\/api/, '/admin-api'),
+        rewrite: (path: string) => path.replace(/^\/admin-api/, '/micro-dev-api'),
     },
 }
 export const alias = {

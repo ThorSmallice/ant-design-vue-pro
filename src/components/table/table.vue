@@ -120,6 +120,7 @@ const {
     rowKey = 'id',
     columnSettingBtn = config.table.columnSettingBtn,
     requestParamsFormatter = config.table.requestParamsFormatter,
+    detailsRequestParamsFormatter = config.table.detailsRequestParamsFormatter,
     fieldsNames = config.table.fieldsNames,
     onSourceSuccess = config.table.onSourceSuccess,
     onSourceError = config.table.onSourceError,
@@ -383,6 +384,7 @@ const { resColumns, ColumnSettingBtn }: any = $$(
         controlColumnWidth,
         controlColumnWidthProps,
         columnSettingBtn,
+        detailsRequestParamsFormatter,
     })
 )
 

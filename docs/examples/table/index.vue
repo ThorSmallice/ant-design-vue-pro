@@ -14,6 +14,7 @@
         @before-cu-form-submit="beforeSubmit"
         :apis="{
             list: getContractManagePageApi,
+            details: getContractManageDetailApi,
             export: exportApi,
             import: importApi,
             template: templateApi,
@@ -25,6 +26,7 @@
         :downloadTempalteParamsFormat="downloadTempalteParamsFormat"
         templateFileName="模板.xlsx"
         :cies-btns-in-query-form="true"
+        :detailsRequestParamsFormatter="detailsRequestParamsFormatter"
     >
     </Table>
 </template>
@@ -36,6 +38,12 @@ import { computed, ref, toRaw } from 'vue'
 import request from 'axios'
 const tableRef = ref()
 const abc = ref()
+const detailsRequestParamsFormatter = async (record: any) => {
+    return {
+        id: record?.id,
+        companyId: record?.companyId,
+    }
+}
 const onModelChange = (a) => {
     abc.value = a.status
 }
@@ -68,6 +76,8 @@ const exportApi = async (params) => {
 const templateApi = async (params) => {
     return axios.get('/admin-api/basic/config/template/get', { params, responseType: 'blob' })
 }
+const getContractManageDetailApi = async (params?: any) =>
+    await axios.get('/admin-api/wms/task-plan/get', { params })
 
 const importApi = async (data) => {
     return axios.post(

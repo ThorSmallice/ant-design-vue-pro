@@ -166,6 +166,7 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
         template: TablePropsApi
     }>
     requestParamsFormatter?: null | RequestParamsFormatter
+    detailsRequestParamsFormatter?: null | TableUseColumnsProps['detailsRequestParamsFormatter']
     onSourceSuccess?: null | TableUseDataSourceProps['onSourceSuccess']
     onSourceError?: null | TableUseDataSourceProps['onSourceError']
     onGetRowDetail?: null | TableUseColumnsProps['onGetRowDetail']
