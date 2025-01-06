@@ -13,7 +13,7 @@ export interface TableUseDownloadTemplateProps {
     fieldsNames?: TableProps['fieldsNames']
     templateFileName?: string
     downloadTemplateBtn?: ownBtnProps
-    downloadTempalteParamsFormat?: TableProps['requestParamsFormatter']
+    downloadTempalteParamsFormatter?: TableProps['requestParamsFormatter']
     onTemplateRequestSuccess?: (res: AxiosResponse) => Promise<DownloadResResponse | false>
     onTemplateDownloadSuccess?: (res: any) => Promise<false | void>
     onTemplateDownloadError?: (error: Error) => Promise<false | void>
@@ -33,7 +33,7 @@ export default (props: TableUseDownloadTemplateProps) => {
         fieldsNames,
         resultParams,
         templateFileName,
-        downloadTempalteParamsFormat,
+        downloadTempalteParamsFormatter,
         onTemplateRequestSuccess,
         onTemplateDownloadSuccess,
         onTemplateDownloadError,
@@ -44,8 +44,8 @@ export default (props: TableUseDownloadTemplateProps) => {
     const downloadTempalte = async () => {
         if (!apis?.template) return console.warn('请传递apis.template')
         downloadTemplateBtnLoading.value = true
-        const params = isFunction(downloadTempalteParamsFormat)
-            ? downloadTempalteParamsFormat?.(cloneDeep(resultParams))
+        const params = isFunction(downloadTempalteParamsFormatter)
+            ? downloadTempalteParamsFormatter?.(cloneDeep(resultParams))
             : {}
 
         await apis

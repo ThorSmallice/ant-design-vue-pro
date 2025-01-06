@@ -21,7 +21,7 @@ export interface TableUseExportProps {
     resultParams?: any
     exportFileByParams?: boolean
     exportFileName?: string
-    exportFileParamsFormat?: (vals?: any, type?: ExportDataType) => Promise<any>
+    exportFileParamsFormatter?: (vals?: any, type?: ExportDataType) => Promise<any>
     exportDropdown?: ownDropDownProps
     exportCurrentPageBtn?: ownBtnProps
     exportAllBtn?: ownBtnProps
@@ -39,7 +39,7 @@ export default (props: TableUseExportProps) => {
         fieldsNames,
         exportFileByParams,
         exportFileName,
-        exportFileParamsFormat,
+        exportFileParamsFormatter,
         onExportRequestSuccess,
         onExportSuccess,
         onExportError,
@@ -70,8 +70,8 @@ export default (props: TableUseExportProps) => {
         }
 
         const resParams = exportFileByParams
-            ? exportFileParamsFormat && isFunction(exportFileParamsFormat)
-                ? exportFileParamsFormat?.(
+            ? exportFileParamsFormatter && isFunction(exportFileParamsFormatter)
+                ? exportFileParamsFormatter?.(
                       {
                           ...resultParams,
                           ...exportDataParams,

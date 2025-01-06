@@ -166,7 +166,7 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
         template: TablePropsApi
     }>
     requestParamsFormatter?: null | RequestParamsFormatter
-    detailsRequestParamsFormatter?: null | TableUseColumnsProps['detailsRequestParamsFormatter']
+    onBeforeRequestDetails?: null | TableUseColumnsProps['onBeforeRequestDetails']
     onSourceSuccess?: null | TableUseDataSourceProps['onSourceSuccess']
     onSourceError?: null | TableUseDataSourceProps['onSourceError']
     onGetRowDetail?: null | TableUseColumnsProps['onGetRowDetail']
@@ -250,22 +250,22 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     exportAllBtn?: TableUseExportProps['exportAllBtn']
 
     exportFileByParams?: TableUseExportProps['exportFileByParams']
-    exportFileParamsFormat?: null | TableUseExportProps['exportFileParamsFormat']
+    exportFileParamsFormatter?: null | TableUseExportProps['exportFileParamsFormatter']
     exportFileName?: TableUseExportProps['exportFileName']
     onExportRequestSuccess?: null | TableUseExportProps['onExportRequestSuccess']
     onExportSuccess?: null | TableUseExportProps['onExportSuccess']
     onExportError?: null | TableUseExportProps['onExportError']
 
     importUploadProps?: TableUseImportProps['importUploadProps']
-    importFileParamsFormat?: null | TableUseImportProps['importFileParamsFormat']
+    importFileParamsFormatter?: null | TableUseImportProps['importFileParamsFormatter']
     onImportSuccess?: null | TableUseImportProps['onImportSuccess']
     onImportError?: null | TableUseImportProps['onImportError']
 
     downloadTemplateBtn?: TableUseDownloadTemplateProps['downloadTemplateBtn']
     templateFileName?: TableUseDownloadTemplateProps['templateFileName']
-    downloadTempalteParamsFormat?:
+    downloadTempalteParamsFormatter?:
         | null
-        | TableUseDownloadTemplateProps['downloadTempalteParamsFormat']
+        | TableUseDownloadTemplateProps['downloadTempalteParamsFormatter']
 
     onTemplateRequestSuccess?: null | TableUseDownloadTemplateProps['onTemplateRequestSuccess']
     onTemplateDownloadSuccess?: null | TableUseDownloadTemplateProps['onTemplateDownloadSuccess']

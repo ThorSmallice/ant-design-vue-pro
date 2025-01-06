@@ -23,10 +23,10 @@
         :params="params"
         @cu-form-model-change="onModelChange"
         @source-success="onsuccess"
-        :downloadTempalteParamsFormat="downloadTempalteParamsFormat"
+        :downloadTempalteParamsFormatter="downloadTempalteParamsFormatter"
         templateFileName="模板.xlsx"
         :cies-btns-in-query-form="true"
-        :detailsRequestParamsFormatter="detailsRequestParamsFormatter"
+        :onBeforeRequestDetails="onBeforeRequestDetails"
     >
     </Table>
 </template>
@@ -38,7 +38,7 @@ import { computed, ref, toRaw } from 'vue'
 import request from 'axios'
 const tableRef = ref()
 const abc = ref()
-const detailsRequestParamsFormatter = async (record: any) => {
+const onBeforeRequestDetails = async (record: any) => {
     return {
         id: record?.id,
         companyId: record?.companyId,
@@ -53,7 +53,7 @@ const onsuccess = async (res) => {
         total: res?.data?.data?.total,
     }
 }
-const downloadTempalteParamsFormat = ({ companyId }) => {
+const downloadTempalteParamsFormatter = ({ companyId }) => {
     return {
         companyId,
     }

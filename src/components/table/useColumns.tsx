@@ -113,7 +113,7 @@ export interface TableUseColumnsProps {
     updateSource?: () => Promise<void>
     cuFormModel?: TableUseCUReturnOptions['cuFormModel']
     emits?: EmitFn
-    detailsRequestParamsFormatter?: RequestParamsFormatter
+    onBeforeRequestDetails?: RequestParamsFormatter
     onBeforeRowEditBackFill?: (
         res: AxiosResponse | any,
         record?: any
@@ -180,7 +180,7 @@ export default (props: TableUseColumnsProps) => {
         detailModalLoading,
         openDetailModal,
         detailsDataSource,
-        detailsRequestParamsFormatter,
+        onBeforeRequestDetails,
         detailBackFillByGetDetail,
         tableTextConfig,
         columnSettingBtn,
@@ -339,8 +339,8 @@ export default (props: TableUseColumnsProps) => {
 
     const getDetails = async (record: any) => {
         return new Promise(async (resolve, reject) => {
-            const params = isFunction(detailsRequestParamsFormatter)
-                ? await detailsRequestParamsFormatter?.(record)
+            const params = isFunction(onBeforeRequestDetails)
+                ? await onBeforeRequestDetails?.(record)
                 : { id: record?.id }
 
             return apis

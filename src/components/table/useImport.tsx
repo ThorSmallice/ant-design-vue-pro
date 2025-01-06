@@ -16,7 +16,7 @@ export interface TableUseImportProps {
     onImportError?: (error: Error) => Promise<any>
     importBtn?: ownBtnProps
     importUploadProps?: UploadProps
-    importFileParamsFormat?: null | ((options: UploadRequestOption) => Promise<any>)
+    importFileParamsFormatter?: null | ((options: UploadRequestOption) => Promise<any>)
     [key: string]: any
 }
 
@@ -28,7 +28,7 @@ export default (props: TableUseImportProps) => {
         onImportSuccess,
         onImportError,
         importUploadProps,
-        importFileParamsFormat,
+        importFileParamsFormatter,
         updateSource,
     } = $(props)
 
@@ -41,8 +41,8 @@ export default (props: TableUseImportProps) => {
         const data = { file }
 
         const requestData =
-            importFileParamsFormat && isFunction(importFileParamsFormat)
-                ? await importFileParamsFormat(options)
+            importFileParamsFormatter && isFunction(importFileParamsFormatter)
+                ? await importFileParamsFormatter(options)
                 : data
 
         try {
