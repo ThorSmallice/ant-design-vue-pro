@@ -45,7 +45,7 @@ export default (props: TableUseDownloadTemplateProps) => {
         if (!apis?.template) return console.warn('请传递apis.template')
         downloadTemplateBtnLoading.value = true
         const params = isFunction(downloadTempalteParamsFormatter)
-            ? downloadTempalteParamsFormatter?.(cloneDeep(resultParams))
+            ? await downloadTempalteParamsFormatter?.(cloneDeep(resultParams))
             : {}
 
         await apis

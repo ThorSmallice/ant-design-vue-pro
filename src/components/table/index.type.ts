@@ -54,7 +54,9 @@ export type TablePropsApi = (
 export type RequestParams = {
     [key: string]: any
 }
-export type RequestParamsFormatter = (params: RequestParams | any) => RequestParams | any
+export type RequestParamsFormatter = (
+    params: RequestParams | any
+) => Promise<RequestParams | any> | RequestParams | any
 export type CRUDRequestFinish = (res: AxiosResponse, info?: any) => boolean | void
 export type ParamsFormatter = (
     vals:
