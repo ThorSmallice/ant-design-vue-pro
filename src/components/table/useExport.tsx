@@ -71,7 +71,7 @@ export default (props: TableUseExportProps) => {
 
         const resParams = exportFileByParams
             ? exportFileParamsFormatter && isFunction(exportFileParamsFormatter)
-                ? exportFileParamsFormatter?.(
+                ? await exportFileParamsFormatter?.(
                       {
                           ...resultParams,
                           ...exportDataParams,
