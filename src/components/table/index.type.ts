@@ -12,7 +12,7 @@ import { RenderExpandIconProps } from 'ant-design-vue/es/vc-table/interface'
 import { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { cloneDeep } from 'es-toolkit'
 import { isArray, isObject } from 'es-toolkit/compat'
-import { Ref, SetupContext, VNode } from 'vue'
+import { Reactive, Ref, SetupContext, VNode } from 'vue'
 import { JSX } from 'vue/jsx-runtime'
 import { TableUseAutoSizeProps } from './useAutoSize'
 import { TableColumnCustomRenderArgs, TableColumnProps, TableUseColumnsProps } from './useColumns'
@@ -34,11 +34,11 @@ export interface TableInstance {
     source: any[]
     updateSource: () => Promise<void>
     QueryForm: () => JSX.Element | VNode
-    queryFormState: Ref<{ values: any }>
+    queryFormModel: Reactive<{ values: any }>
     QueryFormInstance: Partial<TableQueryFormInstance>
     Pagination: () => JSX.Element | VNode
-    cuModalFormIsEdit: boolean
-    cuFormModel: Ref<{ values: any }>
+    cuModalFormIsEdit: Readonly<Ref<boolean>>
+    cuFormModel: Reactive<{ values: any }>
     CreateBtn: (props?: OwnBtnProps) => JSX.Element | VNode
     ImportBtn: (props?: OwnBtnProps) => JSX.Element | VNode
     ExportDropDown: (props?: OwnDropProps) => JSX.Element | VNode
@@ -264,7 +264,7 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     createBtn?: false | TableUseCUFormProps['createBtn']
 
     importBtn?: TableUseImportProps['importBtn']
-
+    exportBtnMode?: 'dropdown' | 'all'
     exportDropdown?: TableUseExportProps['exportDropdown']
     exportCurrentPageBtn?: TableUseExportProps['exportCurrentPageBtn']
     exportAllBtn?: TableUseExportProps['exportAllBtn']

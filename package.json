@@ -2,7 +2,7 @@
     "name": "antd-vue-dbthor",
     "type": "module",
     "private": false,
-    "version": "1.0.59",
+    "version": "1.0.60",
     "description": "",
     "main": "index.js",
     "scripts": {

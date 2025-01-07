@@ -162,6 +162,7 @@ export const TableConfig: TableProps = {
         children: '导入',
         icon: <ImportOutlined />,
     },
+    exportBtnMode: 'dropdown',
     exportDropdown: {
         children: '导出',
         buttonProps: {

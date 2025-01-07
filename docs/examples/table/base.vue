@@ -1,18 +1,17 @@
 <template>
-    <Button @click="click">点我</Button>
     <Table
         :own-pagin="true"
         :columns="columns"
         full
         :control-column-width="150"
         :query-form-items="queryFormItems"
-        :cies-btns-in-query-form="true"
         :apis="{
             list: getUsersApi,
             details: getUserDetailsApi,
             create: createUserApi,
             delete: deleteUserApi,
             update: updateUserApi,
+            export: async () => {},
         }"
         :fields-names="{
             ...TableConfig.fieldsNames,
@@ -22,6 +21,8 @@
         }"
         ref="tableRef"
         :query-form-default-values="defaultValues"
+        :export-dropdown="false"
+        :export-btn-mode="'all'"
     >
     </Table>
 </template>
@@ -136,11 +137,6 @@ const queryFormItems = computed((): TableProps['queryFormItems'] => [
         },
     },
 ])
-
-const click = () => {
-    console.log(tableRef.value.queryFormState)
-    tableRef.value.queryFormState.values.email = '2'
-}
 </script>
 
 <style scoped></style>

@@ -56,17 +56,21 @@ export default (props: TableUseExportProps) => {
         if (!apis?.export) return console.warn('请传递apis.export')
 
         let exportDataParams: any = null
-        if (type === 'currentPage') {
-            exportCurrentPageBtnLoading.value = true
-            exportDataParams = {
-                [fieldsNames.page]: pagination.page,
-                [fieldsNames.pageSize]: pagination.pageSize,
-            }
-        } else {
-            exportAllBtnLoading.value = true
-            exportDataParams = {
-                [fieldsNames.pageSize]: -1,
-            }
+
+        switch (type) {
+            case 'currentPage':
+                exportCurrentPageBtnLoading.value = true
+                exportDataParams = {
+                    [fieldsNames.page]: pagination.page,
+                    [fieldsNames.pageSize]: pagination.pageSize,
+                }
+                break
+            case 'allPage':
+                exportAllBtnLoading.value = true
+                exportDataParams = {
+                    [fieldsNames.pageSize]: -1,
+                }
+                break
         }
 
         const resParams = exportFileByParams
@@ -138,6 +142,7 @@ export default (props: TableUseExportProps) => {
     }
 
     const ExportCurrentPageBtn = (props?: OwnBtnProps) => {
+        if (!exportCurrentPageBtn || !apis?.export) return null
         const { children, ...btnProps } = merge(
             exportCurrentPageBtn || {},
             props || {}
@@ -155,6 +160,8 @@ export default (props: TableUseExportProps) => {
         )
     }
     const ExportAllBtn = (props?: OwnBtnProps) => {
+        if (!exportAllBtn || !apis?.export) return null
+
         const { children, ...btnProps } = merge(exportAllBtn || {}, props || {}) as OwnBtnProps
 
         return (

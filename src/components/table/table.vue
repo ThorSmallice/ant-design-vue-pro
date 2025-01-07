@@ -25,7 +25,9 @@
                     <Flex :gap="8">
                         <CreateBtn></CreateBtn>
                         <ImportBtn></ImportBtn>
-                        <ExportDropDown></ExportDropDown>
+
+                        <ExportDropDown v-if="exportBtnMode === 'dropdown'"></ExportDropDown>
+                        <ExportAllBtn v-if="exportBtnMode === 'all'"></ExportAllBtn>
                         <DownloadTemplateBtn></DownloadTemplateBtn>
                     </Flex>
                     <Flex>
@@ -182,6 +184,7 @@ const {
     ciesBtnsInQueryForm = config.table.ciesBtnsInQueryForm,
     createBtn = config.table.createBtn,
     importBtn = config.table.importBtn,
+    exportBtnMode = config.table.exportBtnMode,
     exportDropdown = config.table.exportDropdown,
     exportCurrentPageBtn = config.table.exportCurrentPageBtn,
     exportAllBtn = config.table.exportAllBtn,
@@ -439,11 +442,11 @@ defineExpose<TableInstance>({
     source: unref(source),
     updateSource,
     QueryForm: unref(QueryForm),
-    queryFormState: toRaw(queryFormState),
+    queryFormModel: unref(queryFormState),
     QueryFormInstance: unref(QueryFormInstance),
     Pagination: unref(Pagination),
-    cuModalFormIsEdit: toRaw(unref(cuModalFormIsEdit)),
-    cuFormModel: toRaw(cuFormModel),
+    cuModalFormIsEdit: readonly(cuModalFormIsEdit),
+    cuFormModel: unref(cuFormModel),
     CreateBtn: unref(CreateBtn),
     ImportBtn: unref(ImportBtn),
     ExportDropDown: unref(ExportDropDown),
