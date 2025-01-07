@@ -120,7 +120,7 @@ export type queryFormSlotOptions = {
     QueryFormInstance: TableQueryFormInstance
 } & ciesBtnsVNode
 export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 'scroll'> {
-    immediateRequest?: boolean
+    autoRequest?: TableUseDataSourceProps['autoRequest']
     scroll?: {
         x: true | string | number
         y: boolean | number | 'auto'

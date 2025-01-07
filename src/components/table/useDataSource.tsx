@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios'
-import { get } from 'es-toolkit/compat'
+import { get, isEmpty, isObject } from 'es-toolkit/compat'
 import { isFunction } from 'es-toolkit/predicate'
-import { EmitFn, onBeforeUnmount, ref, watch } from 'vue'
+import { EmitFn, onBeforeUnmount, ref, watch, WatchOptions } from 'vue'
 import { RequestParams, TableProps } from './index.type'
 export interface TableSourceResult {
     total: number
@@ -10,6 +10,7 @@ export interface TableSourceResult {
     pageSize?: number | string
 }
 
+type AutoRequestOptions = false | WatchOptions
 export interface TableUseDataSourceProps {
     api: any
     fieldsNames: TableProps['fieldsNames']
@@ -18,7 +19,7 @@ export interface TableUseDataSourceProps {
     onSourceError: (err: Error) => void
     emits?: EmitFn
     dataSource?: any
-    immediateRequest?: boolean
+    autoRequest?: AutoRequestOptions
 }
 
 export default (props: TableUseDataSourceProps) => {
@@ -30,7 +31,7 @@ export default (props: TableUseDataSourceProps) => {
         onSourceSuccess,
         onSourceError,
         emits,
-        immediateRequest,
+        autoRequest,
     } = $(props)
 
     const source = ref([])
@@ -77,7 +78,7 @@ export default (props: TableUseDataSourceProps) => {
         api?.list && getSource(params)
     }
 
-    if (immediateRequest) {
+    if (autoRequest !== false && isObject(autoRequest)) {
         watch(
             () => params,
             () => {
@@ -85,9 +86,7 @@ export default (props: TableUseDataSourceProps) => {
                     updateSource()
                 })
             },
-            {
-                immediate: true,
-            }
+            autoRequest
         )
     }
 
