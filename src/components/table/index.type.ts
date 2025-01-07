@@ -19,6 +19,7 @@ import { TableColumnCustomRenderArgs, TableColumnProps, TableUseColumnsProps } f
 import { TableUseCUFormProps } from './useCU'
 import { TableUseDataSourceProps } from './useDataSource'
 import { TableUseDetailProps } from './useDetail'
+import { TableUseDownloadTemplateProps } from './useDownloadTemplate'
 import { TableUseExportProps } from './useExport'
 import { TableUseImportProps } from './useImport'
 import {
@@ -26,10 +27,25 @@ import {
     TableQueryFormItemProps,
     TableQueryFormProps,
 } from './useQueryForm'
-import { TableUseDownloadTemplateProps } from './useDownloadTemplate'
 
 type TableFieldNames = string | string[]
 
+export interface TableInstance {
+    source: any[]
+    updateSource: () => Promise<void>
+    QueryForm: () => JSX.Element | VNode
+    queryFormState: Ref<{ values: any }>
+    QueryFormInstance: Partial<TableQueryFormInstance>
+    Pagination: () => JSX.Element | VNode
+    cuModalFormIsEdit: boolean
+    cuFormModel: Ref<{ values: any }>
+    CreateBtn: (props?: OwnBtnProps) => JSX.Element | VNode
+    ImportBtn: (props?: OwnBtnProps) => JSX.Element | VNode
+    ExportDropDown: (props?: OwnDropProps) => JSX.Element | VNode
+    ExportCurrentPageBtn: (props?: OwnBtnProps) => JSX.Element | VNode
+    ExportAllBtn: (props?: OwnBtnProps) => JSX.Element | VNode
+    onResize: (entries?: any) => void
+}
 export interface OwnBtnProps extends ButtonProps {
     children?: JSX.Element[] | VNode[] | string
 }

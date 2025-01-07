@@ -14,7 +14,7 @@ import { FieldNamesType } from 'ant-design-vue/es/cascader'
 import { Callbacks, RuleError, RuleObject } from 'ant-design-vue/es/form/interface'
 import { Props, ValidateInfo, validateInfos, validateOptions } from 'ant-design-vue/es/form/useForm'
 import { cloneDeep, isFunction, omit } from 'es-toolkit'
-import { computed, h, Reactive, reactive, ref, Ref, toRaw, useSlots, VNode } from 'vue'
+import { computed, h, Reactive, reactive, ref, Ref, toRaw, useSlots, VNode, watch } from 'vue'
 import { ControlMapProps, FormItemControl } from './control'
 import { ciesBtnsVNode, OwnBtnProps } from './index.type'
 import { TableUseCUReturnOptions } from './useCU'
@@ -51,7 +51,6 @@ export interface TableQueryFormItemProps<T extends keyof ControlMapProps = keyof
     controlProps?: ControlMapProps[T] & { [key: string]: any }
     customControl?: (model: Reactive<any>, name: FormItemProps['name']) => VNode
     colProps?: ColProps
-    formItemProps?: FormItemProps
     rules?: RuleObject[]
 }
 
@@ -100,17 +99,29 @@ const useQueryForm = (props: TableQueryFormProps) => {
         ciesBtnsInQueryForm,
         ciesBtnsVNode,
         defaultValues,
+        emits,
     } = $(props)
 
     const initValues = defaultValues ? toRaw(defaultValues) : {}
 
-    const queryFormState = reactive<any>({ values: cloneDeep(initValues) })
-    const formRef = ref<FormInstance>()
+    const queryFormState = reactive<{
+        values: any
+    }>({ values: cloneDeep(initValues) })
+    const formRef = ref<any>()
 
+    watch(
+        () => queryFormState.values,
+        (currentModel, prevModel) => {
+            emits('queryFormModelChange', currentModel, prevModel)
+        },
+        {
+            deep: true,
+        }
+    )
     const { customQueryFormBtns, customCiesBtns } = $(useSlots())
 
     const queryFormParams = reactive<{ values: any }>({
-        values: {},
+        values: cloneDeep(initValues),
     })
 
     const onQueryFormFinish = (vals: any) => {
@@ -118,20 +129,15 @@ const useQueryForm = (props: TableQueryFormProps) => {
     }
 
     const onQueryFormReset = () => {
-        queryFormSubmitWithReset && onQueryFormFinish(null)
-        formRef?.value?.resetFields()
+        queryFormSubmitWithReset && onQueryFormFinish(initValues)
+        formRef?.value?.resetFields(initValues)
+        queryFormState.values = cloneDeep(initValues)
     }
+    const QueryFormInstance = reactive({
+        onQueryFormFinish,
+        onQueryFormReset,
+    })
 
-    const QueryFormInstance = $(
-        computed(
-            () =>
-                ({
-                    ...(formRef.value || {}),
-                    onQueryFormFinish,
-                    onQueryFormReset,
-                } as TableQueryFormInstance)
-        )
-    )
     const SubmitBtn = queryFormSubmitBtn ? (
         isFunction(queryFormSubmitBtn) ? (
             queryFormSubmitBtn?.(QueryFormInstance)
@@ -171,7 +177,10 @@ const useQueryForm = (props: TableQueryFormProps) => {
 
     const QueryForm = () => (
         <Form
-            ref={formRef}
+            ref={(e) => {
+                formRef.value = e
+                Object.assign(QueryFormInstance, e)
+            }}
             model={queryFormState.values}
             onFinish={onQueryFormFinish}
             {...queryFormProps}
@@ -187,7 +196,7 @@ const useQueryForm = (props: TableQueryFormProps) => {
                             controlProps,
                             customControl,
                             colProps,
-                            formItemProps,
+                            ...formItemProps
                         } = item
                         return (
                             <Col
@@ -265,6 +274,7 @@ const useQueryForm = (props: TableQueryFormProps) => {
         QueryForm,
         QueryFormInstance,
         queryFormParams,
+        queryFormState,
     }
 }
 

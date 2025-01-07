@@ -19,5 +19,5 @@ export default (props: {
         ></APagination>
     )
 
-    return Pagination
+    return { Pagination }
 }

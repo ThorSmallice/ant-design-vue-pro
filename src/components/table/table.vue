@@ -68,8 +68,8 @@
 <script setup lang="tsx" async>
 import config from '@config/index'
 import { Table as ATable, Flex, TableColumnProps } from 'ant-design-vue'
-import { computed, reactive, ref, toRaw, watch } from 'vue'
-import { ATableSlotsWhiteList, TableProps, TableSlots } from './index.type'
+import { computed, reactive, readonly, ref, toRaw, unref, watch } from 'vue'
+import { ATableSlotsWhiteList, TableInstance, TableProps, TableSlots } from './index.type'
 import useAutoSize from './useAutoSize'
 import useColumns from './useColumns'
 import useCU from './useCU'
@@ -93,6 +93,7 @@ const slots = defineSlots<TableSlots>()
 const emits = defineEmits<{
     (e: 'cuFormModelChange', currentModel: any, prevModel: any): void
     (e: 'cuFormEditStatusChange', cuFormEditStatus: boolean): void
+    (e: 'queryFormModelChange', currentModel: any, prevModel: any): void
 }>()
 const aTableSlots = computed(() => {
     return Object?.keys?.(slots)?.filter?.(
@@ -216,7 +217,7 @@ const {
 
 const ciesBtnsVNode = ref({})
 
-const { QueryForm, QueryFormInstance, queryFormParams } = $$(
+const { QueryForm, QueryFormInstance, queryFormParams, queryFormState } = $$(
     useQueryForm({
         queryFormItems,
         queryFormProps,
@@ -232,6 +233,7 @@ const { QueryForm, QueryFormInstance, queryFormParams } = $$(
         ciesBtnsInQueryForm,
         ciesBtnsVNode,
         defaultValues: queryFormDefaultValues,
+        emits,
     })
 )
 
@@ -384,7 +386,7 @@ const { resColumns, ColumnSettingBtn }: any = $$(
     })
 )
 
-const Pagination = $$(usePagination({ pagination, total, ownPaginProps }))
+const { Pagination } = $$(usePagination({ pagination, total, ownPaginProps }))
 
 const { x, y, onResize } = $$(
     useAutoSize({
@@ -433,20 +435,21 @@ watch(
     }
 )
 
-defineExpose({
-    source,
+defineExpose<TableInstance>({
+    source: unref(source),
     updateSource,
-    QueryForm,
-    QueryFormInstance,
-    Pagination,
-    cuModalFormIsEdit: toRaw(cuModalFormIsEdit),
+    QueryForm: unref(QueryForm),
+    queryFormState: toRaw(queryFormState),
+    QueryFormInstance: unref(QueryFormInstance),
+    Pagination: unref(Pagination),
+    cuModalFormIsEdit: toRaw(unref(cuModalFormIsEdit)),
     cuFormModel: toRaw(cuFormModel),
-    CreateBtn,
-    ImportBtn,
-    ExportDropDown,
-    ExportCurrentPageBtn,
-    ExportAllBtn,
-    onResize,
+    CreateBtn: unref(CreateBtn),
+    ImportBtn: unref(ImportBtn),
+    ExportDropDown: unref(ExportDropDown),
+    ExportCurrentPageBtn: unref(ExportCurrentPageBtn),
+    ExportAllBtn: unref(ExportAllBtn),
+    onResize: unref(onResize),
 })
 </script>
 
