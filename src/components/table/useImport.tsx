@@ -1,6 +1,6 @@
 import { Button, message, Upload, UploadProps } from 'ant-design-vue'
 import { UploadRequestOption } from 'ant-design-vue/es/vc-upload/interface'
-import { isFunction } from 'es-toolkit'
+import { isFunction, merge } from 'es-toolkit'
 import { ref } from 'vue'
 import { OwnBtnProps, ownBtnProps, TableProps } from './index.type'
 import { AxiosResponse } from 'axios'
@@ -67,9 +67,7 @@ export default (props: TableUseImportProps) => {
     }
     const ImportBtn = (props?: OwnBtnProps) => {
         if (!importBtn || !apis?.import) return null
-        const { children, ...btnProps } = !isEmpty(props)
-            ? props
-            : ((importBtn || {}) as OwnBtnProps)
+        const { children, ...btnProps } = merge(importBtn || {}, props || {}) as OwnBtnProps
 
         return (
             <Upload

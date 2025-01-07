@@ -1,7 +1,7 @@
 import { Button, ButtonProps, Dropdown, Menu, message } from 'ant-design-vue'
 import { AxiosResponse } from 'axios'
 import dayjs from 'dayjs'
-import { isFunction } from 'es-toolkit'
+import { isFunction, merge } from 'es-toolkit'
 import { get, isEmpty } from 'es-toolkit/compat'
 import JsFileDownloader, { OptionalParams } from 'js-file-downloader'
 import mime from 'mime'
@@ -138,9 +138,10 @@ export default (props: TableUseExportProps) => {
     }
 
     const ExportCurrentPageBtn = (props?: OwnBtnProps) => {
-        const { children, ...btnProps } = !isEmpty(props)
-            ? props
-            : ((exportCurrentPageBtn || {}) as OwnBtnProps)
+        const { children, ...btnProps } = merge(
+            exportCurrentPageBtn || {},
+            props || {}
+        ) as OwnBtnProps
 
         return (
             <Button
@@ -154,9 +155,7 @@ export default (props: TableUseExportProps) => {
         )
     }
     const ExportAllBtn = (props?: OwnBtnProps) => {
-        const { children, ...btnProps } = !isEmpty(props)
-            ? props
-            : ((exportAllBtn || {}) as OwnBtnProps)
+        const { children, ...btnProps } = merge(exportAllBtn || {}, props || {}) as OwnBtnProps
 
         return (
             <Button
@@ -175,9 +174,10 @@ export default (props: TableUseExportProps) => {
     }
     const ExportDropDown = (props?: OwnDropProps) => {
         if (!exportDropdown || !apis?.export) return null
-        const { children, buttonProps, ...dropProps } = !isEmpty(props)
-            ? props
-            : ((exportDropdown || {}) as OwnDropProps)
+        const { children, buttonProps, ...dropProps } = merge(
+            exportDropdown || {},
+            props || {}
+        ) as OwnDropProps
 
         const { children: currentPageChildren } = exportCurrentPageBtn || {}
         const { children: allPageChildren } = exportAllBtn || {}

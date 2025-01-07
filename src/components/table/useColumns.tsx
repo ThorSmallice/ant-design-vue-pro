@@ -15,7 +15,7 @@ import { AxiosResponse } from 'axios'
 import Big from 'big.js'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
-import { cloneDeep, isFunction } from 'es-toolkit'
+import { cloneDeep, isFunction, merge } from 'es-toolkit'
 import { get, isEmpty, isObject } from 'es-toolkit/compat'
 import numeral from 'numeral'
 import { pinyin } from 'pinyin-pro'
@@ -387,9 +387,10 @@ export default (props: TableUseColumnsProps) => {
     }
 
     const ColumnSettingBtn = (props: OwnPopoverProps) => {
-        const { children, buttonProps, ...popverProps } = !isEmpty(props)
-            ? props
-            : ((columnSettingBtn || {}) as OwnPopoverProps)
+        const { children, buttonProps, ...popverProps } = merge(
+            columnSettingBtn || {},
+            props || {}
+        ) as OwnPopoverProps
 
         const content = (
             <Flex vertical>
@@ -477,9 +478,10 @@ const getCustomRender = (
     if (type === 'control') {
         const DetailBtn = (props?: OwnBtnProps) => {
             if (!(controlColumnBtns && isObject((controlColumnBtns as any)?.detail))) return null
-            const { children, ...btnProps } = !isEmpty(props)
-                ? props
-                : ((controlColumnBtns?.detail || {}) as OwnBtnProps)
+            const { children, ...btnProps } = merge(
+                controlColumnBtns?.detail || {},
+                props || {}
+            ) as OwnBtnProps
 
             return (
                 <Button class="p-0" onClick={() => openRowDetails(record)} {...btnProps}>
@@ -490,9 +492,10 @@ const getCustomRender = (
 
         const EditBtn = (props?: OwnBtnProps) => {
             if (!(controlColumnBtns && isObject((controlColumnBtns as any)?.edit))) return null
-            const { children, ...btnProps } = !isEmpty(props)
-                ? props
-                : ((controlColumnBtns?.edit || {}) as OwnBtnProps)
+            const { children, ...btnProps } = merge(
+                controlColumnBtns?.edit || {},
+                props || {}
+            ) as OwnBtnProps
 
             return (
                 <Button class="p-0" onClick={() => editRow(record)} {...btnProps}>
@@ -502,9 +505,10 @@ const getCustomRender = (
         }
         const DeleteBtn = (props?: OwnBtnProps) => {
             if (!(controlColumnBtns && isObject((controlColumnBtns as any)?.delete))) return null
-            const { children, ...btnProps } = !isEmpty(props)
-                ? props
-                : ((controlColumnBtns?.delete || {}) as OwnBtnProps)
+            const { children, ...btnProps } = merge(
+                controlColumnBtns?.delete || {},
+                props || {}
+            ) as OwnBtnProps
 
             return (
                 <Popconfirm

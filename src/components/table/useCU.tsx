@@ -13,7 +13,7 @@ import {
     RowProps,
     Skeleton,
 } from 'ant-design-vue'
-import { cloneDeep, isFunction } from 'es-toolkit'
+import { cloneDeep, isFunction, merge } from 'es-toolkit'
 import { isEmpty } from 'es-toolkit/compat'
 import { computed, Reactive, reactive, Ref, ref, toRaw, VNode, watch } from 'vue'
 import { JSX } from 'vue/jsx-runtime'
@@ -179,9 +179,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
     }
     const CreateBtn = (props?: OwnBtnProps) => {
         if (!createBtn || !apis?.create) return null
-        const { children, ...btnProps } = !isEmpty(props)
-            ? props
-            : ((createBtn || {}) as OwnBtnProps)
+        const { children, ...btnProps } = merge(createBtn || {}, props || {}) as OwnBtnProps
 
         return (
             <Button class="flex items-center" onClick={() => openCUModalForm(false)} {...btnProps}>

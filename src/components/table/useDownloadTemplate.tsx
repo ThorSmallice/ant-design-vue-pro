@@ -2,7 +2,7 @@ import { get, isEmpty, isFunction } from 'es-toolkit/compat'
 import { ownBtnProps, OwnBtnProps, TableProps } from './index.type'
 import { Button, message } from 'ant-design-vue'
 import { ref } from 'vue'
-import { cloneDeep } from 'es-toolkit'
+import { cloneDeep, merge } from 'es-toolkit'
 import { AxiosResponse } from 'axios'
 import JsFileDownloader, { OptionalParams } from 'js-file-downloader'
 import dayjs from 'dayjs'
@@ -102,9 +102,10 @@ export default (props: TableUseDownloadTemplateProps) => {
     const DownloadTemplateBtn = (props?: OwnBtnProps) => {
         if (!downloadTemplateBtn || !apis?.template) return null
 
-        const { children, ...btnProps } = !isEmpty(props)
-            ? props
-            : ((downloadTemplateBtn || {}) as OwnBtnProps)
+        const { children, ...btnProps } = merge(
+            downloadTemplateBtn || {},
+            props || {}
+        ) as OwnBtnProps
 
         return (
             <Button
