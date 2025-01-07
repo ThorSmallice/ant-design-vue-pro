@@ -22,6 +22,7 @@ import { pinyin } from 'pinyin-pro'
 import { computed, createSSRApp, EmitFn, Reactive, Ref, ref, useSlots, VNode, watch } from 'vue'
 import { renderToString } from 'vue/server-renderer'
 import {
+    OwnBtnProps,
     ownBtnProps,
     OwnPopoverProps,
     ownPopoverProps,
@@ -474,39 +475,51 @@ const getCustomRender = (
     }
 
     if (type === 'control') {
-        const { children: detailBtnChildren, ...detailsBtnProps } =
-            (controlColumnBtns as any)?.detail || {}
-        const { children: editBtnChildren, ...editBtnProps } =
-            (controlColumnBtns as any)?.edit || {}
-        const { children: deleteBtnChildren, ...deleteBtnProps } =
-            (controlColumnBtns as any)?.delete || {}
+        const DetailBtn = (props?: OwnBtnProps) => {
+            if (!(controlColumnBtns && isObject((controlColumnBtns as any)?.detail))) return null
+            const { children, ...btnProps } = !isEmpty(props)
+                ? props
+                : ((controlColumnBtns?.detail || {}) as OwnBtnProps)
 
-        const DetailBtn =
-            controlColumnBtns && isObject((controlColumnBtns as any)?.detail) ? (
-                <Button class="p-0" onClick={() => openRowDetails(record)} {...detailsBtnProps}>
-                    {detailBtnChildren}
+            return (
+                <Button class="p-0" onClick={() => openRowDetails(record)} {...btnProps}>
+                    {children}
                 </Button>
-            ) : null
+            )
+        }
 
-        const EditBtn =
-            controlColumnBtns && isObject((controlColumnBtns as any)?.edit) ? (
-                <Button class="p-0" onClick={() => editRow(record)} {...editBtnProps}>
-                    {editBtnChildren}
+        const EditBtn = (props?: OwnBtnProps) => {
+            if (!(controlColumnBtns && isObject((controlColumnBtns as any)?.edit))) return null
+            const { children, ...btnProps } = !isEmpty(props)
+                ? props
+                : ((controlColumnBtns?.edit || {}) as OwnBtnProps)
+
+            return (
+                <Button class="p-0" onClick={() => editRow(record)} {...btnProps}>
+                    {children}
                 </Button>
-            ) : null
-        const DeleteBtn =
-            controlColumnBtns && isObject((controlColumnBtns as any)?.delete) ? (
+            )
+        }
+        const DeleteBtn = (props?: OwnBtnProps) => {
+            if (!(controlColumnBtns && isObject((controlColumnBtns as any)?.delete))) return null
+            const { children, ...btnProps } = !isEmpty(props)
+                ? props
+                : ((controlColumnBtns?.delete || {}) as OwnBtnProps)
+
+            return (
                 <Popconfirm
                     onConfirm={() => deleteRow(record)}
                     title="确定删除吗?"
                     okText="确定"
                     cancelText="取消"
                 >
-                    <Button class="p-0" {...deleteBtnProps}>
-                        {deleteBtnChildren}
+                    <Button class="p-0" {...btnProps}>
+                        {children}
                     </Button>
                 </Popconfirm>
-            ) : null
+            )
+        }
+
         return (
             <Space>
                 {slots?.customControlColumnBtns && isFunction(slots?.customControlColumnBtns) ? (
@@ -522,9 +535,9 @@ const getCustomRender = (
                     })
                 ) : (
                     <>
-                        {DetailBtn}
-                        {EditBtn}
-                        {DeleteBtn}
+                        <DetailBtn></DetailBtn>
+                        <EditBtn></EditBtn>
+                        <DeleteBtn></DeleteBtn>
                     </>
                 )}
             </Space>
