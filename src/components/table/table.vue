@@ -132,6 +132,7 @@ const {
 
     queryForm = config.table.queryForm,
     queryFormItems,
+    queryFormDefaultValues,
     queryFormProps = config.table.queryFormProps,
     queryFormSubmitWithReset = config.table.queryFormSubmitWithReset,
     queryFormRowProps = config.table.queryFormRowProps,
@@ -230,6 +231,7 @@ const { QueryForm, QueryFormInstance, queryFormParams } = $$(
         queryFormControlFormItemProps,
         ciesBtnsInQueryForm,
         ciesBtnsVNode,
+        defaultValues: queryFormDefaultValues,
     })
 )
 

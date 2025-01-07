@@ -13,8 +13,8 @@ import {
 import { FieldNamesType } from 'ant-design-vue/es/cascader'
 import { Callbacks, RuleError, RuleObject } from 'ant-design-vue/es/form/interface'
 import { Props, ValidateInfo, validateInfos, validateOptions } from 'ant-design-vue/es/form/useForm'
-import { isFunction, omit } from 'es-toolkit'
-import { computed, h, Reactive, reactive, ref, Ref, useSlots, VNode } from 'vue'
+import { cloneDeep, isFunction, omit } from 'es-toolkit'
+import { computed, h, Reactive, reactive, ref, Ref, toRaw, useSlots, VNode } from 'vue'
 import { ControlMapProps, FormItemControl } from './control'
 import { ciesBtnsVNode, OwnBtnProps } from './index.type'
 import { TableUseCUReturnOptions } from './useCU'
@@ -80,6 +80,7 @@ export interface TableQueryFormProps {
     CreateBtn?: Ref<TableUseCUReturnOptions['CreateBtn']>
     ImportBtn?: TableUseCUReturnOptions
     queryFormControlFormItemProps?: TableQueryFormItemProps
+    defaultValues?: any
     [key: string]: any
 }
 
@@ -98,9 +99,12 @@ const useQueryForm = (props: TableQueryFormProps) => {
         queryFormControlFormItemProps,
         ciesBtnsInQueryForm,
         ciesBtnsVNode,
+        defaultValues,
     } = $(props)
 
-    const queryFormState = reactive<any>({ values: {} })
+    const initValues = defaultValues ? toRaw(defaultValues) : {}
+
+    const queryFormState = reactive<any>({ values: cloneDeep(initValues) })
     const formRef = ref<FormInstance>()
 
     const { customQueryFormBtns, customCiesBtns } = $(useSlots())

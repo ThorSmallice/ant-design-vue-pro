@@ -204,6 +204,7 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
      * 内置查询表单配置
      */
     queryForm?: boolean
+    queryFormDefaultValues?: TableQueryFormProps['defaultValues']
     queryFormProps?: FormProps & { [key: string]: any }
     queryFormItems?: TableQueryFormItemProps[]
     queryFormRowProps?: TableQueryFormProps['queryFormRowProps'] & { [key: string]: any }
