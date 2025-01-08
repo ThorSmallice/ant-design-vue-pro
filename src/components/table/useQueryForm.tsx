@@ -42,8 +42,8 @@ export interface FormInstance {
     clearValidate: (names?: namesType) => void
 }
 export interface TableQueryFormInstance extends FormInstance {
-    onQueryFormFinish: (vals: any) => void
-    onQueryFormReset: () => void
+    submit: (vals: any) => void
+    reset: () => void
 }
 export interface TableQueryFormItemProps<T extends keyof ControlMapProps = keyof ControlMapProps>
     extends FormItemProps {
@@ -107,6 +107,7 @@ const useQueryForm = (props: TableQueryFormProps) => {
     const queryFormState = reactive<{
         values: any
     }>({ values: cloneDeep(initValues) })
+
     const formRef = ref<any>()
 
     watch(
@@ -128,14 +129,13 @@ const useQueryForm = (props: TableQueryFormProps) => {
         queryFormParams.values = vals
     }
 
-    const onQueryFormReset = () => {
-        queryFormSubmitWithReset && onQueryFormFinish(initValues)
-        formRef?.value?.resetFields(initValues)
-        queryFormState.values = cloneDeep(initValues)
+    const onQueryFormReset = (vals?: any) => {
+        queryFormSubmitWithReset && onQueryFormFinish(vals || initValues)
+        queryFormState.values = cloneDeep(vals || initValues)
     }
     const QueryFormInstance = reactive({
-        onQueryFormFinish,
-        onQueryFormReset,
+        submit: onQueryFormFinish,
+        reset: onQueryFormReset,
     })
 
     const SubmitBtn = queryFormSubmitBtn ? (
@@ -159,7 +159,7 @@ const useQueryForm = (props: TableQueryFormProps) => {
         ) : (
             <Button
                 class="flex items-center"
-                onClick={onQueryFormReset}
+                onClick={() => onQueryFormReset()}
                 {...omit(queryFormResetBtnProps, ['children'])}
             >
                 {queryFormResetBtnProps?.children}
@@ -179,6 +179,7 @@ const useQueryForm = (props: TableQueryFormProps) => {
         <Form
             ref={(e) => {
                 formRef.value = e
+
                 Object.assign(QueryFormInstance, e)
             }}
             model={queryFormState.values}

@@ -186,6 +186,9 @@ import {
   presetPrimaryColors
 } from "./chunk-LXEYKIM3.js";
 import {
+  require_customParseFormat
+} from "./chunk-TCLP4MPK.js";
+import {
   Fragment,
   Teleport,
   Text,
@@ -233,9 +236,6 @@ import {
 import {
   require_dayjs_min
 } from "./chunk-KLOCJB4C.js";
-import {
-  require_customParseFormat
-} from "./chunk-TCLP4MPK.js";
 import {
   __commonJS,
   __export,
