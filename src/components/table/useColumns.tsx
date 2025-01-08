@@ -401,6 +401,7 @@ export default (props: TableUseColumnsProps) => {
     }
 
     const ColumnSettingBtn = (props: OwnPopoverProps) => {
+        if (columnSettingBtn === false) return null
         const { children, buttonProps, ...popverProps } = merge(
             columnSettingBtn || {},
             props || {}

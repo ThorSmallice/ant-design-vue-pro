@@ -4,7 +4,11 @@ import { debounce } from 'es-toolkit'
 import { merge } from 'es-toolkit/compat'
 
 export interface TableUseAutoSizeProps {
-    scroll: TableProps['scroll']
+    scroll: {
+        x?: string | 'max-content' | number | true
+        y: string | number
+        scrollToFirstRowOnChange?: boolean
+    }
     wrapContainer: Ref<HTMLElement>
     source?: any[]
     minScollHeight?: number
@@ -28,8 +32,9 @@ const useAutoSize = (props: TableUseAutoSizeProps) => {
         tableRealRegionClasses,
         minScollHeight = 50,
     } = $(props)
-    const y = ref<any>(null)
+    const y = ref<string | number>(null)
     const x = ref(scroll?.x)
+    const scrollToFirstRowOnChange = ref<boolean>(scroll?.scrollToFirstRowOnChange || false)
     const resizeConfig = computed((): TableUseAutoSizeProps['autoSizeConfig'] => {
         return merge(
             {
@@ -123,6 +128,7 @@ const useAutoSize = (props: TableUseAutoSizeProps) => {
     return {
         x,
         y,
+        scrollToFirstRowOnChange,
         onResize,
     }
 }

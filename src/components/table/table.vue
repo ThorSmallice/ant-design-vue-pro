@@ -394,7 +394,7 @@ const { resColumns, ColumnSettingBtn }: any = $$(
 
 const { Pagination } = $$(usePagination({ pagination, total, ownPaginProps }))
 
-const { x, y, onResize } = $$(
+const { x, y, scrollToFirstRowOnChange, onResize } = $$(
     useAutoSize({
         scroll,
         autoSizeConfig,
@@ -411,8 +411,12 @@ const { x, y, onResize } = $$(
     })
 )
 
-const resScroll = computed((): { x: any; y: any } => {
-    return { x: x.value, y: y.value }
+const resScroll = computed(() => {
+    return {
+        x: unref(x.value),
+        y: unref(y.value),
+        scrollToFirstRowOnChange: unref(scrollToFirstRowOnChange.value),
+    }
 })
 
 watch(

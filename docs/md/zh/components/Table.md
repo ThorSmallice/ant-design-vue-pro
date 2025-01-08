@@ -26,6 +26,27 @@
 <<< @../../examples/table/index.vue
 :::
 
+## API
+
+### Table
+
+|      参数      |                              说明                              |  类型   |              默认值              |     版本      |     glob      |
+| :------------: | :------------------------------------------------------------: | :-----: | :------------------------------: | :-----------: | :-----------: |
+|      full      |                        表格是否撑满容器                        | boolean |              false               |               |      \*       |
+|     scroll     | 表格是否可滚动，也可以指定滚动区域的宽、高。 [配置项](#scroll) | object  | \{ x: "max-content",y: "auto" \} |               |      \*       |
+| autoSizeConfig |       表格自动计算高度防抖配置 [配置项](#autoSizeConfig)       | object  |          :-----------:           | :-----------: | :-----------: |
+| zebra stripes  |                            are neat                            |   $1    |
+
+### scroll
+
+|           参数           |                                             说明                                             |     类型      |    默认值     | 版本 | glob |
+| :----------------------: | :------------------------------------------------------------------------------------------: | :-----------: | :-----------: | :--: | :--: |
+| scrollToFirstRowOnChange |                          当分页、排序、筛选变化后是否滚动到表格顶部                          |    boolean    |     false     |  -   |  \*  |
+|            x             | 设置横向滚动，也可用于指定滚动区域的宽，<br/>可以设置为像素值，百分比，true 和 'max-content' | string number | "max-content" |      |  \*  |
+|            y             |                   设置纵向滚动，也可用于指定滚动区域的高，可以设置为像素值                   |               |               |  \*  |
+
+### autoSizeConfig
+
 <script lang="ts" setup>
 import { ref,h } from 'vue' 
 import Base from '@docs/examples/table/base.vue';
