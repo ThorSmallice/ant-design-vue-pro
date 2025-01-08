@@ -7,7 +7,7 @@
 
 ## 基础示例
 
-<div style="height:500px;overflow:hidden;">
+<div style="overflow:hidden;">
     <Base></Base>
 </div>
 

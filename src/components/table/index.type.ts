@@ -48,15 +48,21 @@ export interface TableInstance {
 }
 export interface OwnBtnProps extends ButtonProps {
     children?: JSX.Element[] | VNode[] | string
+    class?: string
+    style?: CSSStyleSheet
 }
 export interface OwnDropProps extends DropdownProps {
     children?: JSX.Element[] | VNode[] | string
     buttonProps?: ButtonProps
+    class?: string
+    style?: CSSStyleSheet
 }
 
 export interface OwnPopoverProps extends Omit<PopoverProps, 'children'> {
     children?: JSX.Element[] | VNode[] | string
     buttonProps?: ButtonProps
+    class?: string
+    style?: CSSStyleSheet
 }
 export type ownBtnProps = false | OwnBtnProps
 export type ownDropDownProps = false | OwnDropProps

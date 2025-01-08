@@ -1,7 +1,7 @@
 <template>
     <Table
         ref="tableRef"
-        full
+        :full="true"
         export-file-name="测试.xlsx"
         :cu-form-default-values="initalValues"
         :cu-form-props="{

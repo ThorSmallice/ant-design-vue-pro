@@ -2,7 +2,6 @@
     <Table
         :own-pagin="true"
         :columns="columns"
-        full
         :control-column-width="150"
         :query-form-items="queryFormItems"
         :apis="{
@@ -40,6 +39,7 @@ import {
 import { ControlMapType, Table, TableConfig, TableInstance, TableProps } from 'antd-vue-dbthor'
 import { computed, Ref, ref, watch } from 'vue'
 import axios from '@docs/apis/request'
+import dayjs from 'dayjs'
 
 const tableRef = ref<TableInstance>()
 const getUsersApi = async (params?: any, config?: any) =>
@@ -107,6 +107,7 @@ const columns = ref<TableProps['columns']>([
 
 const defaultValues = ref({
     email: '1',
+    time: [dayjs(), dayjs().add(1, 'day')],
 })
 const queryFormItems = computed((): TableProps['queryFormItems'] => [
     {
@@ -135,6 +136,11 @@ const queryFormItems = computed((): TableProps['queryFormItems'] => [
                 ></Select>
             )
         },
+    },
+    {
+        label: 'time',
+        name: 'time',
+        control: 'RangePicker',
     },
 ])
 </script>
