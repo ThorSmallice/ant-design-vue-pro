@@ -12,8 +12,8 @@ export interface ImportFileParmas {
 }
 export interface TableUseImportProps {
     apis?: TableProps['apis']
-    onImportSuccess?: (res: AxiosResponse) => Promise<any>
-    onImportError?: (error: Error) => Promise<any>
+    onImportSuccess?: (res: AxiosResponse) => Promise<void | boolean>
+    onImportError?: (error: Error) => Promise<void | boolean>
     importBtn?: ownBtnProps
     importUploadProps?: UploadProps
     importFileParamsFormatter?: null | ((options: UploadRequestOption) => Promise<any>)

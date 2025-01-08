@@ -26,8 +26,8 @@ export interface TableUseExportProps {
     exportCurrentPageBtn?: ownBtnProps
     exportAllBtn?: ownBtnProps
     onExportRequestSuccess?: (res: AxiosResponse) => Promise<ExportResponse | false>
-    onExportSuccess?: (res: any) => Promise<false | void>
-    onExportError?: (error: Error) => Promise<false | void>
+    onExportSuccess?: (res: any) => Promise<boolean | void>
+    onExportError?: (error: Error) => Promise<boolean | void>
     [key: string]: any
 }
 

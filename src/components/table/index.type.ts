@@ -195,7 +195,7 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     onSourceSuccess?: null | TableUseDataSourceProps['onSourceSuccess']
     onSourceError?: null | TableUseDataSourceProps['onSourceError']
     onGetRowDetail?: null | TableUseColumnsProps['onGetRowDetail']
-
+    onBeforeRequestSource?: null | TableUseDataSourceProps['onBeforeRequestSource']
     onBeforeCuFormSubmit?: null | ParamsFormatter
 
     onBeforeRowEditBackFill?: null | TableUseColumnsProps['onBeforeRowEditBackFill']

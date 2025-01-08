@@ -116,6 +116,8 @@ const {
     rowKey = 'id',
     columnSettingBtn = config.table.columnSettingBtn,
     requestParamsFormatter = config.table.requestParamsFormatter,
+    onBeforeRequestSource,
+
     onBeforeRequestDetails = config.table.onBeforeRequestDetails,
     fieldsNames = config.table.fieldsNames,
     onSourceSuccess = config.table.onSourceSuccess,
@@ -301,6 +303,7 @@ const { source, loading, total, updateSource }: any = $$(
         onSourceError,
         dataSource,
         autoRequest,
+        onBeforeRequestSource,
     })
 )
 const { ImportBtn } = $$(

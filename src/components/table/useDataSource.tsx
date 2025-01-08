@@ -20,6 +20,7 @@ export interface TableUseDataSourceProps {
     emits?: EmitFn
     dataSource?: any
     autoRequest?: AutoRequestOptions
+    onBeforeRequestSource?: (params: { [key: string]: any }) => Promise<any | boolean>
 }
 
 export default (props: TableUseDataSourceProps) => {
@@ -30,6 +31,7 @@ export default (props: TableUseDataSourceProps) => {
         params,
         onSourceSuccess,
         onSourceError,
+        onBeforeRequestSource,
         emits,
         autoRequest,
     } = $(props)
@@ -40,6 +42,13 @@ export default (props: TableUseDataSourceProps) => {
     let controller: AbortController
 
     const getSource = async (params: RequestParams) => {
+        if (
+            isFunction(onBeforeRequestSource) &&
+            (await onBeforeRequestSource?.(params)) === false
+        ) {
+            return
+        }
+
         controller?.abort?.()
         loading.value = true
 
