@@ -19,7 +19,21 @@ import { cloneDeep, isFunction, merge } from 'es-toolkit'
 import { get, isEmpty, isObject } from 'es-toolkit/compat'
 import numeral from 'numeral'
 import { pinyin } from 'pinyin-pro'
-import { computed, createSSRApp, EmitFn, Reactive, Ref, ref, useSlots, VNode, watch } from 'vue'
+import {
+    computed,
+    createSSRApp,
+    EmitFn,
+    Events,
+    FunctionalComponent,
+    Reactive,
+    Ref,
+    ref,
+    SetupContext,
+    useAttrs,
+    useSlots,
+    VNode,
+    watch,
+} from 'vue'
 import { renderToString } from 'vue/server-renderer'
 import {
     OwnBtnProps,
@@ -503,7 +517,7 @@ const getCustomRender = (
                 </Button>
             )
         }
-        const DeleteBtn = (props?: OwnBtnProps) => {
+        const DeleteBtn: FunctionalComponent<OwnBtnProps> = (props: OwnBtnProps, { attrs }) => {
             if (!(controlColumnBtns && isObject((controlColumnBtns as any)?.delete))) return null
             const { children, ...btnProps } = merge(
                 controlColumnBtns?.delete || {},
@@ -511,16 +525,18 @@ const getCustomRender = (
             ) as OwnBtnProps
 
             return (
-                <Popconfirm
-                    onConfirm={() => deleteRow(record)}
-                    title="确定删除吗?"
-                    okText="确定"
-                    cancelText="取消"
-                >
-                    <Button class="p-0" {...btnProps}>
-                        {children}
-                    </Button>
-                </Popconfirm>
+                <div>
+                    <Popconfirm
+                        onConfirm={() => deleteRow(record)}
+                        title="确定删除吗?"
+                        okText="确定"
+                        cancelText="取消"
+                    >
+                        <Button class="p-0" {...btnProps} {...attrs}>
+                            {children}
+                        </Button>
+                    </Popconfirm>
+                </div>
             )
         }
 
