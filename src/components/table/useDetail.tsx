@@ -99,7 +99,7 @@ export default (props: TableUseDetailProps): TableUseDetailReturnOptions => {
         return (
             <Modal
                 v-model:open={detailModalOpen.value}
-                title={tableTextConfig?.modalTitle?.detail}
+                title={tableTextConfig?.modalTitle?.details}
                 footer={null}
                 width="65%"
                 destroyOnClose

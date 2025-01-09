@@ -362,7 +362,7 @@ export default (props: TableUseColumnsProps) => {
                 ?.details?.(params, record)
                 ?.then(async (res) => {
                     return resolve(
-                        (await onGetRowDetail?.(res)) || get(res, fieldsNames?.detail) || {}
+                        (await onGetRowDetail?.(res)) || get(res, fieldsNames?.details) || {}
                     )
                 })
                 .catch((error) => reject(error))

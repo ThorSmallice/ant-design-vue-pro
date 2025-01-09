@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-    name: 'Ant-Design-Pro-Vue'
+    name: 'Antd-Vue-DBThor'
     text: 'Antd增强版'
     tagline: 别问 用就是了！
     actions:

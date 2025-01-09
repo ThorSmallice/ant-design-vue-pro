@@ -6,7 +6,7 @@ import { merge } from 'es-toolkit/compat'
 export interface TableUseAutoSizeProps {
     scroll: {
         x?: string | 'max-content' | number | true
-        y: string | number
+        y?: string | number | 'auto'
         scrollToFirstRowOnChange?: boolean
     }
     wrapContainer: Ref<HTMLElement>

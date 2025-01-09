@@ -93,7 +93,7 @@ export type TableTextConfig = Partial<{
     modalTitle: {
         create: string
         update: string
-        detail: string
+        details: string
     }
     message: {
         createSuccess: string
@@ -142,11 +142,38 @@ export type queryFormSlotOptions = {
     QueryFormInstance: TableQueryFormInstance
 } & ciesBtnsVNode
 export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 'scroll'> {
-    autoRequest?: TableUseDataSourceProps['autoRequest']
-    scroll?: TableUseAutoSizeProps['scroll']
     full?: boolean // 高度100%
+    scroll?: TableUseAutoSizeProps['scroll']
+    autoSizeConfig?: TableUseAutoSizeProps['autoSizeConfig']
+    minScollHeight?: TableUseAutoSizeProps['minScollHeight']
+
+    autoRequest?: TableUseDataSourceProps['autoRequest']
+
+    /**
+     * api 请求配置
+     */
+    apis?: Partial<{
+        list: TablePropsApi
+        details: TablePropsApi
+        create: TablePropsApi
+        update: TablePropsApi
+        delete: TablePropsApi
+        export: TablePropsApi
+        import: TablePropsApi
+        template: TablePropsApi
+    }>
+
+    fieldsNames?: Partial<{
+        page: string
+        pageSize: string
+        total: TableFieldNames
+        list: TableFieldNames
+        details: TableFieldNames
+        export: TableFieldNames
+        template: TableFieldNames
+    }>
+
     tableTextConfig?: TableTextConfig
-    columnSettingBtn?: TableUseColumnsProps['columnSettingBtn']
     /**
      * 额外的请求参数
      * 会覆盖重名的参数
@@ -174,19 +201,6 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     columnsEmptyText?: TableUseColumnsProps['columnsEmptyText']
     controlColumnBtns?: TableUseColumnsProps['controlColumnBtns']
 
-    /**
-     * api 请求配置
-     */
-    apis?: Partial<{
-        list: TablePropsApi
-        details: TablePropsApi
-        create: TablePropsApi
-        update: TablePropsApi
-        delete: TablePropsApi
-        export: TablePropsApi
-        import: TablePropsApi
-        template: TablePropsApi
-    }>
     requestParamsFormatter?: null | RequestParamsFormatter
     onBeforeRequestDetails?: null | TableUseColumnsProps['onBeforeRequestDetails']
     onSourceSuccess?: null | TableUseDataSourceProps['onSourceSuccess']
@@ -202,16 +216,6 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     onBeforeRowDelete?: null | ParamsFormatter
     onRowDeleteSuccess?: null | CRUDRequestFinish
     onRowDeleteError?: null | CRUDRequestFinish
-
-    fieldsNames?: Partial<{
-        page: string //  apis.list 请求参数中的 当前页的field
-        pageSize: string //  apis.list 请求参数中的 每页数据量的field
-        list: TableFieldNames //  apis.list 返回值中获取数据集合的field
-        total: TableFieldNames //  apis.list 返回值中获取数据总数的field
-        detail: TableFieldNames
-        export: TableFieldNames
-        template: TableFieldNames
-    }>
 
     /**
      * 分页配置
@@ -261,6 +265,13 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     detailDescItemTimeFormat?: TableUseDetailProps['detailDescItemTimeFormat']
     detailModalProps?: TableUseDetailProps['detailModalProps'] & { [key: string]: any }
     detailDescProps?: TableUseDetailProps['detailDescProps'] & { [key: string]: any }
+
+    /**
+     * 内置按钮配置
+     */
+
+    columnSettingBtn?: TableUseColumnsProps['columnSettingBtn']
+
     ciesBtns?: boolean
     ciesBtnsInQueryForm?: boolean
 
@@ -293,9 +304,6 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     onTemplateRequestSuccess?: null | TableUseDownloadTemplateProps['onTemplateRequestSuccess']
     onTemplateDownloadSuccess?: null | TableUseDownloadTemplateProps['onTemplateDownloadSuccess']
     onTemplateDownloadError?: null | TableUseDownloadTemplateProps['onTemplateDownloadError']
-
-    autoSizeConfig?: TableUseAutoSizeProps['autoSizeConfig']
-    minScollHeight?: TableUseAutoSizeProps['minScollHeight']
 }
 
 interface controlColumnInfo {

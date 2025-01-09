@@ -22,11 +22,11 @@ export const TableConfig: TableProps = {
     },
     tableLayout: 'fixed',
     fieldsNames: {
-        list: 'list',
         page: 'page',
         pageSize: 'pageSize',
         total: 'total',
-        detail: 'data',
+        list: 'list',
+        details: 'data',
         export: 'data',
         template: 'data',
     },
@@ -129,7 +129,7 @@ export const TableConfig: TableProps = {
         modalTitle: {
             create: '新增',
             update: '编辑',
-            detail: '详情',
+            details: '详情',
         },
         message: {
             createSuccess: '新增成功!',
