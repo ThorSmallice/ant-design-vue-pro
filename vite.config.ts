@@ -59,6 +59,7 @@ export const alias = {
     '@tools': resolve(__dirname, './src/tools'),
     '@examples': resolve(__dirname, './docs/examples'),
     '@docs': resolve(__dirname, './docs'),
+    '@root': resolve(__dirname, '/'),
     [pkg.name]: resolve(__dirname, './src/main.ts'),
 }
 export default defineConfig({
