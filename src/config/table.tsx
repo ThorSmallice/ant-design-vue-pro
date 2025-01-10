@@ -18,7 +18,7 @@ export const TableConfig: TableProps = {
     scroll: {
         x: 'max-content',
         y: 'auto',
-        scrollToFirstRowOnChange: false,
+        scrollToFirstRowOnChange: true,
     },
     tableLayout: 'fixed',
     fieldsNames: {

@@ -37,7 +37,7 @@ export interface TableInstance {
     queryFormModel: Reactive<{ values: any }>
     QueryFormInstance: Partial<TableQueryFormInstance>
     Pagination: () => JSX.Element | VNode
-    cuModalFormIsEdit: Readonly<Ref<boolean>>
+    cuModalFormIsEdit: Ref<boolean>
     cuFormModel: Reactive<{ values: any }>
     CreateBtn: (props?: OwnBtnProps) => JSX.Element | VNode
     ImportBtn: (props?: OwnBtnProps) => JSX.Element | VNode

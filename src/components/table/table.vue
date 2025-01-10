@@ -39,6 +39,7 @@
 
         <div :class="['db-table-wrap']" ref="tableWrapRef">
             <ATable
+                ref="atableRef"
                 :sticky="true"
                 :rowKey="rowKey"
                 :pagination="false"
@@ -87,6 +88,8 @@ import useQueryForm from './useQueryForm'
 defineOptions({
     name: 'DbTable',
 })
+const atableRef = ref()
+console.log('🚀 ~ atableRef:', atableRef)
 
 const tableRef = ref()
 const tableWrapRef = ref()
@@ -404,8 +407,10 @@ const { x, y, scrollToFirstRowOnChange, onResize } = $$(
             '.ant-table-thead',
             '.ant-table-footer',
             '.ant-table-summary',
+            '.ant-table-pagination',
         ],
         tableRealRegionClasses: ['.ant-table-tbody'],
+        tableScrollWrapClass: '.ant-table-body',
         source,
     })
 )
@@ -451,7 +456,7 @@ defineExpose<TableInstance>({
     queryFormModel: unref(queryFormState),
     QueryFormInstance: unref(QueryFormInstance),
     Pagination: unref(Pagination),
-    cuModalFormIsEdit: readonly(cuModalFormIsEdit),
+    cuModalFormIsEdit: cuModalFormIsEdit,
     cuFormModel: unref(cuFormModel),
     CreateBtn: unref(CreateBtn),
     ImportBtn: unref(ImportBtn),

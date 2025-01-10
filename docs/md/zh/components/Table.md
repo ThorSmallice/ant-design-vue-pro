@@ -7,6 +7,10 @@
 
 ## 基础示例
 
+<div style="height:500px; overflow:hidden;">
+<Table></Table>
+</div>
+
 ## API
 
 ### Table

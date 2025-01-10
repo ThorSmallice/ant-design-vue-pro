@@ -1,7 +1,6 @@
-import { computed, nextTick, onBeforeMount, onMounted, Ref, ref, toRaw, watch } from 'vue'
-import { TableProps } from './index.type'
 import { debounce } from 'es-toolkit'
 import { merge } from 'es-toolkit/compat'
+import { computed, nextTick, onBeforeMount, onMounted, Ref, ref, watch } from 'vue'
 
 export interface TableUseAutoSizeProps {
     scroll: {
@@ -21,6 +20,7 @@ export interface TableUseAutoSizeProps {
     }>
     subtractEleClasses?: string[]
     tableRealRegionClasses?: string[]
+    tableScrollWrapClass?: string
 }
 const useAutoSize = (props: TableUseAutoSizeProps) => {
     const {
@@ -31,6 +31,7 @@ const useAutoSize = (props: TableUseAutoSizeProps) => {
         subtractEleClasses,
         tableRealRegionClasses,
         minScollHeight = 50,
+        tableScrollWrapClass,
     } = $(props)
     const y = ref<string | number>(null)
     const x = ref(scroll?.x)
@@ -83,7 +84,7 @@ const useAutoSize = (props: TableUseAutoSizeProps) => {
 
             const maxHeight = Math?.max?.(height, minScollHeight)
 
-            if (y.value === maxHeight && maxHeight === tbodyRegionHeight.value) {
+            if (y.value === maxHeight || maxHeight === tbodyRegionHeight.value) {
                 console.warn('与更新前高度一致,已阻止高度重置!')
                 return
             }
@@ -108,7 +109,11 @@ const useAutoSize = (props: TableUseAutoSizeProps) => {
         if (!ele) return 0
         const styles = getComputedStyle(ele)
 
-        return ele?.offsetHeight + parseFloat(styles.marginTop) + parseFloat(styles.marginBottom)
+        return (
+            ele?.offsetHeight +
+            parseFloat(styles.marginTop || '0') +
+            parseFloat(styles.marginBottom || '0')
+        )
     }
 
     onMounted(() => {
@@ -120,11 +125,19 @@ const useAutoSize = (props: TableUseAutoSizeProps) => {
 
     watch(
         () => source,
-        (cur, pre) => {
+        async (cur, pre) => {
+            if (scroll.scrollToFirstRowOnChange === true) {
+                await nextTick()
+
+                wrapContainer
+                    ?.querySelector?.(tableScrollWrapClass)
+                    ?.scrollTo({ top: 0, behavior: 'smooth' })
+            }
             if (cur?.length === pre?.length) return
             onResize?.()
         }
     )
+
     return {
         x,
         y,
