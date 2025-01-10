@@ -1,7 +1,7 @@
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
 import { resolve } from 'path'
-import { defineConfig } from 'vitepress'
+import { defineConfig, withBase } from 'vitepress'
 import ReactivityTransform from '@vue-macros/reactivity-transform/vite'
 import terser from '@rollup/plugin-terser'
 import { external, globals, proxy, alias } from '../../vite.config'
@@ -21,8 +21,10 @@ export const base = defineConfig({
         'zh/:rest*': ':rest*',
     },
     head: [
-        ['link', { rel: 'icon', type: 'image/png', href: '/images/logo.svg' }],
-        ['link', { rel: 'icon', type: 'image/svg+xml', href: '/images/logo.svg' }],
+        [
+            'link',
+            { rel: 'icon', type: 'image/svg+xml', href: `${VITE_DOCS_BASE_URL}images/logo.svg` },
+        ],
     ],
     vite: {
         plugins: [vueJsx(), ReactivityTransform()],

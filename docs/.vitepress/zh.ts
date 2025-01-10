@@ -61,7 +61,7 @@ export const zh = defineConfig({
 
 function nav(): DefaultTheme.NavItem[] {
     return [
-        { text: '文档', link: '/documents/install', activeMatch: '/documents' },
+        { text: '指南', link: '/documents/quickstart', activeMatch: '/documents' },
         { text: '组件', link: '/components/Table', activeMatch: '/components' },
         {
             text: pkg.version,
@@ -77,8 +77,8 @@ function sidebarDocuments(): DefaultTheme.SidebarItem[] {
             collapsed: true,
             items: [
                 {
-                    text: '安装',
-                    link: 'install',
+                    text: '快速开始',
+                    link: 'quickstart',
                 },
             ],
         },
@@ -94,10 +94,10 @@ function sidebarComponents(): DefaultTheme.SidebarItem[] {
                     text: 'Table',
                     link: 'Table',
                 },
-                {
-                    text: 'Modal',
-                    link: 'Modal',
-                },
+                // {
+                //     text: 'Modal',
+                //     link: 'Modal',
+                // },
             ],
         },
     ]

@@ -81,8 +81,7 @@ export interface TableColumnProps extends ATableColumnProps {
 
     formItemProps?: TableUseCUFormItemProps
     descItemProps?: TableDescItemsProps
-    columnsEllipsis?: boolean
-    columnsSorter?: ATableColumnProps['sorter']
+
     filterPlaceholder?: string
 }
 
@@ -116,6 +115,8 @@ export interface TableUseColumnsProps {
     }>
     columnsTimeFormat?: string
     columnsEmptyText?: VNode | string
+    columnsEllipsis?: boolean
+    columnsSorter?: ATableColumnProps['sorter']
     columnsTitleNoWrap?: boolean
     controlColumnBtns?: {
         detail: false | (ButtonProps & { children?: VNode | string })
@@ -275,7 +276,7 @@ export default (props: TableUseColumnsProps) => {
                 width: width || computedTitleWidth(titleArr[i]) || String(title)?.length * 16,
                 align: columnsAlign,
                 fixed,
-                ellipsis: columnsEllipsis ?? ellipsis,
+                ellipsis: ellipsis ?? columnsEllipsis,
                 filterPlaceholder: filterPlaceholder || `请输入${title}`,
                 defaultSortOrder: 'ascend',
                 sorter: localSort(col),

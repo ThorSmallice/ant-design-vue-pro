@@ -5,40 +5,49 @@
 
 > 基于 ant-design-vue Table 封装，内置 CRUD、表单搜索、表头排序、数据导入导出等功能
 
-## 基础示例
-
-<div style="height:500px; overflow:hidden;">
-<Table></Table>
-</div>
-
 ## API
 
 ### Table
 
-| 参数            | 说明                                                                        |                  类型                   | 默认值 | 版本 | global |
-| :-------------- | :-------------------------------------------------------------------------- | :-------------------------------------: | :----: | :--: | :----: |
-| full            | 表格是否撑满容器                                                            |                 boolean                 | false  |  -   |   \*   |
-| scroll          | 表格是否可滚动，也可以指定滚动区域的宽、高 [配置项](#scroll)                |                 object                  |   -    |  -   |   \*   |
-| autoSizeConfig  | 表格自动计算高度函数防抖配置 [配置项](#autosizeconfig)                      |                 object                  |   -    |  -   |   \*   |
-| minScollHeight  | 指定自动计算表格 scroll.y 值的最小高度, scroll.y 指定为 number 时该值不生效 |                 number                  |   50   |  -   |   \*   |
-| autoRequest     | 指定表格自动请求列表数据配置 [配置项](#autorequest)                         |             false / object              |   -    |  -   |   \*   |
-| apis            | 提供给表格内置请求的 api [配置项](#apis)                                    |                 object                  |   -    |  -   |   -    |
-| fieldsNames     | 配置表格调用 api 后从返回结果中拿取数据的字段 [配置项](#fieldsnames)        |                 object                  |   -    |  -   |   \*   |
-| tableTextConfig | 配置表格内置提示的文本 [配置项](#tabletextconfig)                           |                 object                  |   -    |  -   |   \*   |
-| params          | 请求时额外添加的参数                                                        |                 object                  |   -    |  -   |   -    |
-| columns         | 表格列配置                                                                  | [TableColumnProps](#tablecolumnprops)[] |   -    |  -   |   -    |
+| 参数               | 说明                                                                                          |                                   类型                                    |        默认值         | 版本 | global |
+| :----------------- | :-------------------------------------------------------------------------------------------- | :-----------------------------------------------------------------------: | :-------------------: | :--: | :----: |
+| full               | 表格是否撑满容器                                                                              |                                  boolean                                  |         false         |  -   |   \*   |
+| scroll             | 表格是否可滚动，也可以指定滚动区域的宽、高 [配置项](#scroll)                                  |                                  object                                   |           -           |  -   |   \*   |
+| autoSizeConfig     | 表格自动计算高度函数防抖配置 [配置项](#autosizeconfig)                                        |                                  object                                   |           -           |  -   |   \*   |
+| minScollHeight     | 指定自动计算表格 scroll.y 值的最小高度, scroll.y 指定为 number 时该值不生效                   |                                  number                                   |          50           |  -   |   \*   |
+| autoRequest        | 指定表格自动请求列表数据配置 [配置项](#autorequest)                                           |                              false / object                               |           -           |  -   |   \*   |
+| apis               | 提供给表格内置请求的 api [配置项](#apis)                                                      |                                  object                                   |           -           |  -   |   -    |
+| fieldsNames        | 配置表格调用 api 后从返回结果中拿取数据的字段 [配置项](#fieldsnames)                          |                                  object                                   |           -           |  -   |   \*   |
+| tableTextConfig    | 配置表格内置提示的文本 [配置项](#tabletextconfig)                                             |                                  object                                   |           -           |  -   |   \*   |
+| params             | 请求时额外添加的参数                                                                          |                                  object                                   |           -           |  -   |   -    |
+| columns            | 表格列配置                                                                                    |                  [TableColumnProps](#tablecolumnprops)[]                  |           -           |  -   |   -    |
+| columnsTitleNoWrap | 全部列头不换行                                                                                |                                  boolean                                  |         true          |  -   |   \*   |
+| columnsAlign       | 全部列对齐方式                                                                                |                        'left' / 'center' / 'right'                        |        'left'         |  -   |   \*   |
+| columnsSorter      | 全部列排序配置, 除['index','control']列,其他列均内置了排序逻辑                                | [ColumnProps](https://www.antdv.com/components/table-cn#column)['sorter'] |         true          |  -   |   \*   |
+| columnsEllipsis    | 全部列的 ellipsis 属性                                                                        |                                  boolean                                  |         true          |  -   |   \*   |
+| columnsTimeFormat  | 当 column.type == 'date'时,处理时间显示的[格式](https://day.js.org/docs/zh-CN/display/format) |                                  string                                   | 'YYYY-MM-DD HH:mm:ss' |  -   |   \*   |
 
 ### TableColumnProps
 
-| 参数         | 说明                                                                           |                                                      类型                                                      | 默认值 | 版本 | global |
-| :----------- | :----------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------: | :----: | :--: | :----: |
-| ...          | 继承 antd-vue [ColumnProps](https://www.antdv.com/components/table-cn#column)  |                                                       -                                                        |   -    |  -   |   -    |
-| hidden       | 隐藏列                                                                         |                                                    boolean                                                     |   -    |  -   |   -    |
-| type         | 内容类型 可选 序号/操作/时间/数字                                              |                                    'index' / 'control' / 'date' / 'number'                                     |   -    |  -   |   -    |
-| nowrap       | 列头不换行                                                                     |                                                    boolean                                                     |   -    |  -   |   -    |
-| emptyText    | 值为空时显示的内容                                                             |                                                 VNode / string                                                 |   -    |  -   |   -    |
-| timeFormat   | type 为'date'时,显示的时间[格式](https://day.js.org/docs/zh-CN/display/format) |                                                     string                                                     |   -    |  -   |   -    |
-| numberFormat | type 为'number'时,显示的数字格式                                               | [Numeral.format](http://numeraljs.com/#format) / (val:Numeral,local: string/number) => string / number / VNode |   -    |  -   |   -    |
+| 参数           | 说明                                                                                                      |                                                           类型                                                           |  默认值  | 版本 | global |
+| :------------- | :-------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------: | :------: | :--: | :----: |
+| ...            | 继承 antd-vue [ColumnProps](https://www.antdv.com/components/table-cn#column)                             |                                                            -                                                             |    -     |  -   |   -    |
+| hidden         | 隐藏列                                                                                                    |                                                         boolean                                                          |    -     |  -   |   -    |
+| type           | 内容类型 可选 序号/操作/时间/数字                                                                         |                                         'index' / 'control' / 'date' / 'number'                                          |    -     |  -   |   -    |
+| nowrap         | 列头不换行                                                                                                |                                                         boolean                                                          |    -     |  -   |   -    |
+| emptyText      | 值为空时显示的内容                                                                                        |                                                      VNode / string                                                      |    -     |  -   |   -    |
+| timeFormat     | type 为'date'时,显示的时间[格式](https://day.js.org/docs/zh-CN/display/format)                            |                                                          string                                                          |    -     |  -   |   -    |
+| numberFormat   | type 为'number'时,显示的数字格式                                                                          |      [Numeral.format](http://numeraljs.com/#format) / (val:Numeral,local: string/number) => string / number / VNode      | '0[.]00' |  -   |   -    |
+| numberComputed | type 为'number'时用于数字运算,返回结果将回填至 numeral 进行格式化。当 numberFormat 为函数时，该属性不生效 | (val:[Big.Big](https://github.com/MikeMcl/big.js#readme),Big: [Big](https://github.com/MikeMcl/big.js#readme)) => number |    -     |  -   |   -    |
+| formItemProps  | 列对应到 cuForm(新增/编辑表单) 中的表单项 [配置项](#formitemprops)                                        |                                                          object                                                          |    -     |  -   |   -    |
+| descItemProps  | 列对应到 detailDesc(详情描述列表) 中的描述项 [配置项](#descitemprops)                                     |                                                          object                                                          |    -     |  -   |   -    |
+
+### formItemProps
+
+| 参数 | 说明 | 类型 | 默认值 | 版本 | global |
+| :--- | :--- | :--: | :----: | :--: | :----: |
+
+### descItemProps
 
 ### autoRequest
 

@@ -186,19 +186,18 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
      */
     columns?: TableColumnProps[]
     columnsTitleNoWrap?: TableUseColumnsProps['columnsTitleNoWrap']
-    indexColumn?: TableUseColumnsProps['indexColumn']
+    columnsAlign?: TableColumnProps['align']
+    columnsSorter?: TableUseColumnsProps['columnsSorter']
+    columnsEllipsis?: TableUseColumnsProps['columnsEllipsis']
+    columnsTimeFormat?: TableUseColumnsProps['columnsTimeFormat']
+    columnsEmptyText?: TableUseColumnsProps['columnsEmptyText']
 
+    indexColumn?: TableUseColumnsProps['indexColumn']
     indexColumnWidth?: TableUseColumnsProps['indexColumnWidth']
     indexColumnProps?: TableUseColumnsProps['indexColumnProps']
     controlColumn?: TableUseColumnsProps['controlColumn']
     controlColumnWidth?: TableUseColumnsProps['controlColumnWidth']
     controlColumnWidthProps?: TableUseColumnsProps['controlColumnWidthProps']
-
-    columnsAlign?: TableColumnProps['align']
-    columnsSorter?: TableColumnProps['columnsSorter']
-    columnsEllipsis?: TableColumnProps['columnsEllipsis']
-    columnsTimeFormat?: TableUseColumnsProps['columnsTimeFormat']
-    columnsEmptyText?: TableUseColumnsProps['columnsEmptyText']
     controlColumnBtns?: TableUseColumnsProps['controlColumnBtns']
 
     requestParamsFormatter?: null | RequestParamsFormatter

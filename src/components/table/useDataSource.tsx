@@ -39,7 +39,7 @@ export default (props: TableUseDataSourceProps) => {
     const own_source = ref([])
     const loading = ref(false)
     const total = ref(0)
-    let controller: AbortController
+    let controller: AbortController | null
 
     const getSource = async (params: RequestParams) => {
         if (
@@ -77,6 +77,7 @@ export default (props: TableUseDataSourceProps) => {
             })
             ?.finally?.(() => {
                 loading.value = false
+                controller = null
             })
     }
 

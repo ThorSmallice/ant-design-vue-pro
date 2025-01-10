@@ -39,7 +39,6 @@
 
         <div :class="['db-table-wrap']" ref="tableWrapRef">
             <ATable
-                ref="atableRef"
                 :sticky="true"
                 :rowKey="rowKey"
                 :pagination="false"
@@ -88,8 +87,6 @@ import useQueryForm from './useQueryForm'
 defineOptions({
     name: 'DbTable',
 })
-const atableRef = ref()
-console.log('🚀 ~ atableRef:', atableRef)
 
 const tableRef = ref()
 const tableWrapRef = ref()
@@ -450,7 +447,7 @@ watch(
 )
 
 defineExpose<TableInstance>({
-    source: unref(source),
+    source: source,
     updateSource,
     QueryForm: unref(QueryForm),
     queryFormModel: unref(queryFormState),
