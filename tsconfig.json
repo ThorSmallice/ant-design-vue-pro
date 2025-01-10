@@ -34,7 +34,7 @@
             "@tools/*": ["src/tools/*"],
             "@examples/*": ["docs/examples/*"],
             "@docs/*": ["docs/*"],
-            "@root/*": ["/*"],
+            "@/*": ["./*"],
             "antd-vue-dbthor": ["src/main.ts"]
         }
     },
@@ -48,7 +48,8 @@
         "docs/**/*.vue",
         "docs/**/*.ts",
         "docs/**/*.tsx",
-        "utils/env.ts"
+        "docs/.vitepress/**/*.ts",
+        "utils/**/*.ts"
     ],
     "exclude": ["node_modules"],
     "vueCompilerOptions": {

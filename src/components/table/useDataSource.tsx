@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios'
 import { get, isEmpty, isObject } from 'es-toolkit/compat'
 import { isFunction } from 'es-toolkit/predicate'
-import { EmitFn, onBeforeUnmount, ref, watch, WatchOptions } from 'vue'
+import { computed, EmitFn, onBeforeUnmount, ref, unref, watch, WatchOptions } from 'vue'
 import { RequestParams, TableProps } from './index.type'
 export interface TableSourceResult {
     total: number
@@ -27,16 +27,16 @@ export default (props: TableUseDataSourceProps) => {
     const {
         api,
         fieldsNames,
-        dataSource,
         params,
         onSourceSuccess,
         onSourceError,
         onBeforeRequestSource,
         emits,
         autoRequest,
+        dataSource,
     } = $(props)
 
-    const source = ref([])
+    const own_source = ref([])
     const loading = ref(false)
     const total = ref(0)
     let controller: AbortController
@@ -67,11 +67,11 @@ export default (props: TableUseDataSourceProps) => {
                     }
                 })
 
-                source.value = get(res_trans, fieldsNames.list) || []
+                own_source.value = get(res_trans, fieldsNames.list) || []
                 total.value = get(res_trans, fieldsNames.total) || 0
             })
             ?.catch?.((err) => {
-                source.value = []
+                own_source.value = []
                 total.value = 0
                 onSourceError?.(err)
             })
@@ -81,13 +81,10 @@ export default (props: TableUseDataSourceProps) => {
     }
 
     const updateSource = async () => {
-        if (dataSource) {
-            return (source.value = dataSource)
-        }
         api?.list && getSource(params)
     }
 
-    if (autoRequest !== false && isObject(autoRequest)) {
+    if (autoRequest !== false && isObject(autoRequest) && !dataSource) {
         watch(
             () => params,
             () => {
@@ -98,6 +95,11 @@ export default (props: TableUseDataSourceProps) => {
             autoRequest
         )
     }
+
+    const source = computed(() => {
+        if (dataSource) return unref(dataSource)
+        return unref(own_source)
+    })
 
     onBeforeUnmount(() => {
         controller?.abort?.()

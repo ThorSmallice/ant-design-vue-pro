@@ -20,6 +20,10 @@ export const base = defineConfig({
     rewrites: {
         'zh/:rest*': ':rest*',
     },
+    head: [
+        ['link', { rel: 'icon', type: 'image/png', href: '/images/logo.svg' }],
+        ['link', { rel: 'icon', type: 'image/svg+xml', href: '/images/logo.svg' }],
+    ],
     vite: {
         plugins: [vueJsx(), ReactivityTransform()],
         build: {
@@ -44,6 +48,7 @@ export const base = defineConfig({
     },
 
     themeConfig: {
+        logo: { src: '/images/logo.svg', width: 24, height: 24 },
         socialLinks: [
             { icon: 'github', link: 'https://github.com/ThorSmallice/ant-design-pro-vue' },
         ],

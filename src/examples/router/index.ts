@@ -5,10 +5,10 @@ const routes: RouteRecordRaw[] = [
         path: '/',
         component: () => import('../page/home/index.vue'),
         children: [
-            {
-                path: 'table',
-                component: () => import('@examples/table/index.vue'),
-            },
+            // {
+            //     path: 'table',
+            //     component: () => import('@examples/table/index.vue'),
+            // },
         ],
     },
 ]

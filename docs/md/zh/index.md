@@ -7,7 +7,7 @@ hero:
     tagline: 别问 用就是了！
     actions:
         - theme: brand
-          text: 文档
+          text: 指南
           link: /documents/install
         - theme: alt
           text: 组件

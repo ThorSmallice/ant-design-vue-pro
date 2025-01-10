@@ -26,15 +26,15 @@
 
 ### TableColumnProps
 
-| 参数         | 说明                                                                           |                                                  类型                                                   | 默认值 | 版本 | global |
-| :----------- | :----------------------------------------------------------------------------- | :-----------------------------------------------------------------------------------------------------: | :----: | :--: | :----: |
-| ...          | 继承 antd-vue [ColumnProps](https://www.antdv.com/components/table-cn#column)  |                                                    -                                                    |   -    |  -   |   -    |
-| hidden       | 隐藏列                                                                         |                                                 boolean                                                 |   -    |  -   |   -    |
-| type         | 内容类型 可选 序号/操作/时间/数字                                              |                                 'index' / 'control' / 'date' / 'number'                                 |   -    |  -   |   -    |
-| nowrap       | 列头不换行                                                                     |                                                 boolean                                                 |   -    |  -   |   -    |
-| emptyText    | 值为空时显示的内容                                                             |                                             VNode / string                                              |   -    |  -   |   -    |
-| timeFormat   | type 为'date'时,显示的时间[格式](https://day.js.org/docs/zh-CN/display/format) |                                                 string                                                  |   -    |  -   |   -    |
-| numberFormat | type 为'number'时,显示的数字格式                                               | [Numeral](http://numeraljs.com/#format) / (val:Numeral,local: string/number) => string / number / VNode |   -    |  -   |   -    |
+| 参数         | 说明                                                                           |                                                      类型                                                      | 默认值 | 版本 | global |
+| :----------- | :----------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------: | :----: | :--: | :----: |
+| ...          | 继承 antd-vue [ColumnProps](https://www.antdv.com/components/table-cn#column)  |                                                       -                                                        |   -    |  -   |   -    |
+| hidden       | 隐藏列                                                                         |                                                    boolean                                                     |   -    |  -   |   -    |
+| type         | 内容类型 可选 序号/操作/时间/数字                                              |                                    'index' / 'control' / 'date' / 'number'                                     |   -    |  -   |   -    |
+| nowrap       | 列头不换行                                                                     |                                                    boolean                                                     |   -    |  -   |   -    |
+| emptyText    | 值为空时显示的内容                                                             |                                                 VNode / string                                                 |   -    |  -   |   -    |
+| timeFormat   | type 为'date'时,显示的时间[格式](https://day.js.org/docs/zh-CN/display/format) |                                                     string                                                     |   -    |  -   |   -    |
+| numberFormat | type 为'number'时,显示的数字格式                                               | [Numeral.format](http://numeraljs.com/#format) / (val:Numeral,local: string/number) => string / number / VNode |   -    |  -   |   -    |
 
 ### autoRequest
 
@@ -127,6 +127,7 @@
 <script lang="ts" setup>
 import { ref,h } from 'vue' 
 import Base from '@docs/examples/table/base.vue';
+import Test from '@docs/examples/table/test.vue';
 import Table from '@examples/table/index.vue';
 import {Modal,Button} from 'ant-design-vue';
 import { FullscreenOutlined } from '@ant-design/icons-vue';

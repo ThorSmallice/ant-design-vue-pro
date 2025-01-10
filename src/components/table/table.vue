@@ -192,7 +192,6 @@ const {
     exportAllBtn = config.table.exportAllBtn,
     scroll = config.table.scroll,
     tableLayout = config.table.tableLayout,
-    dataSource,
 
     exportFileByParams = config.table.exportFileByParams,
     exportFileParamsFormatter = config.table.exportFileParamsFormatter,
@@ -206,7 +205,7 @@ const {
     onImportSuccess = config.table.onImportSuccess,
     onImportError = config.table.onImportError,
     showHeader = null,
-
+    dataSource,
     templateFileName,
     downloadTemplateBtn = config.table.downloadTemplateBtn,
     downloadTempalteParamsFormatter = config.table.downloadTempalteParamsFormatter,
@@ -301,8 +300,8 @@ const { source, loading, total, updateSource }: any = $$(
         params: resultParams,
         onSourceSuccess,
         onSourceError,
-        dataSource,
         autoRequest,
+        dataSource,
         onBeforeRequestSource,
     })
 )

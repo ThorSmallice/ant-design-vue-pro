@@ -23,20 +23,7 @@ export const generateGlobals = (arr: string[]) => {
     })
     return obj
 }
-export const external = [
-    'vue',
-    'ant-design-vue',
-    'dayjs',
-    'numeral',
-    'es-toolkit',
-    'big.js',
-    'qs',
-    'mime',
-    'pinyin-pro',
-    'js-file-downloader',
-    'axios',
-    '@ant-design/icons-vue',
-]
+export const external = Object.keys(pkg.peerDependencies)
 export const globals = generateGlobals(external)
 
 export const proxy = {
@@ -59,7 +46,7 @@ export const alias = {
     '@tools': resolve(__dirname, './src/tools'),
     '@examples': resolve(__dirname, './docs/examples'),
     '@docs': resolve(__dirname, './docs'),
-    '@root': resolve(__dirname, '/'),
+    '@/': resolve(__dirname, './'),
     [pkg.name]: resolve(__dirname, './src/main.ts'),
 }
 export default defineConfig({

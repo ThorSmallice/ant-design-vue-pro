@@ -28,26 +28,17 @@
         :cies-btns-in-query-form="true"
         :onBeforeRequestDetails="onBeforeRequestDetails"
     >
-        <template #customControlColumnBtns="{ EditBtn, DetailBtn, DeleteBtn }">
-            <!-- <component :is="DetailBtn" v-auth="['wms:contract:query']" />
-            <component :is="EditBtn" v-auth="['wms:contract:update']" /> -->
-            <component :is="DeleteBtn" v-auth="['wms:contract:update']" abc="123" />
-        </template>
     </Table>
 </template>
 
 <script setup lang="tsx">
-const vAuth = {
-    mounted: (el) => {
-        console.log('🚀 ~ el:', el)
-    },
-}
-import { ControlMapType, Table, TableProps } from 'antd-vue-dbthor'
+import { ControlMapType, Table, TableProps, TableConfig } from 'antd-vue-dbthor'
 import dayjs, { Dayjs } from 'dayjs'
 import { computed, ref, toRaw } from 'vue'
 import request from 'axios'
 const tableRef = ref()
 const abc = ref()
+TableConfig.fieldsNames.page = 'pageNo'
 const onBeforeRequestDetails = async (record: any) => {
     return {
         id: record?.id,

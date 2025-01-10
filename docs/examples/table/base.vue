@@ -16,7 +16,7 @@
             ...TableConfig.fieldsNames,
             list: ['data', 'data'],
             total: ['data', 'total'],
-            detail: ['data', 'data'],
+            details: ['data', 'data'],
         }"
         ref="tableRef"
         :query-form-default-values="defaultValues"
