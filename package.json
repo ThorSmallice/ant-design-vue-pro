@@ -10,7 +10,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "tsc && vite build",
         "docs:dev": "cross-env NODE_ENV=development vitepress dev docs",
-        "docs:build": "vitepress build docs",
+        "docs:build": "cross-env NODE_ENV=production vitepress build docs",
         "docs:preview": "vitepress preview docs",
         "push": "npm publish"
     },
