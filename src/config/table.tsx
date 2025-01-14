@@ -57,6 +57,7 @@ export const TableConfig: TableProps = {
         showSizeChanger: true,
         showTotal: (total) => `共${total}条数据`,
         showQuickJumper: true,
+        defaultPageSize: 10,
     },
 
     queryForm: true,

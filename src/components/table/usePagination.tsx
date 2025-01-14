@@ -4,7 +4,7 @@ import { TableProps } from './index.type'
 
 export default (props: {
     pagination: Ref<{ page: number; pageSize: number }>
-    total: any
+    total: number
     ownPaginProps: TableProps['ownPaginProps']
 }) => {
     const { pagination, total, ownPaginProps = {} } = $(props)

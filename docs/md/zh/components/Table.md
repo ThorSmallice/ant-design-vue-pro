@@ -5,6 +5,10 @@
 
 > 基于 ant-design-vue Table 封装，内置 CRUD、表单搜索、表头排序、数据导入导出等功能
 
+## 示例
+
+<Table></Table>
+
 ## API
 
 ### Table
@@ -49,6 +53,9 @@
 
 ### descItemProps
 
+| 参数 | 说明 | 类型 | 默认值 | 版本 | global |
+| :--- | :--- | :--: | :----: | :--: | :----: |
+
 ### autoRequest
 
 ::: tip 注意
@@ -56,7 +63,7 @@
 -   autoRequest 配置项同步 vue watch 的 Options,详见[Vue-Watch](https://cn.vuejs.org/api/reactivity-core.html#watch);
 -   默认情况下 Table 将监听 queryFormParams、params、page、pageSize 最终组成的参数 resParams 去调用 apis.list, 虽然内部只 watch 了 resParams,但由于依赖问题,apis.list 在发生变化时也会触发数据更新
 -   autoRequest 为 false 时将不创建 watch, 意味着将不自动发起请求
--   autoRequest 配置只有初始化时生效,不建议动态修改
+-   autoRequest 配置只有初始化时生效,不能动态修改
 
 :::
 
@@ -97,7 +104,7 @@
 
 | 参数                     | 说明                                                                                                                                        |              类型               |    默认值     | 版本 | global |
 | :----------------------- | :------------------------------------------------------------------------------------------------------------------------------------------ | :-----------------------------: | :-----------: | :--: | :----: |
-| scrollToFirstRowOnChange | 当分页、排序、筛选变化后是否滚动到表格顶部                                                                                                  |             boolean             |     false     |  -   |   \*   |
+| scrollToFirstRowOnChange | 当分页、排序、筛选变化后是否滚动到表格顶部                                                                                                  |             boolean             |     true      |  -   |   \*   |
 | x                        | 设置横向滚动，也可用于指定滚动区域的宽，<br/>可以设置为像素值，百分比，true 和 'max-content'                                                | string / number / 'max-content' | 'max-content' |  -   |   \*   |
 | y                        | 设置纵向滚动，也可用于指定滚动区域的高，可以设置为像素值。<br/>值为'auto'时将自动计算高度，<br/>注意 Table 的父容器需有高度或者为 flex 容器 |    string / number / 'auto'     |    'auto'     |  -   |   \*   |
 

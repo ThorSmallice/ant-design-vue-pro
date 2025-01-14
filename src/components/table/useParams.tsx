@@ -1,16 +1,20 @@
-import dayjs, { Dayjs } from 'dayjs'
+import dayjs, { Dayjs, isDayjs } from 'dayjs'
 import { isFunction } from 'es-toolkit/predicate'
 import qs from 'qs'
-import { computed, reactive, toRaw, unref } from 'vue'
+import { computed, ComputedRef, Reactive, reactive, Ref, toRaw, unref, watch } from 'vue'
 import { TableProps } from './index.type'
+type paramsObj = {
+    [key: string]: any
+}
 export interface TableUseParmasProps {
     ownPagin: boolean
+    ownPaginProps?: TableProps['ownPaginProps']
     queryFormTimeFormat?: string
     queryFormParams: {
         [key: string]: any
     }
     fieldsNames: TableProps['fieldsNames']
-    params: TableProps['params']
+    params: Ref<paramsObj> | Reactive<paramsObj> | ComputedRef<paramsObj>
     requestParamsFormatter: TableProps['requestParamsFormatter']
 }
 export default (props: TableUseParmasProps) => {
@@ -18,6 +22,7 @@ export default (props: TableUseParmasProps) => {
         params,
         queryFormParams,
         ownPagin,
+        ownPaginProps,
         queryFormTimeFormat,
         fieldsNames,
         requestParamsFormatter,
@@ -25,8 +30,35 @@ export default (props: TableUseParmasProps) => {
 
     const pagination = reactive({
         page: 1,
-        pageSize: 10,
+        pageSize: ownPaginProps?.defaultPageSize,
     })
+
+    const resetPage = () => {
+        pagination.page = 1
+    }
+
+    watch(
+        () => [queryFormParams?.values, params],
+        (cur, pre) => {
+            const preQueryFormParamsRaw = unref(pre?.[0])
+            const preParamsRaw = unref(pre?.[1])
+
+            const curQueryFormParamsRaw = unref(cur?.[0])
+            const curParamsRaw = unref(cur?.[1])
+
+            const preResparams = { ...(preQueryFormParamsRaw || {}), ...(preParamsRaw || {}) }
+            const curResparams = { ...(curQueryFormParamsRaw || {}), ...(curParamsRaw || {}) }
+
+            for (let k in curResparams) {
+                if (!isSameValue(curResparams[k], preResparams[k])) {
+                    resetPage()
+                    break
+                }
+            }
+        },
+        { deep: true }
+    )
+
     const resultParams = computed(() => {
         const paginParams = ownPagin
             ? {
@@ -36,7 +68,7 @@ export default (props: TableUseParmasProps) => {
             : {}
 
         const queryFormParamsRaw = unref({ ...queryFormParams.values })
-
+        const paramsValue = unref(params)
         for (let k in queryFormParamsRaw) {
             if (dayjs.isDayjs(queryFormParamsRaw[k])) {
                 queryFormParamsRaw[k] = queryFormParamsRaw[k].format(queryFormTimeFormat)
@@ -50,7 +82,7 @@ export default (props: TableUseParmasProps) => {
 
         const requestParams = unref({
             ...queryFormParamsRaw,
-            ...params,
+            ...paramsValue,
             ...paginParams,
         })
 
@@ -60,4 +92,12 @@ export default (props: TableUseParmasProps) => {
     })
 
     return { resultParams, pagination }
+}
+
+const isSameValue = (a: unknown, b: unknown) => {
+    if (isDayjs(a) || isDayjs(b)) {
+        return (a as Dayjs)?.isSame(b as Dayjs)
+    }
+
+    return a === b
 }

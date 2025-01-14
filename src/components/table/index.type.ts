@@ -27,6 +27,7 @@ import {
     TableQueryFormItemProps,
     TableQueryFormProps,
 } from './useQueryForm'
+import { TableUseParmasProps } from './useParams'
 
 type TableFieldNames = string | string[]
 
@@ -178,9 +179,7 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
      * 额外的请求参数
      * 会覆盖重名的参数
      */
-    params?: {
-        [key: string]: any
-    }
+    params?: TableUseParmasProps['params']
     /**
      * 列配置
      */

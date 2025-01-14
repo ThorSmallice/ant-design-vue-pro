@@ -254,6 +254,7 @@ const { resultParams, pagination } = $$(
     useParams({
         params,
         ownPagin,
+        ownPaginProps,
         requestParamsFormatter,
         fieldsNames,
         queryFormTimeFormat,
