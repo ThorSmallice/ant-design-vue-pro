@@ -65,7 +65,9 @@ export default defineConfig({
         removeConsole({
             includes: ['log'],
         }),
-        ReactivityTransform(),
+        ReactivityTransform({
+            version: 3,
+        }),
     ],
     build: {
         lib: {

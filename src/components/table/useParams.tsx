@@ -29,8 +29,8 @@ export default (props: TableUseParmasProps) => {
     } = $(props)
 
     const pagination = reactive({
-        page: 1,
-        pageSize: ownPaginProps?.defaultPageSize,
+        page: ownPaginProps?.defaultCurrent || 1,
+        pageSize: ownPaginProps?.defaultPageSize || 10,
     })
 
     const resetPage = () => {
