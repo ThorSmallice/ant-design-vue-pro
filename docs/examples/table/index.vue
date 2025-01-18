@@ -19,13 +19,13 @@
             import: importApi,
             template: templateApi,
         }"
+        v-model:value="dataSource"
         @before-row-edit-back-fill="beforeEdit"
         :params="params"
         @cu-form-model-change="onModelChange"
         @source-success="onsuccess"
         :downloadTempalteParamsFormatter="downloadTempalteParamsFormatter"
         templateFileName="模板.xlsx"
-        :cies-btns-in-query-form="true"
         :onBeforeRequestDetails="onBeforeRequestDetails"
     >
     </Table>
@@ -36,6 +36,7 @@ import { ControlMapType, Table, TableProps, TableConfig } from 'antd-vue-dbthor'
 import dayjs, { Dayjs } from 'dayjs'
 import { computed, ref, toRaw } from 'vue'
 import request from 'axios'
+const dataSource = ref([])
 const tableRef = ref()
 const abc = ref()
 TableConfig.fieldsNames.page = 'pageNo'

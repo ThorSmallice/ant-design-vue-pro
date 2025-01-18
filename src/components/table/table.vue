@@ -43,7 +43,7 @@
                 :rowKey="rowKey"
                 :pagination="false"
                 :columns="resColumns"
-                :data-source="source"
+                :data-source="data_source"
                 :loading="loading"
                 @resize-column="onResizeColumn"
                 :scroll="resScroll"
@@ -87,6 +87,7 @@ import useQueryForm from './useQueryForm'
 defineOptions({
     name: 'DbTable',
 })
+const data_source = defineModel('value', { default: [] })
 
 const tableRef = ref()
 const tableWrapRef = ref()
@@ -305,6 +306,13 @@ const { source, loading, total, updateSource }: any = $$(
         dataSource,
         onBeforeRequestSource,
     })
+)
+
+watch(
+    () => source?.value,
+    () => {
+        data_source.value = source?.value
+    }
 )
 const { ImportBtn } = $$(
     useImport({
