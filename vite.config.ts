@@ -73,7 +73,9 @@ export default defineConfig({
         lib: {
             entry: resolve(__dirname, 'src/main.ts'),
             name: pkg.name,
-            fileName: (format) => `lib/index.${format}.js`,
+            fileName: (format) => {
+                return `lib/index.${format}.js`
+            },
         },
 
         rollupOptions: {
