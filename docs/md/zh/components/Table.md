@@ -25,11 +25,16 @@
 | tableTextConfig    | 配置表格内置提示的文本 [配置项](#tabletextconfig)                                             |                                  object                                   |           -           |  -   |   \*   |
 | params             | 请求时额外添加的参数                                                                          |                                  object                                   |           -           |  -   |   -    |
 | columns            | 表格列配置                                                                                    |                  [TableColumnProps](#tablecolumnprops)[]                  |           -           |  -   |   -    |
-| columnsTitleNoWrap | 全部列头不换行                                                                                |                                  boolean                                  |         true          |  -   |   \*   |
-| columnsAlign       | 全部列对齐方式                                                                                |                        'left' / 'center' / 'right'                        |        'left'         |  -   |   \*   |
-| columnsSorter      | 全部列排序配置, 除['index','control']列,其他列均内置了排序逻辑                                | [ColumnProps](https://www.antdv.com/components/table-cn#column)['sorter'] |         true          |  -   |   \*   |
-| columnsEllipsis    | 全部列的 ellipsis 属性                                                                        |                                  boolean                                  |         true          |  -   |   \*   |
+| columnsTitleNoWrap | 统一列头不换行                                                                                |                                  boolean                                  |         true          |  -   |   \*   |
+| columnsAlign       | 统一列对齐方式                                                                                |                        'left' / 'center' / 'right'                        |        'left'         |  -   |   \*   |
+| columnsSorter      | 统一列排序配置, 除['index','control']列,其他列均内置了排序逻辑                                | [ColumnProps](https://www.antdv.com/components/table-cn#column)['sorter'] |         true          |  -   |   \*   |
+| columnsEllipsis    | 统一列的 ellipsis 属性                                                                        |                                  boolean                                  |         true          |  -   |   \*   |
 | columnsTimeFormat  | 当 column.type == 'date'时,处理时间显示的[格式](https://day.js.org/docs/zh-CN/display/format) |                                  string                                   | 'YYYY-MM-DD HH:mm:ss' |  -   |   \*   |
+| columnsEmptyText   | 统一列取值为空时显示的内容                                                                    |                              VNode / string                               |          '-'          |  -   |   \*   |
+| indexColumn        | 开启序号列                                                                                    |                                  boolean                                  |         true          |  -   |   \*   |
+| indexColumnWidth   | 序号列宽度                                                                                    |                                  number                                   |          80           |  -   |   \*   |
+| indexColumnProps   | 序号列 Props                                                                                  |                   [TableColumnProps](#tablecolumnprops)                   |           -           |  -   |   \*   |
+| controlColumn      | 开启操作列                                                                                    |                   [TableColumnProps](#tablecolumnprops)                   |           -           |  -   |   \*   |
 
 ### TableColumnProps
 
