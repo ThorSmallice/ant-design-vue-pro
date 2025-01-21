@@ -207,7 +207,7 @@ const useQueryForm = (props: TableQueryFormProps) => {
                             >
                                 <Form.Item
                                     label={label}
-                                    name={flattenDataIndex(name)}
+                                    name={flattenDataIndex(name as string | string[])}
                                     rules={rules}
                                     {...formItemProps}
                                 >
@@ -215,13 +215,13 @@ const useQueryForm = (props: TableQueryFormProps) => {
                                         customControl?.(
                                             queryFormState,
                                             name,
-                                            flattenDataIndex(name)
+                                            flattenDataIndex(name as string | string[])
                                         )
                                     ) : (
                                         <FormItemControl
                                             type={control}
                                             model={queryFormState.values}
-                                            name={flattenDataIndex(name)}
+                                            name={flattenDataIndex(name as string | string[])}
                                             {...controlProps}
                                         ></FormItemControl>
                                     )}
