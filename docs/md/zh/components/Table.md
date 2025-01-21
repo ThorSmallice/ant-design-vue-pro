@@ -7,7 +7,7 @@
 
 ## 示例
 
-<Table></Table>
+<!-- <Table></Table> -->
 
 ## API
 

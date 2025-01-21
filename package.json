@@ -1,8 +1,9 @@
 {
     "name": "antd-vue-dbthor",
+    "homepage": "https://www.dbice.cn/antd-vue-dbthor/docs/",
     "type": "module",
     "private": false,
-    "version": "1.0.71",
+    "version": "1.0.72",
     "description": "",
     "main": "index.js",
     "scripts": {
