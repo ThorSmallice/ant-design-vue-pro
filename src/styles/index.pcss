@@ -52,6 +52,18 @@
     .ant-form-item .ant-form-item-label > label .ant-form-item-tooltip {
         @apply flex;
     }
+    .control-cell {
+        @apply m-0 flex items-center;
+        .edit-btn {
+            @apply opacity-0;
+        }
+        .ant-input-clear-icon {
+            @apply flex  items-center;
+        }
+    }
+    .control-cell:hover > .edit-btn {
+        @apply opacity-100;
+    }
 }
 .db-table-full {
     @apply h-full;

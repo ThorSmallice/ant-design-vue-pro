@@ -15,7 +15,7 @@ import { Callbacks, RuleError, RuleObject } from 'ant-design-vue/es/form/interfa
 import { Props, ValidateInfo, validateInfos, validateOptions } from 'ant-design-vue/es/form/useForm'
 import { cloneDeep, isFunction, omit } from 'es-toolkit'
 import { computed, h, Reactive, reactive, ref, Ref, toRaw, useSlots, VNode, watch } from 'vue'
-import { ControlMapProps, FormItemControl } from './control'
+import { ControlMapProps, flattenDataIndex, FormItemControl } from './control'
 import { ciesBtnsVNode, OwnBtnProps } from './index.type'
 import { TableUseCUReturnOptions } from './useCU'
 interface DebounceSettings {
@@ -49,7 +49,7 @@ export interface TableQueryFormItemProps<T extends keyof ControlMapProps = keyof
     extends FormItemProps {
     control?: T
     controlProps?: ControlMapProps[T] & { [key: string]: any }
-    customControl?: (model: Reactive<any>, name: FormItemProps['name']) => VNode
+    customControl?: (model: Reactive<any>, name: FormItemProps['name'], realName: string) => VNode
     colProps?: ColProps
     rules?: RuleObject[]
 }
@@ -207,17 +207,21 @@ const useQueryForm = (props: TableQueryFormProps) => {
                             >
                                 <Form.Item
                                     label={label}
-                                    name={name}
+                                    name={flattenDataIndex(name)}
                                     rules={rules}
                                     {...formItemProps}
                                 >
                                     {isFunction(customControl) ? (
-                                        customControl?.(queryFormState, name)
+                                        customControl?.(
+                                            queryFormState,
+                                            name,
+                                            flattenDataIndex(name)
+                                        )
                                     ) : (
                                         <FormItemControl
                                             type={control}
                                             model={queryFormState.values}
-                                            name={name}
+                                            name={flattenDataIndex(name)}
                                             {...controlProps}
                                         ></FormItemControl>
                                     )}

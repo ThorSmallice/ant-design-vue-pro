@@ -18,6 +18,7 @@
             export: exportApi,
             import: importApi,
             template: templateApi,
+            create: createContractManagePageApi,
         }"
         v-model:value="dataSource"
         @before-row-edit-back-fill="beforeEdit"
@@ -27,6 +28,7 @@
         :downloadTempalteParamsFormatter="downloadTempalteParamsFormatter"
         templateFileName="模板.xlsx"
         :onBeforeRequestDetails="onBeforeRequestDetails"
+        @cell-edit-confirm="cellEditConfirm"
     >
     </Table>
 </template>
@@ -34,9 +36,18 @@
 <script setup lang="tsx">
 import { ControlMapType, Table, TableProps, TableConfig } from 'antd-vue-dbthor'
 import dayjs, { Dayjs } from 'dayjs'
-import { computed, ref, toRaw } from 'vue'
+import { computed, ref, toRaw, watch } from 'vue'
 import request from 'axios'
 const dataSource = ref([])
+
+watch(
+    dataSource,
+    (cur, prev) => {
+        console.log('🚀 ~ watch ~ prev:', cur, prev)
+    },
+    { deep: true }
+)
+const cellEditConfirm = async () => {}
 const tableRef = ref()
 const abc = ref()
 TableConfig.fieldsNames.page = 'pageNo'
@@ -80,6 +91,9 @@ const templateApi = async (params) => {
 }
 const getContractManageDetailApi = async (params?: any) =>
     await axios.get('/admin-api/wms/task-plan/get', { params })
+
+const createContractManagePageApi = async (data) =>
+    await axios.post('/admin-api/wms/task-plan/create', { data })
 
 const importApi = async (data) => {
     return axios.post(
@@ -149,7 +163,7 @@ const columns = computed((): TableProps['columns'] => {
             title: '合同名称',
             dataIndex: 'name',
             width: 240,
-            fixed: 'left',
+            editable: true,
             formItemProps: {
                 sort: 2,
                 rules: [
@@ -164,7 +178,8 @@ const columns = computed((): TableProps['columns'] => {
         },
         {
             title: '合同编号',
-            dataIndex: 'code',
+            dataIndex: ['code', 'number'],
+            editable: true,
             width: 200,
             formItemProps: {
                 sort: 1,
@@ -186,24 +201,27 @@ const columns = computed((): TableProps['columns'] => {
         },
         {
             title: '合同有效时间',
-            dataIndex: 'effectiveTime',
+            dataIndex: 'taskStartTime',
+            editable: true,
+            type: 'date',
             width: 240,
             formItemProps: {
                 sort: 4,
-                control: ControlMapType.RangePicker,
+                control: ControlMapType.DatePicker,
+                // name: 'effectiveTime',
                 rules: [
                     {
                         required: true,
                     },
                 ],
             },
-            customRender: ({ record }: any) => {
-                return (
-                    dayjs?.(record?.effectiveStartTime)?.format?.(timeFormat) +
-                    '~' +
-                    dayjs?.(record?.effectiveEndTime)?.format?.(timeFormat)
-                )
-            },
+            // customRender: ({ record }: any) => {
+            //     return (
+            //         dayjs?.(record?.taskStartTime)?.format?.(timeFormat) +
+            //         '~' +
+            //         dayjs?.(record?.taskEndTime)?.format?.(timeFormat)
+            //     )
+            // },
         },
         {
             title: '签署日期',
@@ -274,7 +292,6 @@ const columns = computed((): TableProps['columns'] => {
                     span: 3,
                 },
             },
-            fixed: 'right',
         },
         {
             title: '附件',
@@ -296,7 +313,7 @@ const queryFormItem = computed((): TableProps['queryFormItems'] => {
     return [
         {
             label: '签署乙方',
-            name: 'signatory',
+            name: ['signatory', 'name'],
         },
         {
             label: '合同开始时间',

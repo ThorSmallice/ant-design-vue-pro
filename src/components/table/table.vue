@@ -213,9 +213,10 @@ const {
     onTemplateRequestSuccess = config.table.onTemplateRequestSuccess,
     onTemplateDownloadSuccess = config.table.onTemplateDownloadSuccess,
     onTemplateDownloadError = config.table.onTemplateDownloadError,
-
     autoSizeConfig = config.table.autoSizeConfig,
     minScollHeight = config.table.minScollHeight,
+
+    onCellEditConfirm,
 
     ...o
 } = defineProps<TableProps>()
@@ -397,6 +398,8 @@ const { resColumns, ColumnSettingBtn }: any = $$(
         controlColumnWidthProps,
         columnSettingBtn,
         onBeforeRequestDetails,
+        onCellEditConfirm,
+        emits,
     })
 )
 

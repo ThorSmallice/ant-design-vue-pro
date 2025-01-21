@@ -1,43 +1,40 @@
+import { CheckOutlined, EditOutlined } from '@ant-design/icons-vue'
 import {
     TableColumnProps as ATableColumnProps,
     Button,
     ButtonProps,
     Checkbox,
-    Col,
     Flex,
     message,
     Popconfirm,
     Popover,
-    Row,
     Space,
 } from 'ant-design-vue'
 import { AxiosResponse } from 'axios'
 import Big from 'big.js'
-import dayjs from 'dayjs'
+import dayjs, { Dayjs, isDayjs } from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
-import { cloneDeep, isFunction, merge } from 'es-toolkit'
-import { get, isEmpty, isObject } from 'es-toolkit/compat'
+import { cloneDeep, flattenObject, isFunction, merge } from 'es-toolkit'
+import { get, has, isEmpty, isObject, set } from 'es-toolkit/compat'
 import numeral from 'numeral'
 import { pinyin } from 'pinyin-pro'
 import {
     computed,
     createSSRApp,
-    EmitFn,
-    Events,
     FunctionalComponent,
+    reactive,
     Reactive,
     Ref,
     ref,
-    SetupContext,
-    useAttrs,
+    UnwrapRef,
     useSlots,
     VNode,
     watch,
 } from 'vue'
 import { renderToString } from 'vue/server-renderer'
+import { ControlMapProps, flattenDataIndex, FormItemControl, setValueByDataIndex } from './control'
 import {
     OwnBtnProps,
-    ownBtnProps,
     OwnPopoverProps,
     ownPopoverProps,
     RequestParamsFormatter,
@@ -67,11 +64,13 @@ export const formatterObjValueWithDate = (
     }
     return temp
 }
-export type TableColumnType = 'index' | 'control' | 'date' | 'number'
-export interface TableColumnProps extends ATableColumnProps {
+export type TableColumnType = 'index' | 'control' | 'date' | 'number' | 'date-range'
+export interface TableColumnProps<T extends keyof ControlMapProps = keyof ControlMapProps>
+    extends Omit<ATableColumnProps, 'dataIndex'> {
     hidden?: boolean
     type?: TableColumnType
     nowrap?: boolean
+    dataIndex?: string | string[] | string[][]
     emptyText?: VNode | string
     timeFormat?: string
     numberFormat?:
@@ -83,6 +82,10 @@ export interface TableColumnProps extends ATableColumnProps {
     descItemProps?: TableDescItemsProps
 
     filterPlaceholder?: string
+
+    editable?: boolean
+    editControl?: T
+    editControlProps?: ControlMapProps[T] & { [key: string]: any }
 }
 
 export type TableColumnCustomRenderArgs = {
@@ -99,6 +102,7 @@ export type TableColumnRowMethods = {
     deleteRow: (record: any) => Promise<void>
     openRowDetails: (record: any) => Promise<void>
 }
+
 export interface TableUseColumnsProps {
     apis?: TableProps['apis']
     columns?: TableColumnProps[]
@@ -128,7 +132,7 @@ export interface TableUseColumnsProps {
     openCUModalForm?: TableUseCUReturnOptions['openCUModalForm'] | any
     updateSource?: () => Promise<void>
     cuFormModel?: TableUseCUReturnOptions['cuFormModel']
-    emits?: EmitFn
+
     onBeforeRequestDetails?: RequestParamsFormatter
     onBeforeRowEditBackFill?: (
         res: AxiosResponse | any,
@@ -145,6 +149,16 @@ export interface TableUseColumnsProps {
         [key: string]: any
     }>
     columnSettingBtn?: ownPopoverProps
+    onCellEditConfirm?: (
+        info: {
+            dataIndex: TableColumnProps['dataIndex']
+            handlePath: string
+            record: DataItem
+            value: any
+            closeCellEdit: () => void
+        },
+        editData: UnwrapRef<Reactive<Record<string, DataItem>>>
+    ) => Promise<boolean | void>
     [key: string]: any
 }
 
@@ -163,6 +177,11 @@ const computedTitleWidth = (title: string): number => {
 }
 
 type TransedColumns = ATableColumnProps & { show?: boolean; filterPlaceholder?: string }
+
+type DataItem = {
+    [key: string]: any
+}
+
 export default (props: TableUseColumnsProps) => {
     const {
         apis,
@@ -200,19 +219,20 @@ export default (props: TableUseColumnsProps) => {
         detailBackFillByGetDetail,
         tableTextConfig,
         columnSettingBtn,
+        onCellEditConfirm,
     } = $(props)
     const _cuModalLoading = $$(cuModalLoading)
     const _detailModalLoading = $$(detailModalLoading)
     const columnsTitleString = ref([])
     const transedColumns = ref([])
-
-    const resColumns = computed(() => transedColumns?.value?.filter?.(({ show }) => show))
+    const editData: UnwrapRef<Record<string, DataItem>> = reactive({})
+    const resColumns = computed(() => transedColumns?.value)
 
     const slots = useSlots()
     const transformColumns = (
         columns: TableColumnProps[],
         titleArr: string[]
-    ): TransedColumns[] => {
+    ): TableColumnProps[] => {
         if (isEmpty(columns)) {
             return null
         }
@@ -259,10 +279,11 @@ export default (props: TableUseColumnsProps) => {
                 sorter = columnsSorter,
                 filterPlaceholder,
                 customFilterDropdown = false,
+                customRender,
                 ...o
             } = col
             if (hidden) return
-            const resCol: TransedColumns = {
+            const resCol: TableColumnProps = {
                 title: (
                     <span
                         class={[
@@ -284,6 +305,7 @@ export default (props: TableUseColumnsProps) => {
                     customFilterDropdown ?? !exculdesFilterColumnTypes?.includes(col?.type),
                 customRender: (...args) =>
                     getCustomRender(...args, col, pagination, {
+                        editData,
                         columnsTimeFormat,
                         columnsEmptyText,
                         controlColumnBtns,
@@ -306,8 +328,9 @@ export default (props: TableUseColumnsProps) => {
                         getDetails,
                         editRow,
                         openRowDetails,
+                        onCellEditConfirm,
                     }),
-                show: true,
+
                 ...o,
             }
             if (fixed === 'left') {
@@ -437,7 +460,7 @@ export default (props: TableUseColumnsProps) => {
         )
     }
     watch(
-        [() => columns],
+        () => columns,
         () => {
             updateColumns(columns)
         },
@@ -458,115 +481,240 @@ const getCustomRender = (
         columnsEmptyText,
         columnsTimeFormat,
         controlColumnBtns,
-
         slots,
-
         deleteRow,
         editRow,
         openRowDetails,
+        editData,
+        onCellEditConfirm,
     }: TableUseColumnsProps
 ) => {
     const { text, record, index, column } = opt
-    const { type, customRender, emptyText, timeFormat, numberFormat, numberComputed } = metaColumn
+    const {
+        type,
+        dataIndex,
+        customRender,
+        editable,
+        editControl,
+        editControlProps,
+        emptyText,
+        timeFormat,
+        numberFormat,
+        numberComputed,
+        formItemProps,
+    } = metaColumn
 
-    if (customRender && isFunction(customRender)) return customRender?.(opt)
-    if (type === 'index') {
-        return pagination.page * pagination.pageSize - pagination.pageSize + (index + 1)
+    let path: string = flattenDataIndex([record?.id, dataIndex])
+    let val: any
+    switch (type) {
+        case 'date-range':
+            path = flattenDataIndex([record?.id, formItemProps?.name])
+            val = cloneDeep(
+                (dataIndex as string[][])?.map?.((keypath) => {
+                    const d = get(record, keypath)
+                    return d && dayjs(d)
+                })
+            )
+            break
+        case 'date':
+            val = dayjs(val)
+            break
+        default:
+            val = cloneDeep(get(record, dataIndex as string | string[]))
+            break
     }
+    const renderText = () => {
+        if (customRender && isFunction(customRender)) return customRender?.(opt)
+        if (type === 'index') {
+            return pagination.page * pagination.pageSize - pagination.pageSize + (index + 1)
+        }
 
-    if (type === 'date') {
-        return text
-            ? dayjs(text)?.format?.(timeFormat || columnsTimeFormat)
-            : text || emptyText || columnsEmptyText
-    }
+        if (type === 'date') {
+            return text
+                ? dayjs(text)?.format?.(timeFormat || columnsTimeFormat)
+                : text || emptyText || columnsEmptyText
+        }
 
-    if (type === 'number') {
-        const val = Number(text)
-        return isFunction(numberFormat)
-            ? numberFormat?.(numeral(val), text)
-            : numeral?.(
-                  isFunction(numberComputed) ? numberComputed?.(new Big(val), Big) : val
-              )?.format?.((numberFormat as unknown as string) || '0[.]00') ||
-                  emptyText ||
-                  columnsEmptyText
-    }
+        if (type === 'number') {
+            const val = Number(text)
+            return isFunction(numberFormat)
+                ? numberFormat?.(numeral(val), text)
+                : numeral?.(
+                      isFunction(numberComputed) ? numberComputed?.(new Big(val), Big) : val
+                  )?.format?.((numberFormat as unknown as string) || '0[.]00') ||
+                      emptyText ||
+                      columnsEmptyText
+        }
 
-    if (type === 'control') {
-        const DetailBtn = (props?: OwnBtnProps) => {
-            if (!(controlColumnBtns && isObject((controlColumnBtns as any)?.detail))) return null
-            const { children, ...btnProps } = merge(
-                controlColumnBtns?.detail || {},
-                props || {}
-            ) as OwnBtnProps
+        if (type === 'control') {
+            const DetailBtn = (props?: OwnBtnProps) => {
+                if (!(controlColumnBtns && isObject((controlColumnBtns as any)?.detail)))
+                    return null
+                const { children, ...btnProps } = merge(
+                    controlColumnBtns?.detail || {},
+                    props || {}
+                ) as OwnBtnProps
+
+                return (
+                    <Button class="p-0" onClick={() => openRowDetails(record)} {...btnProps}>
+                        {children}
+                    </Button>
+                )
+            }
+
+            const EditBtn = (props?: OwnBtnProps) => {
+                if (!(controlColumnBtns && isObject((controlColumnBtns as any)?.edit))) return null
+                const { children, ...btnProps } = merge(
+                    controlColumnBtns?.edit || {},
+                    props || {}
+                ) as OwnBtnProps
+
+                return (
+                    <Button class="p-0" onClick={() => editRow(record)} {...btnProps}>
+                        {children}
+                    </Button>
+                )
+            }
+            const DeleteBtn: FunctionalComponent<OwnBtnProps> = (props: OwnBtnProps, { attrs }) => {
+                if (!(controlColumnBtns && isObject((controlColumnBtns as any)?.delete)))
+                    return null
+                const { children, ...btnProps } = merge(
+                    controlColumnBtns?.delete || {},
+                    props || {}
+                ) as OwnBtnProps
+
+                return (
+                    <div>
+                        <Popconfirm
+                            onConfirm={() => deleteRow(record)}
+                            title="确定删除吗?"
+                            okText="确定"
+                            cancelText="取消"
+                        >
+                            <Button class="p-0" {...btnProps} {...attrs}>
+                                {children}
+                            </Button>
+                        </Popconfirm>
+                    </div>
+                )
+            }
 
             return (
-                <Button class="p-0" onClick={() => openRowDetails(record)} {...btnProps}>
-                    {children}
-                </Button>
+                <Space>
+                    {slots?.customControlColumnBtns &&
+                    isFunction(slots?.customControlColumnBtns) ? (
+                        slots?.customControlColumnBtns?.({
+                            DetailBtn,
+                            EditBtn,
+                            DeleteBtn,
+                            deleteRow,
+                            editRow,
+                            openRowDetails,
+                            rowInfo: opt,
+                            metaColumnInfo: metaColumn,
+                        })
+                    ) : (
+                        <>
+                            <DetailBtn></DetailBtn>
+                            <EditBtn></EditBtn>
+                            <DeleteBtn></DeleteBtn>
+                        </>
+                    )}
+                </Space>
             )
         }
 
-        const EditBtn = (props?: OwnBtnProps) => {
-            if (!(controlColumnBtns && isObject((controlColumnBtns as any)?.edit))) return null
-            const { children, ...btnProps } = merge(
-                controlColumnBtns?.edit || {},
-                props || {}
-            ) as OwnBtnProps
+        return text || emptyText || columnsEmptyText
+    }
 
-            return (
-                <Button class="p-0" onClick={() => editRow(record)} {...btnProps}>
-                    {children}
-                </Button>
-            )
-        }
-        const DeleteBtn: FunctionalComponent<OwnBtnProps> = (props: OwnBtnProps, { attrs }) => {
-            if (!(controlColumnBtns && isObject((controlColumnBtns as any)?.delete))) return null
-            const { children, ...btnProps } = merge(
-                controlColumnBtns?.delete || {},
-                props || {}
-            ) as OwnBtnProps
+    const openEdit = (record: DataItem) => {
+        let obj: DataItem
+        switch (type) {
+            case 'date-range':
+                obj = {
+                    [path]: val,
+                }
+                break
 
-            return (
-                <div>
-                    <Popconfirm
-                        onConfirm={() => deleteRow(record)}
-                        title="确定删除吗?"
-                        okText="确定"
-                        cancelText="取消"
-                    >
-                        <Button class="p-0" {...btnProps} {...attrs}>
-                            {children}
-                        </Button>
-                    </Popconfirm>
-                </div>
-            )
+            default:
+                obj = flattenObject(set({}, path, val))
+                break
         }
 
-        return (
-            <Space>
-                {slots?.customControlColumnBtns && isFunction(slots?.customControlColumnBtns) ? (
-                    slots?.customControlColumnBtns?.({
-                        DetailBtn,
-                        EditBtn,
-                        DeleteBtn,
-                        deleteRow,
-                        editRow,
-                        openRowDetails,
-                        rowInfo: opt,
-                        metaColumnInfo: metaColumn,
-                    })
-                ) : (
-                    <>
-                        <DetailBtn></DetailBtn>
-                        <EditBtn></EditBtn>
-                        <DeleteBtn></DeleteBtn>
-                    </>
-                )}
-            </Space>
+        Object.assign(editData, obj)
+    }
+    const confirmEdit = async (record: DataItem) => {
+        let val = get(editData, path)
+        const closeCellEdit = () => {
+            delete editData[path]
+        }
+        if (
+            (await onCellEditConfirm?.(
+                { dataIndex, handlePath: path, record, value: val, closeCellEdit },
+                editData
+            )) === false
+        ) {
+            return
+        }
+
+        switch (type) {
+            case 'date-range':
+                val?.forEach?.((v: Dayjs, i: number) => {
+                    setValueByDataIndex(
+                        record,
+                        flattenDataIndex(dataIndex[i]),
+                        isDayjs(v) ? v?.format?.() : emptyText || columnsEmptyText
+                    )
+                })
+                break
+            case 'date':
+                setValueByDataIndex(
+                    record,
+                    path?.split('.')?.slice(1)?.join('.'),
+                    isDayjs(val) ? val?.format?.() : emptyText || columnsEmptyText
+                )
+
+                break
+            default:
+                setValueByDataIndex(record, path?.split('.')?.slice(1)?.join('.'), val)
+                break
+        }
+
+        closeCellEdit()
+    }
+
+    const renderControl = () => {
+        return has(editData, path) ? (
+            <p class="control-cell ">
+                <FormItemControl
+                    type={editControl || formItemProps?.control}
+                    model={editData}
+                    name={path}
+                    {...(editControlProps || formItemProps?.controlProps)}
+                ></FormItemControl>
+                <Button
+                    onClick={() => confirmEdit(record)}
+                    class="flex items-center ml-2"
+                    title="确定"
+                    type="link"
+                    icon={<CheckOutlined />}
+                ></Button>
+            </p>
+        ) : (
+            <p class="control-cell " onDblclick={() => openEdit(record)}>
+                <span>{renderText()}</span>
+                <Button
+                    title="编辑"
+                    onClick={() => openEdit(record)}
+                    class="edit-btn flex items-center ml-2"
+                    icon={<EditOutlined />}
+                    type="link"
+                ></Button>
+            </p>
         )
     }
 
-    return text || emptyText || columnsEmptyText
+    return editable && !excludesBaseColumns?.includes(type) ? renderControl() : renderText()
 }
 
 const localSort = ({ type, dataIndex, sorter }: TableColumnProps) => {
@@ -574,8 +722,19 @@ const localSort = ({ type, dataIndex, sorter }: TableColumnProps) => {
     if (sorter === false) return false
     if (!isEmpty(sorter)) return sorter
     return (a: any, b: any, sortType: string) => {
-        const aVal = get(a, dataIndex)
-        const bVal = get(b, dataIndex)
+        let aVal: any
+        let bVal: any
+        switch (type) {
+            case 'date-range':
+                aVal = get(a, dataIndex?.[0])
+                bVal = get(b, dataIndex?.[1])
+
+                break
+            default:
+                aVal = get(a, dataIndex as string | string[])
+                bVal = get(b, dataIndex as string | string[])
+                break
+        }
 
         return compareValues(aVal, bVal)
     }

@@ -19,6 +19,9 @@ import {
     TextAreaProps,
 } from 'ant-design-vue'
 import { RangePickerProps } from 'ant-design-vue/es/date-picker'
+import { TableColumnProps } from './useColumns'
+import { flatten, join } from 'es-toolkit/compat'
+import { Reactive } from 'vue'
 const { TextArea } = Input
 const ControlMap = {
     Input,
@@ -105,7 +108,7 @@ export const FormItemControl = ({ type = 'Input', model, name, customControl, ..
         case ControlModelFields.Checked:
             return (
                 <Comp
-                    v-model:checked={model[`${name}`]}
+                    v-model:checked={model[flattenDataIndex(name)]}
                     placeholder={placeholder}
                     {...props}
                 ></Comp>
@@ -114,11 +117,41 @@ export const FormItemControl = ({ type = 'Input', model, name, customControl, ..
             return (
                 <Comp
                     allowClear
-                    v-model:value={model[`${name}`]}
+                    v-model:value={model[flattenDataIndex(name)]}
                     class={['w-full']}
                     placeholder={placeholder}
                     {...props}
                 ></Comp>
             )
     }
+}
+
+export const flattenDataIndex = (dataIndex: TableColumnProps['dataIndex']): string => {
+    return join([...flatten([dataIndex], 2)], '.')
+}
+
+export const hasDataIndex = (
+    obj: Reactive<Record<string, any>>,
+    dataIndex: TableColumnProps['dataIndex']
+): boolean => {
+    const key = flattenDataIndex(dataIndex)
+    return obj?.hasOwnProperty ? obj?.hasOwnProperty?.(key) : Object.hasOwn(obj, key)
+}
+
+export const setValueByDataIndex = (
+    obj: Reactive<Record<string, any>>,
+    path: string,
+    value: any
+) => {
+    const keys = path.split('.')
+
+    // 遍历路径并设置对应的值
+    keys.reduce((obj, key, index) => {
+        if (index === keys.length - 1) {
+            obj[key] = value
+        } else {
+            if (!obj[key]) obj[key] = {} // 如果中间路径的对象不存在，创建空对象
+        }
+        return obj[key]
+    }, obj)
 }

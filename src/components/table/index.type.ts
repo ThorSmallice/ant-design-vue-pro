@@ -199,6 +199,8 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     controlColumnWidthProps?: TableUseColumnsProps['controlColumnWidthProps']
     controlColumnBtns?: TableUseColumnsProps['controlColumnBtns']
 
+    onCellEditConfirm?: null | TableUseColumnsProps['onCellEditConfirm']
+
     requestParamsFormatter?: null | RequestParamsFormatter
     onBeforeRequestDetails?: null | TableUseColumnsProps['onBeforeRequestDetails']
     onSourceSuccess?: null | TableUseDataSourceProps['onSourceSuccess']
