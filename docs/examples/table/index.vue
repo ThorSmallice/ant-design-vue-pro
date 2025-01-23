@@ -3,6 +3,8 @@
         ref="tableRef"
         :full="true"
         export-file-name="测试.xlsx"
+        :cu-form-back-fill-by-get-detail="false"
+        :detail-back-fill-by-get-detail="false"
         :cu-form-default-values="initalValues"
         :cu-form-props="{
             labelCol: {
@@ -11,7 +13,6 @@
         }"
         :columns="columns"
         :query-form-items="queryFormItem"
-        @before-cu-form-submit="beforeSubmit"
         :apis="{
             list: getContractManagePageApi,
             details: getContractManageDetailApi,
@@ -21,10 +22,7 @@
             create: createContractManagePageApi,
         }"
         v-model:value="dataSource"
-        @before-row-edit-back-fill="beforeEdit"
         :params="params"
-        @cu-form-model-change="onModelChange"
-        @source-success="onsuccess"
         :downloadTempalteParamsFormatter="downloadTempalteParamsFormatter"
         templateFileName="模板.xlsx"
         :onBeforeRequestDetails="onBeforeRequestDetails"
@@ -40,64 +38,56 @@ import { computed, ref, toRaw, watch } from 'vue'
 import request from 'axios'
 const dataSource = ref([])
 
-watch(
-    dataSource,
-    (cur, prev) => {
-        console.log('🚀 ~ watch ~ prev:', cur, prev)
-    },
-    { deep: true }
-)
 const cellEditConfirm = async () => {}
 const tableRef = ref()
-const abc = ref()
-TableConfig.fieldsNames.page = 'pageNo'
+TableConfig.fieldsNames = {
+    ...TableConfig.fieldsNames,
+    list: ['data', 'list'],
+    page: 'pageNo',
+}
+
 const onBeforeRequestDetails = async (record: any) => {
     return {
         id: record?.id,
         companyId: record?.companyId,
     }
 }
-const onModelChange = (a) => {
-    abc.value = a.status
-}
-const onsuccess = async (res) => {
-    return {
-        list: res?.data?.data?.list,
-        total: res?.data?.data?.total,
-    }
-}
+
 const downloadTempalteParamsFormatter = ({ companyId }) => {
     return {
         companyId,
     }
 }
-const axios = request.create()
+const axios = request.create({
+    baseURL: '/admin-api',
+})
 axios.interceptors.request.use(async (req) => {
     req.headers['Authorization'] = 'Bearer 14724419e5ba41efaae64d91bed10d7b'
     req.headers['tenant-id'] = '1820759402696224769'
     return req
 })
 axios.interceptors.response.use(async (res) => {
-    return res
+    console.log('🚀 ~ axios.interceptors.response.use ~ res:', res)
+    return res?.data
 })
 const getContractManagePageApi = async (params?: any, config?: any) =>
-    await axios.get('/admin-api/wms/task-plan/page', { params })
+    await axios.get('/wms/task-plan/page', { params })
 
 const exportApi = async (params) => {
-    return axios.get('/admin-api/wms/contract/export-excel', { params, responseType: 'blob' })
+    return axios.get('/wms/contract/export-excel', { params, responseType: 'blob' })
 }
 const templateApi = async (params) => {
-    return axios.get('/admin-api/basic/config/template/get', { params, responseType: 'blob' })
+    return axios.get('/basic/config/template/get', { params, responseType: 'blob' })
 }
 const getContractManageDetailApi = async (params?: any) =>
-    await axios.get('/admin-api/wms/task-plan/get', { params })
+    await axios.get('/wms/task-plan/get', { params })
 
 const createContractManagePageApi = async (data) =>
-    await axios.post('/admin-api/wms/task-plan/create', { data })
+    await axios.post('/wms/task-plan/create', { data })
 
 const importApi = async (data) => {
     return axios.post(
-        '/admin-api/basic/config/import-excel',
+        '/basic/config/import-excel',
         {
             companyId: '1821098661168885761',
             ...data,
@@ -140,9 +130,53 @@ const columns = computed((): TableProps['columns'] => {
             },
         },
         {
-            title: '签署乙方',
-            dataIndex: 'signatory',
-            width: 80,
+            title: '任务类别',
+            dataIndex: 'category',
+            width: 120,
+            editable: true,
+            formItemProps: {
+                control: ControlMapType.Select,
+                controlProps: {
+                    options: [
+                        {
+                            value: '维修',
+                            label: '维修',
+                        },
+                        {
+                            value: '整改',
+                            label: '整改',
+                        },
+                        {
+                            value: '巡检',
+                            label: '巡检',
+                        },
+                    ],
+                },
+                sort: 1,
+                rules: [
+                    {
+                        required: true,
+                    },
+                ],
+            },
+        },
+        {
+            title: '计划编号',
+            dataIndex: 'planCode',
+            width: 120,
+
+            formItemProps: {
+                hidden: true,
+            },
+            descItemProps: {
+                hidden: true,
+            },
+        },
+        {
+            title: '计划名称',
+            dataIndex: 'name',
+            width: 220,
+            ellipsis: true,
             formItemProps: {
                 sort: 0,
                 rules: [
@@ -153,45 +187,95 @@ const columns = computed((): TableProps['columns'] => {
             },
         },
         {
-            title: '合同类型',
-            dataIndex: 'typeId',
+            title: '任务类型',
+            dataIndex: 'type',
             width: 120,
-
-            customRender: ({ record }: any) => record?.type || '-',
-        },
-        {
-            title: '合同名称',
-            dataIndex: 'name',
-            width: 240,
             editable: true,
             formItemProps: {
-                sort: 2,
+                sort: 4,
                 rules: [
                     {
                         required: true,
                     },
                 ],
+                control: ControlMapType.Select,
                 controlProps: {
-                    maxlength: 100,
+                    mode: 'multiple',
+                    options: [
+                        {
+                            label: '临时任务',
+                            value: '临时任务',
+                        },
+                        {
+                            label: '周期任务',
+                            value: '周期任务',
+                        },
+                    ],
                 },
             },
         },
+
         {
-            title: '合同编号',
-            dataIndex: ['code', 'number'],
-            editable: true,
-            width: 200,
+            title: '任务表单',
+            hidden: true,
+            dataIndex: 'taskFromId',
             formItemProps: {
-                sort: 1,
-                controlProps: {
-                    maxlength: 50,
-                },
+                sort: 3,
+                hidden: true,
+            },
+            descItemProps: {
+                hidden: true,
+            },
+        },
+
+        {
+            title: '任务周期',
+            dataIndex: 'gap',
+            width: 180,
+            formItemProps: {
+                hidden: true,
+            },
+            descItemProps: {
+                hidden: true,
+            },
+            customRender: ({ record }: any) => record?.periodDesc || '-',
+        },
+        {
+            title: '起始时间',
+            dataIndex: [['taskStartTime'], ['taskEndTime']],
+            editable: true,
+            type: 'date-range',
+            formItemProps: {
+                name: 'taskEffectTime',
+                control: ControlMapType.RangePicker,
+            },
+            width: 400,
+        },
+        {
+            title: '开始日期',
+            dataIndex: 'taskStartTime',
+            type: 'date',
+            width: 220,
+            ellipsis: true,
+            formItemProps: {
+                control: ControlMapType.DatePicker,
             },
         },
         {
-            title: '履约状态',
-            width: 120,
-            dataIndex: 'performanceStatus',
+            title: '结束日期',
+            dataIndex: 'taskEndTime',
+            type: 'date',
+            width: 220,
+            ellipsis: true,
+            formItemProps: {
+                control: ControlMapType.DatePicker,
+            },
+        },
+
+        {
+            title: '设备总数',
+            width: 100,
+            dataIndex: 'equNum',
             formItemProps: {
                 hidden: true,
             },
@@ -200,109 +284,58 @@ const columns = computed((): TableProps['columns'] => {
             },
         },
         {
-            title: '合同有效时间',
-            dataIndex: 'taskStartTime',
-            editable: true,
-            type: 'date',
-            width: 240,
-            formItemProps: {
-                sort: 4,
-                control: ControlMapType.DatePicker,
-                // name: 'effectiveTime',
-                rules: [
-                    {
-                        required: true,
-                    },
-                ],
-            },
-            // customRender: ({ record }: any) => {
-            //     return (
-            //         dayjs?.(record?.taskStartTime)?.format?.(timeFormat) +
-            //         '~' +
-            //         dayjs?.(record?.taskEndTime)?.format?.(timeFormat)
-            //     )
-            // },
-        },
-        {
-            title: '签署日期',
-            dataIndex: 'signature',
-            width: 200,
-            formItemProps: {
-                sort: 5,
-                control: ControlMapType.DatePicker,
-            },
-            type: 'date',
-            timeFormat,
-        },
-        {
-            title: '合同状态',
+            title: '计划状态',
             dataIndex: 'status',
-            hidden: true,
-        },
-        {
-            title: '合同负责人',
-            dataIndex: 'person',
-            hidden: true,
-        },
-        {
-            title: '到期提醒',
-            dataIndex: 'reminder',
-            hidden: true,
+            width: 100,
             formItemProps: {
-                control: ControlMapType.InputNumber,
-                controlProps: {
-                    addonAfter: '天',
-                    precision: 0,
-                    step: 1,
-                },
+                hidden: true,
             },
-        },
-        {
-            title: '负责人联系电话',
-            dataIndex: 'phone',
-            hidden: true,
+            descItemProps: {
+                hidden: true,
+            },
+            customRender: ({ record }: any) => record?.statusDesc || '-',
         },
         {
             title: '操作人员',
-            dataIndex: 'operatorName',
-            width: 200,
+            dataIndex: 'updaterName',
+            width: 220,
+            ellipsis: true,
+
             formItemProps: {
+                hidden: true,
+            },
+            descItemProps: {
                 hidden: true,
             },
         },
         {
             title: '操作时间',
             dataIndex: 'updateTime',
-            width: 200,
+            width: 220,
+            ellipsis: true,
+
+            type: 'date',
+            timeFormat,
             formItemProps: {
+                hidden: true,
+            },
+            descItemProps: {
                 hidden: true,
             },
         },
         {
             title: '备注',
             dataIndex: 'remark',
-            width: 200,
+            width: 220,
             ellipsis: true,
             formItemProps: {
+                sort: 6,
                 control: ControlMapType.TextArea,
                 colProps: {
                     span: 20,
                 },
                 labelCol: {
-                    span: 3,
-                },
-            },
-        },
-        {
-            title: '附件',
-            dataIndex: 'files',
-            hidden: true,
-            formItemProps: {
-                colProps: {
-                    span: 20,
-                },
-                labelCol: {
-                    span: 3,
+                    span: 2,
                 },
             },
         },
@@ -324,49 +357,50 @@ const queryFormItem = computed((): TableProps['queryFormItems'] => {
             label: '合同类型',
             name: 'typeId',
             control: ControlMapType.Select,
+            controlProps: {
+                options: [
+                    {
+                        value: 1,
+                        label: '类型1',
+                    },
+                    {
+                        value: 2,
+                        label: '类型2',
+                    },
+                    {
+                        value: 3,
+                        label: '类型3',
+                    },
+                ],
+            },
         },
         {
             label: '履约状态',
             name: 'performanceStatus',
             control: ControlMapType.Select,
+            controlProps: {
+                fieldNames: {
+                    label: 'name',
+                    value: 'id',
+                },
+                options: [
+                    {
+                        id: 1,
+                        name: '维修',
+                    },
+                    {
+                        id: 2,
+                        name: '整改',
+                    },
+                    {
+                        id: 3,
+                        name: '巡检',
+                    },
+                ],
+            },
         },
     ]
 })
-
-const beforeSubmit = async ({ typeId, signature, effectiveTime, ...vals }: any) => {
-    return {
-        ...vals,
-        companyId,
-        effectiveStartTime: dayjs(effectiveTime[0])?.format(timeFormat),
-        effectiveEndTime: dayjs(effectiveTime[1])?.format(timeFormat),
-        signature: dayjs(signature)?.format(timeFormat),
-        typeId: typeId?.value,
-        type: typeId?.label,
-    }
-}
-
-const beforeEdit = async ({ typeId, type, effectiveStartTime, effectiveEndTime, ...vals }) => {
-    return {
-        ...vals,
-        typeId: {
-            label: type,
-            value: typeId,
-        },
-        effectiveTime: [dayjs(effectiveStartTime), dayjs(effectiveEndTime)],
-    }
-}
-
-const requestParamsFormatter = async ({ effectiveStartTime, ...vals }) => {
-    return {
-        effectivesStartTime: effectiveStartTime?.map?.((item, i) =>
-            i == 0
-                ? dayjs(item)?.startOf('day')?.format('YYYY-MM-DD HH:mm:ss')
-                : dayjs(item)?.endOf('day')?.format?.('YYYY-MM-DD HH:mm:ss')
-        ),
-        ...vals,
-    }
-}
-const stopTasks = async ({ id }: any) => {}
 </script>
 
 <style scoped></style>

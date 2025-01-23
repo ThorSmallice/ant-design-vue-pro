@@ -172,6 +172,7 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
         details: TableFieldNames
         export: TableFieldNames
         template: TableFieldNames
+        editCellTempKey: string
     }>
 
     tableTextConfig?: TableTextConfig

@@ -65,14 +65,14 @@ export default (props: TableUseDetailProps): TableUseDetailReturnOptions => {
                     descItemProps,
                     customRender,
                 } = col
-                const { label, render, hidden, ...o } = descItemProps || {}
+                const { label, hidden, ...o } = descItemProps || {}
                 return {
                     ...detailDescItemProps,
                     label: title || label,
                     key: JSON.stringify(dataIndex),
                     chidlren: renderChildren({
                         type,
-                        render,
+
                         dataSource: detailsDataSource?.values,
                         dataIndex,
                         column: col,
@@ -130,7 +130,7 @@ export default (props: TableUseDetailProps): TableUseDetailReturnOptions => {
 
 const renderChildren = ({
     type,
-    render,
+
     dataSource,
     dataIndex,
     column,
@@ -143,10 +143,6 @@ const renderChildren = ({
     numberComputed,
     emptyText,
 }) => {
-    if (isFunction(render)) {
-        return render?.(get(dataSource, dataIndex), dataSource, column, index)
-    }
-
     if (isFunction(customRender)) {
         return customRender?.({
             text: get(dataSource, dataIndex),
@@ -158,6 +154,17 @@ const renderChildren = ({
         })
     }
 
+    if (type === 'date-range') {
+        return (dataIndex as string[][])
+            ?.map?.((keypath) => {
+                return get(dataSource, keypath)
+                    ? dayjs(get(dataSource, keypath))?.format?.(
+                          timeFormat || detailDescItemTimeFormat || 'YYYY-MM-DD HH:mm:ss'
+                      )
+                    : emptyText || detailDescItemEmptyText
+            })
+            ?.join?.('~')
+    }
     if (type === 'date' && get(dataSource, dataIndex)) {
         return dayjs(get(dataSource, dataIndex))?.format?.(
             timeFormat || detailDescItemTimeFormat || 'YYYY-MM-DD HH:mm:ss'

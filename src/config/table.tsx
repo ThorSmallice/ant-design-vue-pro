@@ -29,6 +29,7 @@ export const TableConfig: TableProps = {
         details: 'data',
         export: 'data',
         template: 'data',
+        editCellTempKey: 'id',
     },
     onSourceSuccess: null,
     onSourceError: null,

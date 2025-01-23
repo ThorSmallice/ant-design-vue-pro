@@ -49,6 +49,10 @@ export const alias = {
     '@/': resolve(__dirname, './'),
     [pkg.name]: resolve(__dirname, './src/main.ts'),
 }
+
+export const define = {
+    __PKG_NAME__: JSON.stringify(pkg.name),
+}
 export default defineConfig({
     plugins: [
         Vue(),
@@ -95,4 +99,5 @@ export default defineConfig({
     resolve: {
         alias,
     },
+    define,
 })

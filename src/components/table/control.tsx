@@ -19,9 +19,12 @@ import {
     TextAreaProps,
 } from 'ant-design-vue'
 import { RangePickerProps } from 'ant-design-vue/es/date-picker'
-import { TableColumnProps } from './useColumns'
-import { flatten, join } from 'es-toolkit/compat'
+import { TableColumnProps, TableUseColumnsProps } from './useColumns'
+import { flatten, isNumber, join } from 'es-toolkit/compat'
 import { Reactive } from 'vue'
+import { isString } from 'es-toolkit'
+import { i } from 'vite/dist/node/types.d-aGj9QkWt'
+import { DefaultOptionType } from 'ant-design-vue/es/select'
 const { TextArea } = Input
 const ControlMap = {
     Input,
@@ -106,18 +109,35 @@ export const FormItemControl = ({ type = 'Input', model, name, customControl, ..
 
     switch (FormItemControlModelFields[type]) {
         case ControlModelFields.Checked:
-            return (
-                <Comp
-                    v-model:checked={model[flattenDataIndex(name)]}
-                    placeholder={placeholder}
-                    {...props}
-                ></Comp>
-            )
+            return <Comp v-model:checked={model[name]} placeholder={placeholder} {...props}></Comp>
+
         default:
+            if (type === ControlMapType.Select) {
+                const { fieldNames } = props || {}
+                const filterOption = (inputValue: string, options: DefaultOptionType) => {
+                    return (
+                        options[fieldNames?.label || 'label']
+                            .toLowerCase()
+                            .indexOf(inputValue.toLowerCase()) >= 0
+                    )
+                }
+
+                return (
+                    <Comp
+                        allowClear
+                        v-model:value={model[name]}
+                        class={['w-full']}
+                        placeholder={placeholder}
+                        showSearch
+                        filterOption={filterOption}
+                        {...props}
+                    ></Comp>
+                )
+            }
             return (
                 <Comp
                     allowClear
-                    v-model:value={model[flattenDataIndex(name)]}
+                    v-model:value={model[name]}
                     class={['w-full']}
                     placeholder={placeholder}
                     {...props}
@@ -154,4 +174,24 @@ export const setValueByDataIndex = (
         }
         return obj[key]
     }, obj)
+}
+
+export const transformObject = (obj: unknown) => {
+    const result = {}
+
+    for (const [key, value] of Object.entries(obj)) {
+        const keys = key.split('.')
+        let current = result
+
+        keys.forEach((k, index) => {
+            if (index === keys.length - 1) {
+                current[k] = value // 最后一级，赋值
+            } else {
+                current[k] = current[k] || {} // 初始化嵌套对象
+                current = current[k]
+            }
+        })
+    }
+
+    return result
 }

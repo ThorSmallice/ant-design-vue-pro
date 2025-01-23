@@ -4,10 +4,11 @@ import { resolve } from 'path'
 import { defineConfig, withBase } from 'vitepress'
 import ReactivityTransform from '@vue-macros/reactivity-transform/vite'
 import terser from '@rollup/plugin-terser'
-import { external, globals, proxy, alias } from '../../vite.config'
+import { external, globals, proxy, alias, define } from '../../vite.config'
 import { envResolve } from '../../utils/env'
 import { search as zhSearch } from './zh'
-
+import pkg from '../../package.json'
+console.log('🚀 ~ pkg:', pkg)
 const { VITE_DOCS_BASE_URL } = envResolve()
 export const base = defineConfig({
     title: 'Antd-Vue-Dbthor',
@@ -47,6 +48,7 @@ export const base = defineConfig({
 
             proxy,
         },
+        define: define,
     },
 
     themeConfig: {

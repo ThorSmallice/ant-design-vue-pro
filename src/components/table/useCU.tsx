@@ -17,9 +17,10 @@ import { cloneDeep, isFunction, merge } from 'es-toolkit'
 import { isEmpty } from 'es-toolkit/compat'
 import { computed, Reactive, reactive, Ref, ref, toRaw, VNode, watch } from 'vue'
 import { JSX } from 'vue/jsx-runtime'
-import { ControlMapProps, FormItemControl } from './control'
+import { ControlMapProps, flattenDataIndex, FormItemControl } from './control'
 import { OwnBtnProps, ownBtnProps, TableProps, TableTextConfig } from './index.type'
 import { FormInstance } from './useQueryForm'
+import { TableColumnProps } from './useColumns'
 
 export interface TableCUFormInstance extends FormInstance {}
 
@@ -50,7 +51,8 @@ export interface TableUseCUFormProps {
 }
 
 export interface TableUseCUFormItemProps<T extends keyof ControlMapProps = keyof ControlMapProps>
-    extends AFormItemProps {
+    extends Omit<AFormItemProps, 'name'> {
+    name?: string
     control?: T
     colProps?: ColProps
     controlProps?:
@@ -213,7 +215,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                         <Row gutter={[24, 10]} {...cuFormRowProps}>
                             {columns
                                 ?.sort?.((a, b) => a?.formItemProps?.sort - b?.formItemProps?.sort)
-                                ?.map?.(({ title, dataIndex, formItemProps }, i: number) => {
+                                ?.map?.(({ title, dataIndex, type, formItemProps }, i: number) => {
                                     const {
                                         name,
                                         label,
@@ -235,6 +237,18 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                                               })
                                             : controlProps || {}
                                     ) as TableUseCUFormItemProps['controlProps']
+
+                                    let path: string = flattenDataIndex([
+                                        (name || dataIndex) as any,
+                                    ])
+                                    switch (type) {
+                                        case 'date-range':
+                                            path = flattenDataIndex([formItemProps?.name as string])
+                                            break
+                                        default:
+                                            break
+                                    }
+
                                     return (
                                         <Col
                                             key={
@@ -250,9 +264,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                                             ) : (
                                                 <Form.Item
                                                     label={label || title}
-                                                    name={
-                                                        name || (dataIndex as FormItemProps['name'])
-                                                    }
+                                                    name={path}
                                                     rules={rules}
                                                     {...oths}
                                                 >
@@ -265,7 +277,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                                                         <FormItemControl
                                                             type={control}
                                                             model={cuFormModel.values}
-                                                            name={name || dataIndex}
+                                                            name={path}
                                                             {...resControlProps}
                                                         ></FormItemControl>
                                                     )}

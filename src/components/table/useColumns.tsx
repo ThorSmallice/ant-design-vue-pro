@@ -1,4 +1,5 @@
 import { CheckOutlined, EditOutlined } from '@ant-design/icons-vue'
+// import pkg from '@/package.json'
 import {
     TableColumnProps as ATableColumnProps,
     Button,
@@ -14,8 +15,8 @@ import { AxiosResponse } from 'axios'
 import Big from 'big.js'
 import dayjs, { Dayjs, isDayjs } from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
-import { cloneDeep, flattenObject, isFunction, merge } from 'es-toolkit'
-import { get, has, isEmpty, isObject, set } from 'es-toolkit/compat'
+import { cloneDeep, flattenObject, isFunction, isString, merge } from 'es-toolkit'
+import { get, has, isArray, isEmpty, isNumber, isObject, set } from 'es-toolkit/compat'
 import numeral from 'numeral'
 import { pinyin } from 'pinyin-pro'
 import {
@@ -32,7 +33,13 @@ import {
     watch,
 } from 'vue'
 import { renderToString } from 'vue/server-renderer'
-import { ControlMapProps, flattenDataIndex, FormItemControl, setValueByDataIndex } from './control'
+import {
+    ControlMapProps,
+    flattenDataIndex,
+    FormItemControl,
+    hasDataIndex,
+    setValueByDataIndex,
+} from './control'
 import {
     OwnBtnProps,
     OwnPopoverProps,
@@ -52,16 +59,31 @@ const excludesSortColumnTypes = [...excludesBaseColumns]
 const exculdesFilterColumnTypes = [...excludesBaseColumns]
 export const formatterObjValueWithDate = (
     obj: { [key: string]: any },
-    columns: TableColumnProps[]
+    columns: TableColumnProps[],
+    filterCb?: (col: TableColumnProps) => boolean
 ) => {
     const temp = cloneDeep(obj)
 
-    for (let k in temp) {
-        const colType = columns?.find?.(({ dataIndex }) => dataIndex === k)?.type
-        if (colType === 'date' && isDate(temp[k])) {
-            temp[k] = dayjs(temp[k])
+    columns?.forEach?.((col: TableColumnProps) => {
+        if (filterCb && filterCb?.(col)) return
+        const { type, dataIndex, formItemProps } = col
+        let val: any
+        switch (type) {
+            case 'date-range':
+                val = (dataIndex as string[][])?.map?.((keypath: string | string[]) => {
+                    return get(temp, keypath) ? dayjs(get(temp, keypath)) : null
+                })
+                temp[`${formItemProps?.name}`] = val
+                break
+            case 'date':
+                val = get(temp, dataIndex as string | string[])
+                temp[dataIndex as string] = val && isDate(val) ? dayjs(val) : null
+                break
+            default:
+                break
         }
-    }
+    })
+
     return temp
 }
 export type TableColumnType = 'index' | 'control' | 'date' | 'number' | 'date-range'
@@ -176,7 +198,7 @@ const computedTitleWidth = (title: string): number => {
     return title?.length ? title?.length * Math.floor(rootFontSize) : rootFontSize * 6
 }
 
-type TransedColumns = ATableColumnProps & { show?: boolean; filterPlaceholder?: string }
+type TransedColumns = TableColumnProps & { show?: boolean; filterPlaceholder?: string }
 
 type DataItem = {
     [key: string]: any
@@ -226,7 +248,7 @@ export default (props: TableUseColumnsProps) => {
     const columnsTitleString = ref([])
     const transedColumns = ref([])
     const editData: UnwrapRef<Record<string, DataItem>> = reactive({})
-    const resColumns = computed(() => transedColumns?.value)
+    const resColumns = computed(() => transedColumns?.value?.filter?.(({ show }) => show))
 
     const slots = useSlots()
     const transformColumns = (
@@ -283,7 +305,8 @@ export default (props: TableUseColumnsProps) => {
                 ...o
             } = col
             if (hidden) return
-            const resCol: TableColumnProps = {
+
+            const resCol: TransedColumns = {
                 title: (
                     <span
                         class={[
@@ -305,32 +328,19 @@ export default (props: TableUseColumnsProps) => {
                     customFilterDropdown ?? !exculdesFilterColumnTypes?.includes(col?.type),
                 customRender: (...args) =>
                     getCustomRender(...args, col, pagination, {
-                        editData,
-                        columnsTimeFormat,
                         columnsEmptyText,
+                        columnsTimeFormat,
                         controlColumnBtns,
-                        apis,
                         slots,
-                        openCUModalForm,
-                        cuFormModel,
-                        emits,
-                        _cuModalLoading,
-                        cuFormBackFillByGetDetail,
-                        columns,
-                        onBeforeRowEditBackFill,
-                        fieldsNames,
-                        onGetRowDetail,
-                        updateSource,
-                        onBeforeRowDelete,
-                        onRowDeleteSuccess,
-                        onRowDeleteError,
                         deleteRow,
-                        getDetails,
                         editRow,
                         openRowDetails,
+                        editData,
                         onCellEditConfirm,
+                        fieldsNames,
                     }),
 
+                show: true,
                 ...o,
             }
             if (fixed === 'left') {
@@ -343,6 +353,7 @@ export default (props: TableUseColumnsProps) => {
             centerColumns.push(resCol)
         })
 
+        checkColumn(tempColumns)
         return [...fixedLeftColumns, ...centerColumns, ...fixedRightColumns]
     }
 
@@ -352,7 +363,13 @@ export default (props: TableUseColumnsProps) => {
 
         try {
             const detail = detailBackFillByGetDetail ? await getDetails?.(record) : record
-            const res = formatterObjValueWithDate(detail, columns)
+
+            const res = formatterObjValueWithDate(
+                detail,
+                columns,
+                ({ descItemProps }) => descItemProps?.hidden
+            )
+
             detailsDataSource.values = res
         } catch (error) {}
         _detailModalLoading.value = false
@@ -400,9 +417,14 @@ export default (props: TableUseColumnsProps) => {
         try {
             const detail = cuFormBackFillByGetDetail ? await getDetails?.(record) : record
 
-            const res = formatterObjValueWithDate(detail, columns)
+            const res = formatterObjValueWithDate(
+                detail,
+                columns,
+                ({ formItemProps }) => formItemProps?.hidden
+            )
 
             const backFill = (await onBeforeRowEditBackFill?.(res, record)) || res
+            console.log('🚀 ~ editRow ~ backFill:', backFill)
 
             cuFormModel.values = backFill
         } catch (error) {}
@@ -485,6 +507,7 @@ const getCustomRender = (
         deleteRow,
         editRow,
         openRowDetails,
+        fieldsNames,
         editData,
         onCellEditConfirm,
     }: TableUseColumnsProps
@@ -504,11 +527,17 @@ const getCustomRender = (
         formItemProps,
     } = metaColumn
 
-    let path: string = flattenDataIndex([record?.id, dataIndex])
+    let path: string = flattenDataIndex([
+        record[`${fieldsNames?.editCellTempKey}`],
+        formItemProps?.name || dataIndex,
+    ])
     let val: any
     switch (type) {
         case 'date-range':
-            path = flattenDataIndex([record?.id, formItemProps?.name])
+            path = flattenDataIndex([
+                record[`${fieldsNames?.editCellTempKey}`],
+                formItemProps?.name,
+            ])
             val = cloneDeep(
                 (dataIndex as string[][])?.map?.((keypath) => {
                     const d = get(record, keypath)
@@ -529,6 +558,15 @@ const getCustomRender = (
             return pagination.page * pagination.pageSize - pagination.pageSize + (index + 1)
         }
 
+        if (type === 'date-range') {
+            return (dataIndex as string[][])
+                ?.map?.((keypath) => {
+                    return get(record, keypath)
+                        ? dayjs(get(record, keypath))?.format?.(timeFormat || columnsTimeFormat)
+                        : emptyText || columnsEmptyText
+                })
+                ?.join?.('~')
+        }
         if (type === 'date') {
             return text
                 ? dayjs(text)?.format?.(timeFormat || columnsTimeFormat)
@@ -629,16 +667,13 @@ const getCustomRender = (
 
     const openEdit = (record: DataItem) => {
         let obj: DataItem
-        switch (type) {
-            case 'date-range':
-                obj = {
-                    [path]: val,
-                }
-                break
 
-            default:
-                obj = flattenObject(set({}, path, val))
-                break
+        if (isArray(val)) {
+            obj = {
+                [path]: val,
+            }
+        } else {
+            obj = flattenObject(set({}, path, val))
         }
 
         Object.assign(editData, obj)
@@ -663,7 +698,9 @@ const getCustomRender = (
                     setValueByDataIndex(
                         record,
                         flattenDataIndex(dataIndex[i]),
-                        isDayjs(v) ? v?.format?.() : emptyText || columnsEmptyText
+                        isDayjs(v)
+                            ? v?.format?.(timeFormat || columnsTimeFormat)
+                            : emptyText || columnsEmptyText
                     )
                 })
                 break
@@ -671,7 +708,9 @@ const getCustomRender = (
                 setValueByDataIndex(
                     record,
                     path?.split('.')?.slice(1)?.join('.'),
-                    isDayjs(val) ? val?.format?.() : emptyText || columnsEmptyText
+                    isDayjs(val)
+                        ? val?.format?.(timeFormat || columnsTimeFormat)
+                        : emptyText || columnsEmptyText
                 )
 
                 break
@@ -684,7 +723,7 @@ const getCustomRender = (
     }
 
     const renderControl = () => {
-        return has(editData, path) ? (
+        return hasDataIndex(editData, path) ? (
             <p class="control-cell ">
                 <FormItemControl
                     type={editControl || formItemProps?.control}
@@ -751,11 +790,12 @@ const possibleFormats = [
     'HH:mm:ss',
     'x',
 ]
-const isDate = (str: number | string) => {
-    if (isNaN(Number(dayjs(str).valueOf())) || String(str).length >= 10) {
-        return possibleFormats?.some?.((format) => dayjs?.(str, format, true)?.isValid?.())
-    }
-    return false
+const isDate = (str: string) => {
+    // if (isNaN(Number(dayjs(str).valueOf())) || String(str).length >= 10) {
+    //     return possibleFormats?.some?.((format) => dayjs?.(str, format, true)?.isValid?.())
+    // }
+    // return false
+    return Date.parse(str)
 }
 
 // 工具函数：处理字符为英文首字符
@@ -788,4 +828,56 @@ function compareValues(a, b) {
     const firstA = toEnglishFirstChar(a)
     const firstB = toEnglishFirstChar(b)
     return firstA.localeCompare(firstB) // 按英文顺序比较
+}
+
+const checkColumn = (columns: TableColumnProps[]) => {
+    const errorObj = {}
+
+    columns?.forEach?.(({ title, dataIndex, type, editable, formItemProps }) => {
+        if (
+            (dataIndex as string[])?.every?.((item) => isString(item)) &&
+            !isString(formItemProps?.name)
+        ) {
+            errorObj[`${title}`] = [
+                ...(errorObj[`${title}`] || []),
+                `formItemProps.name应设为string类型`,
+            ]
+        }
+        switch (type) {
+            case 'date-range':
+                if (!checkDateRangeDataIndex(dataIndex)) {
+                    errorObj[`${title}`] = [
+                        ...(errorObj[`${title}`] || []),
+                        `dataIndex应设为string[][]类型`,
+                    ]
+                }
+
+                break
+            default:
+                break
+        }
+    })
+    if (!isEmpty(errorObj)) {
+        console.warn(`🚀 ~ ${__PKG_NAME__} ~ Table: 错误的column`, errorObj)
+    }
+}
+export const checkDateRangeDataIndex = (a: unknown) => {
+    // 判断 a 是否是数组
+    if (!Array.isArray(a)) {
+        return false
+    }
+    const res = a.every(
+        (item) => Array.isArray(item) && item?.every?.((v) => isString(v) || isNumber(v))
+    )
+
+    // 判断 a 的每一项是否也是数组
+    return res
+}
+
+export const checkDateRangeFormItemName = ({ formItemProps, editable }: TableColumnProps) => {
+    const res = isString(name)
+    if (!res) {
+        console.warn('请设置formItemProps.name,类型为string')
+    }
+    return res
 }
