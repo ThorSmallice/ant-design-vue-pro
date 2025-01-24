@@ -15,15 +15,14 @@ import { AxiosResponse } from 'axios'
 import Big from 'big.js'
 import dayjs, { Dayjs, isDayjs } from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
-import { cloneDeep, flattenObject, isFunction, isString, merge } from 'es-toolkit'
-import { get, has, isArray, isEmpty, isNumber, isObject, set } from 'es-toolkit/compat'
+import { cloneDeep, flatten, isFunction, isString, merge, omit } from 'es-toolkit'
+import { get, has, isEmpty, isNumber, isObject, set } from 'es-toolkit/compat'
 import numeral from 'numeral'
 import { pinyin } from 'pinyin-pro'
 import {
     computed,
     createSSRApp,
     FunctionalComponent,
-    reactive,
     Reactive,
     Ref,
     ref,
@@ -33,13 +32,7 @@ import {
     watch,
 } from 'vue'
 import { renderToString } from 'vue/server-renderer'
-import {
-    ControlMapProps,
-    flattenDataIndex,
-    FormItemControl,
-    hasDataIndex,
-    setValueByDataIndex,
-} from './control'
+import { ControlMapProps, FormItemControl } from './control'
 import {
     OwnBtnProps,
     OwnPopoverProps,
@@ -173,6 +166,7 @@ export interface TableUseColumnsProps {
     columnSettingBtn?: ownPopoverProps
     onCellEditConfirm?: (
         info: {
+            name: string | string[]
             dataIndex: TableColumnProps['dataIndex']
             handlePath: string
             record: DataItem
@@ -247,7 +241,7 @@ export default (props: TableUseColumnsProps) => {
     const _detailModalLoading = $$(detailModalLoading)
     const columnsTitleString = ref([])
     const transedColumns = ref([])
-    const editData: UnwrapRef<Record<string, DataItem>> = reactive({})
+    const editData: Ref<Record<string, DataItem>> = ref({})
     const resColumns = computed(() => transedColumns?.value?.filter?.(({ show }) => show))
 
     const slots = useSlots()
@@ -424,7 +418,6 @@ export default (props: TableUseColumnsProps) => {
             )
 
             const backFill = (await onBeforeRowEditBackFill?.(res, record)) || res
-            console.log('🚀 ~ editRow ~ backFill:', backFill)
 
             cuFormModel.values = backFill
         } catch (error) {}
@@ -527,17 +520,13 @@ const getCustomRender = (
         formItemProps,
     } = metaColumn
 
-    let path: string = flattenDataIndex([
-        record[`${fieldsNames?.editCellTempKey}`],
-        formItemProps?.name || dataIndex,
-    ])
+    let path: any = flatten(
+        [record[`${fieldsNames?.editCellTempKey}`], formItemProps?.name || dataIndex],
+        2
+    )
     let val: any
     switch (type) {
         case 'date-range':
-            path = flattenDataIndex([
-                record[`${fieldsNames?.editCellTempKey}`],
-                formItemProps?.name,
-            ])
             val = cloneDeep(
                 (dataIndex as string[][])?.map?.((keypath) => {
                     const d = get(record, keypath)
@@ -666,26 +655,25 @@ const getCustomRender = (
     }
 
     const openEdit = (record: DataItem) => {
-        let obj: DataItem
-
-        if (isArray(val)) {
-            obj = {
-                [path]: val,
-            }
-        } else {
-            obj = flattenObject(set({}, path, val))
-        }
-
-        Object.assign(editData, obj)
+        const obj = set({}, path, val)
+        merge(editData.value, obj)
     }
     const confirmEdit = async (record: DataItem) => {
-        let val = get(editData, path)
+        let val = get(editData.value, path)
+
         const closeCellEdit = () => {
-            delete editData[path]
+            editData.value = omit(editData.value, path)
         }
         if (
             (await onCellEditConfirm?.(
-                { dataIndex, handlePath: path, record, value: val, closeCellEdit },
+                {
+                    name: formItemProps?.name,
+                    dataIndex,
+                    handlePath: path,
+                    record,
+                    value: val,
+                    closeCellEdit,
+                },
                 editData
             )) === false
         ) {
@@ -695,9 +683,9 @@ const getCustomRender = (
         switch (type) {
             case 'date-range':
                 val?.forEach?.((v: Dayjs, i: number) => {
-                    setValueByDataIndex(
+                    set(
                         record,
-                        flattenDataIndex(dataIndex[i]),
+                        dataIndex[i] as string[],
                         isDayjs(v)
                             ? v?.format?.(timeFormat || columnsTimeFormat)
                             : emptyText || columnsEmptyText
@@ -705,9 +693,9 @@ const getCustomRender = (
                 })
                 break
             case 'date':
-                setValueByDataIndex(
+                set(
                     record,
-                    path?.split('.')?.slice(1)?.join('.'),
+                    (formItemProps?.name || dataIndex) as string[],
                     isDayjs(val)
                         ? val?.format?.(timeFormat || columnsTimeFormat)
                         : emptyText || columnsEmptyText
@@ -715,45 +703,54 @@ const getCustomRender = (
 
                 break
             default:
-                setValueByDataIndex(record, path?.split('.')?.slice(1)?.join('.'), val)
+                set(record, (formItemProps?.name || dataIndex) as string[], val)
+
                 break
         }
 
         closeCellEdit()
     }
 
-    const renderControl = () => {
-        return hasDataIndex(editData, path) ? (
-            <p class="control-cell ">
-                <FormItemControl
-                    type={editControl || formItemProps?.control}
-                    model={editData}
-                    name={path}
-                    {...(editControlProps || formItemProps?.controlProps)}
-                ></FormItemControl>
-                <Button
-                    onClick={() => confirmEdit(record)}
-                    class="flex items-center ml-2"
-                    title="确定"
-                    type="link"
-                    icon={<CheckOutlined />}
-                ></Button>
-            </p>
-        ) : (
-            <p class="control-cell " onDblclick={() => openEdit(record)}>
-                <span>{renderText()}</span>
-                <Button
-                    title="编辑"
-                    onClick={() => openEdit(record)}
-                    class="edit-btn flex items-center ml-2"
-                    icon={<EditOutlined />}
-                    type="link"
-                ></Button>
+    const RenderControl = () => {
+        return (
+            <p class="control-cell">
+                {has(cloneDeep(editData.value), path) ? (
+                    <>
+                        <FormItemControl
+                            type={editControl || formItemProps?.control}
+                            model={editData.value}
+                            name={path}
+                            {...(editControlProps || formItemProps?.controlProps)}
+                        ></FormItemControl>
+                        <Button
+                            onClick={() => confirmEdit(record)}
+                            class="flex items-center ml-2"
+                            title="确定"
+                            type="link"
+                            icon={<CheckOutlined />}
+                        ></Button>
+                    </>
+                ) : (
+                    <>
+                        <span>{renderText()}</span>
+                        <Button
+                            title="编辑"
+                            onClick={() => openEdit(record)}
+                            class="edit-btn flex items-center ml-2"
+                            icon={<EditOutlined />}
+                            type="link"
+                        ></Button>
+                    </>
+                )}
             </p>
         )
     }
 
-    return editable && !excludesBaseColumns?.includes(type) ? renderControl() : renderText()
+    return editable && !excludesBaseColumns?.includes(type) ? (
+        <RenderControl></RenderControl>
+    ) : (
+        renderText()
+    )
 }
 
 const localSort = ({ type, dataIndex, sorter }: TableColumnProps) => {
@@ -834,15 +831,6 @@ const checkColumn = (columns: TableColumnProps[]) => {
     const errorObj = {}
 
     columns?.forEach?.(({ title, dataIndex, type, editable, formItemProps }) => {
-        if (
-            (dataIndex as string[])?.every?.((item) => isString(item)) &&
-            !isString(formItemProps?.name)
-        ) {
-            errorObj[`${title}`] = [
-                ...(errorObj[`${title}`] || []),
-                `formItemProps.name应设为string类型`,
-            ]
-        }
         switch (type) {
             case 'date-range':
                 if (!checkDateRangeDataIndex(dataIndex)) {

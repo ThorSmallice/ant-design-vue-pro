@@ -14,13 +14,11 @@ import {
     Skeleton,
 } from 'ant-design-vue'
 import { cloneDeep, isFunction, merge } from 'es-toolkit'
-import { isEmpty } from 'es-toolkit/compat'
 import { computed, Reactive, reactive, Ref, ref, toRaw, VNode, watch } from 'vue'
 import { JSX } from 'vue/jsx-runtime'
-import { ControlMapProps, flattenDataIndex, FormItemControl } from './control'
+import { ControlMapProps, FormItemControl } from './control'
 import { OwnBtnProps, ownBtnProps, TableProps, TableTextConfig } from './index.type'
 import { FormInstance } from './useQueryForm'
-import { TableColumnProps } from './useColumns'
 
 export interface TableCUFormInstance extends FormInstance {}
 
@@ -126,6 +124,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
     const submitCUModalForm = async () => {
         try {
             const vals = await formRef.value.validate?.()
+
             submitBtnLoading.value = true
 
             let data: any = null
@@ -238,21 +237,12 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                                             : controlProps || {}
                                     ) as TableUseCUFormItemProps['controlProps']
 
-                                    let path: string = flattenDataIndex([
-                                        (name || dataIndex) as any,
-                                    ])
-                                    switch (type) {
-                                        case 'date-range':
-                                            path = flattenDataIndex([formItemProps?.name as string])
-                                            break
-                                        default:
-                                            break
-                                    }
+                                    let path = (name || dataIndex) as string | string[]
 
                                     return (
                                         <Col
                                             key={
-                                                JSON.stringify(name || dataIndex || title) ||
+                                                JSON.stringify(path || title) ||
                                                 `${i}-${title}-${dataIndex}`
                                             }
                                             class={[hidden && 'hidden']}

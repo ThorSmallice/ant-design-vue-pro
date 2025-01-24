@@ -15,7 +15,7 @@ import { Callbacks, RuleError, RuleObject } from 'ant-design-vue/es/form/interfa
 import { Props, ValidateInfo, validateInfos, validateOptions } from 'ant-design-vue/es/form/useForm'
 import { cloneDeep, isFunction, omit } from 'es-toolkit'
 import { computed, h, Reactive, reactive, ref, Ref, toRaw, useSlots, VNode, watch } from 'vue'
-import { ControlMapProps, flattenDataIndex, FormItemControl } from './control'
+import { ControlMapProps, FormItemControl } from './control'
 import { ciesBtnsVNode, OwnBtnProps } from './index.type'
 import { TableUseCUReturnOptions } from './useCU'
 interface DebounceSettings {
@@ -207,7 +207,7 @@ const useQueryForm = (props: TableQueryFormProps) => {
                             >
                                 <Form.Item
                                     label={label}
-                                    name={flattenDataIndex(name as string | string[])}
+                                    name={name as string | string[]}
                                     rules={rules}
                                     {...formItemProps}
                                 >
@@ -215,13 +215,13 @@ const useQueryForm = (props: TableQueryFormProps) => {
                                         customControl?.(
                                             queryFormState,
                                             name,
-                                            flattenDataIndex(name as string | string[])
+                                            name as string | string[]
                                         )
                                     ) : (
                                         <FormItemControl
                                             type={control}
                                             model={queryFormState.values}
-                                            name={flattenDataIndex(name as string | string[])}
+                                            name={name as string | string[]}
                                             {...controlProps}
                                         ></FormItemControl>
                                     )}

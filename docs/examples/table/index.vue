@@ -325,7 +325,7 @@ const columns = computed((): TableProps['columns'] => {
         },
         {
             title: '备注',
-            dataIndex: 'remark',
+            dataIndex: ['remark', 'text', 'content'],
             width: 220,
             ellipsis: true,
             formItemProps: {
@@ -346,7 +346,7 @@ const queryFormItem = computed((): TableProps['queryFormItems'] => {
     return [
         {
             label: '签署乙方',
-            name: ['signatory', 'name'],
+            name: 'name',
         },
         {
             label: '合同开始时间',

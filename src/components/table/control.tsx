@@ -19,12 +19,10 @@ import {
     TextAreaProps,
 } from 'ant-design-vue'
 import { RangePickerProps } from 'ant-design-vue/es/date-picker'
-import { TableColumnProps, TableUseColumnsProps } from './useColumns'
-import { flatten, isNumber, join } from 'es-toolkit/compat'
-import { Reactive } from 'vue'
-import { isString } from 'es-toolkit'
-import { i } from 'vite/dist/node/types.d-aGj9QkWt'
 import { DefaultOptionType } from 'ant-design-vue/es/select'
+import { flatten, get, join, set } from 'es-toolkit/compat'
+import { computed, Reactive } from 'vue'
+import { TableColumnProps } from './useColumns'
 const { TextArea } = Input
 const ControlMap = {
     Input,
@@ -104,12 +102,20 @@ const ControlPlaceholder = {
 
 export const FormItemControl = ({ type = 'Input', model, name, customControl, ...props }: any) => {
     const Comp = ControlMap[type]
+    console.log('🚀 ~ FormItemControl ~ name:', name)
+
+    const value = computed({
+        get: () => get(model, name),
+        set: (val) => {
+            set(model, name, val)
+        },
+    })
 
     const placeholder = ControlPlaceholder[type]
 
     switch (FormItemControlModelFields[type]) {
         case ControlModelFields.Checked:
-            return <Comp v-model:checked={model[name]} placeholder={placeholder} {...props}></Comp>
+            return <Comp v-model:checked={value.value} placeholder={placeholder} {...props}></Comp>
 
         default:
             if (type === ControlMapType.Select) {
@@ -125,7 +131,7 @@ export const FormItemControl = ({ type = 'Input', model, name, customControl, ..
                 return (
                     <Comp
                         allowClear
-                        v-model:value={model[name]}
+                        v-model:value={value.value}
                         class={['w-full']}
                         placeholder={placeholder}
                         showSearch
@@ -137,7 +143,7 @@ export const FormItemControl = ({ type = 'Input', model, name, customControl, ..
             return (
                 <Comp
                     allowClear
-                    v-model:value={model[name]}
+                    v-model:value={value.value}
                     class={['w-full']}
                     placeholder={placeholder}
                     {...props}
