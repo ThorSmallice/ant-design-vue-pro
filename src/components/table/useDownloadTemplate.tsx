@@ -1,5 +1,5 @@
 import { get, isEmpty, isFunction } from 'es-toolkit/compat'
-import { ownBtnProps, OwnBtnProps, TableProps } from './index.type'
+import { ownBtnProps, OwnBtnProps, RequestParamsFormatter, TableProps } from './index.type'
 import { Button, message } from 'ant-design-vue'
 import { ref } from 'vue'
 import { cloneDeep, merge } from 'es-toolkit'
@@ -13,7 +13,7 @@ export interface TableUseDownloadTemplateProps {
     fieldsNames?: TableProps['fieldsNames']
     templateFileName?: string
     downloadTemplateBtn?: ownBtnProps
-    downloadTempalteParamsFormatter?: TableProps['requestParamsFormatter']
+    downloadTempalteParamsFormatter?: RequestParamsFormatter
     onTemplateRequestSuccess?: (res: AxiosResponse) => Promise<DownloadResResponse | false>
     onTemplateDownloadSuccess?: (res: any) => Promise<false | void>
     onTemplateDownloadError?: (error: Error) => Promise<false | void>

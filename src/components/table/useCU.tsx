@@ -52,10 +52,10 @@ export interface TableUseCUFormItemProps<T extends keyof ControlMapProps = keyof
     extends Omit<AFormItemProps, 'name'> {
     name?: string
     control?: T
-    colProps?: ColProps
     controlProps?:
         | ((opt: { model: any; isEdit: boolean }) => ControlMapProps[T] & { [key: string]: any })
         | (ControlMapProps[T] & { [key: string]: any })
+    colProps?: ColProps
     sort?: number
     customControl?: (
         props: {

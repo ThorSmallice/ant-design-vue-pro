@@ -1,14 +1,11 @@
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
-import { resolve } from 'path'
-import { defineConfig, withBase } from 'vitepress'
-import ReactivityTransform from '@vue-macros/reactivity-transform/vite'
 import terser from '@rollup/plugin-terser'
-import { external, globals, proxy, alias, define } from '../../vite.config'
+import ReactivityTransform from '@vue-macros/reactivity-transform/vite'
+import { defineConfig } from 'vitepress'
 import { envResolve } from '../../utils/env'
+import { alias, define, external, globals, proxy } from '../../vite.config'
 import { search as zhSearch } from './zh'
-import pkg from '../../package.json'
-console.log('🚀 ~ pkg:', pkg)
 const { VITE_DOCS_BASE_URL } = envResolve()
 export const base = defineConfig({
     title: 'Antd-Vue-Dbthor',

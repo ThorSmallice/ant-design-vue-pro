@@ -102,7 +102,6 @@ const ControlPlaceholder = {
 
 export const FormItemControl = ({ type = 'Input', model, name, customControl, ...props }: any) => {
     const Comp = ControlMap[type]
-    console.log('🚀 ~ FormItemControl ~ name:', name)
 
     const value = computed({
         get: () => get(model, name),

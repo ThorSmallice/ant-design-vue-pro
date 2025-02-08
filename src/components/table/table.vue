@@ -109,18 +109,42 @@ const onResizeColumn = (w: number, col: TableColumnProps) => {
 }
 
 const {
-    showSorterTooltip = config.table.showSorterTooltip,
-    autoRequest = config.table.autoRequest,
-    apis,
     full = config.table.full,
+    scroll = config.table.scroll,
+    autoSizeConfig = config.table.autoSizeConfig,
+    minScollHeight = config.table.minScollHeight,
+    autoRequest = config.table.autoRequest,
+
+    apis,
+    fieldsNames = config.table.fieldsNames,
+    tableTextConfig = config.table.tableTextConfig,
+
     params,
+
     rowKey = 'id',
+
+    columns,
+    columnsTitleNoWrap = config.table.columnsTitleNoWrap,
+    columnsAlign = config.table.columnsAlign,
+    columnsSorter = config.table.columnsSorter,
+    columnsEllipsis = config.table.columnsEllipsis,
+    columnsTimeFormat = config.table.columnsTimeFormat,
+    columnsEmptyText = config.table.columnsEmptyText,
+
+    indexColumn = config.table.indexColumn,
+    indexColumnWidth = config.table.indexColumnWidth,
+    indexColumnProps = config.table.indexColumnProps,
+    controlColumn = config.table.controlColumn,
+    controlColumnWidth = config.table.controlColumnWidth,
+    controlColumnWidthProps = config.table.controlColumnWidthProps,
+    controlColumnBtns = config.table.controlColumnBtns,
+
+    showSorterTooltip = config.table.showSorterTooltip,
     columnSettingBtn = config.table.columnSettingBtn,
     requestParamsFormatter = config.table.requestParamsFormatter,
     onBeforeRequestSource,
 
     onBeforeRequestDetails = config.table.onBeforeRequestDetails,
-    fieldsNames = config.table.fieldsNames,
     onSourceSuccess = config.table.onSourceSuccess,
     onSourceError = config.table.onSourceError,
     onBeforeRowEditBackFill = config.table.onBeforeRowEditBackFill,
@@ -151,22 +175,6 @@ const {
     queryFormControlFormItemProps = config.table.queryFormControlFormItemProps,
     queryFormTimeFormat = config.table.queryFormTimeFormat,
 
-    columns,
-    indexColumn = config.table.indexColumn,
-    indexColumnWidth = config.table.indexColumnWidth,
-    indexColumnProps = config.table.indexColumnProps,
-    controlColumn = config.table.controlColumn,
-    controlColumnWidth = config.table.controlColumnWidth,
-    controlColumnWidthProps = config.table.controlColumnWidthProps,
-
-    columnsEllipsis = config.table.columnsEllipsis,
-    columnsAlign = config.table.columnsAlign,
-    columnsSorter = config.table.columnsSorter,
-    columnsTitleNoWrap = config.table.columnsTitleNoWrap,
-    columnsTimeFormat = config.table.columnsTimeFormat,
-    columnsEmptyText = config.table.columnsEmptyText,
-    controlColumnBtns = config.table.controlColumnBtns,
-
     cuFormProps = config.table.cuFormProps,
     cuFormRules,
     cuFormDefaultValues,
@@ -174,7 +182,6 @@ const {
     cuFormRowProps = config.table.cuFormRowProps,
     cuFormColProps = config.table.cuFormColProps,
     cuFormBackFillByGetDetail = config.table.cuFormBackFillByGetDetail,
-    tableTextConfig = config.table.tableTextConfig,
 
     detailBackFillByGetDetail = config.table.detailBackFillByGetDetail,
     detailDescItemEmptyText = config.table.detailDescItemEmptyText,
@@ -191,7 +198,6 @@ const {
     exportDropdown = config.table.exportDropdown,
     exportCurrentPageBtn = config.table.exportCurrentPageBtn,
     exportAllBtn = config.table.exportAllBtn,
-    scroll = config.table.scroll,
     tableLayout = config.table.tableLayout,
 
     exportFileByParams = config.table.exportFileByParams,
@@ -213,8 +219,6 @@ const {
     onTemplateRequestSuccess = config.table.onTemplateRequestSuccess,
     onTemplateDownloadSuccess = config.table.onTemplateDownloadSuccess,
     onTemplateDownloadError = config.table.onTemplateDownloadError,
-    autoSizeConfig = config.table.autoSizeConfig,
-    minScollHeight = config.table.minScollHeight,
 
     onCellEditConfirm,
 

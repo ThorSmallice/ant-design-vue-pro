@@ -199,24 +199,7 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     controlColumnWidth?: TableUseColumnsProps['controlColumnWidth']
     controlColumnWidthProps?: TableUseColumnsProps['controlColumnWidthProps']
     controlColumnBtns?: TableUseColumnsProps['controlColumnBtns']
-
-    onCellEditConfirm?: null | TableUseColumnsProps['onCellEditConfirm']
-
-    requestParamsFormatter?: null | RequestParamsFormatter
-    onBeforeRequestDetails?: null | TableUseColumnsProps['onBeforeRequestDetails']
-    onSourceSuccess?: null | TableUseDataSourceProps['onSourceSuccess']
-    onSourceError?: null | TableUseDataSourceProps['onSourceError']
-    onGetRowDetail?: null | TableUseColumnsProps['onGetRowDetail']
-    onBeforeRequestSource?: null | TableUseDataSourceProps['onBeforeRequestSource']
-    onBeforeCuFormSubmit?: null | ParamsFormatter
-
-    onBeforeRowEditBackFill?: null | TableUseColumnsProps['onBeforeRowEditBackFill']
-    onCuFormSubmitSuccess?: null | CRUDRequestFinish
-    onCuFormSubmitError?: null | CRUDRequestFinish
-    onCuFormCancel?: null | TableUseCUFormProps['onCuFormCancel']
-    onBeforeRowDelete?: null | ParamsFormatter
-    onRowDeleteSuccess?: null | CRUDRequestFinish
-    onRowDeleteError?: null | CRUDRequestFinish
+    columnSettingBtn?: TableUseColumnsProps['columnSettingBtn']
 
     /**
      * 分页配置
@@ -260,41 +243,33 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     /**
      * 详情 描述列表配置
      */
-    detailBackFillByGetDetail?: TableUseColumnsProps['detailBackFillByGetDetail']
-    detailDescItemEmptyText?: TableUseDetailProps['detailDescItemEmptyText']
-    detailDescItemProps?: TableUseDetailProps['detailDescItemProps'] & { [key: string]: any }
-    detailDescItemTimeFormat?: TableUseDetailProps['detailDescItemTimeFormat']
     detailModalProps?: TableUseDetailProps['detailModalProps'] & { [key: string]: any }
     detailDescProps?: TableUseDetailProps['detailDescProps'] & { [key: string]: any }
+    detailDescItemProps?: TableUseDetailProps['detailDescItemProps'] & { [key: string]: any }
+    detailDescItemEmptyText?: TableUseDetailProps['detailDescItemEmptyText']
+    detailDescItemTimeFormat?: TableUseDetailProps['detailDescItemTimeFormat']
+    detailBackFillByGetDetail?: TableUseColumnsProps['detailBackFillByGetDetail']
 
     /**
      * 内置按钮配置
      */
 
-    columnSettingBtn?: TableUseColumnsProps['columnSettingBtn']
-
     ciesBtns?: boolean
     ciesBtnsInQueryForm?: boolean
 
     createBtn?: false | TableUseCUFormProps['createBtn']
-
     importBtn?: TableUseImportProps['importBtn']
-    exportBtnMode?: 'dropdown' | 'all'
+    importUploadProps?: TableUseImportProps['importUploadProps']
+    importFileParamsFormatter?: null | TableUseImportProps['importFileParamsFormatter']
+
     exportDropdown?: TableUseExportProps['exportDropdown']
-    exportCurrentPageBtn?: TableUseExportProps['exportCurrentPageBtn']
     exportAllBtn?: TableUseExportProps['exportAllBtn']
+    exportBtnMode?: 'dropdown' | 'all'
+    exportCurrentPageBtn?: TableUseExportProps['exportCurrentPageBtn']
 
     exportFileByParams?: TableUseExportProps['exportFileByParams']
     exportFileParamsFormatter?: null | TableUseExportProps['exportFileParamsFormatter']
     exportFileName?: TableUseExportProps['exportFileName']
-    onExportRequestSuccess?: null | TableUseExportProps['onExportRequestSuccess']
-    onExportSuccess?: null | TableUseExportProps['onExportSuccess']
-    onExportError?: null | TableUseExportProps['onExportError']
-
-    importUploadProps?: TableUseImportProps['importUploadProps']
-    importFileParamsFormatter?: null | TableUseImportProps['importFileParamsFormatter']
-    onImportSuccess?: null | TableUseImportProps['onImportSuccess']
-    onImportError?: null | TableUseImportProps['onImportError']
 
     downloadTemplateBtn?: TableUseDownloadTemplateProps['downloadTemplateBtn']
     templateFileName?: TableUseDownloadTemplateProps['templateFileName']
@@ -302,9 +277,37 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
         | null
         | TableUseDownloadTemplateProps['downloadTempalteParamsFormatter']
 
+    requestParamsFormatter?: null | RequestParamsFormatter
+
+    onBeforeRequestSource?: null | TableUseDataSourceProps['onBeforeRequestSource']
+    onSourceSuccess?: null | TableUseDataSourceProps['onSourceSuccess']
+    onSourceError?: null | TableUseDataSourceProps['onSourceError']
+
+    onBeforeRequestDetails?: null | TableUseColumnsProps['onBeforeRequestDetails']
+    onGetRowDetail?: null | TableUseColumnsProps['onGetRowDetail']
+    onBeforeRowEditBackFill?: null | TableUseColumnsProps['onBeforeRowEditBackFill']
+
+    onBeforeCuFormSubmit?: null | ParamsFormatter
+    onCuFormSubmitSuccess?: null | CRUDRequestFinish
+    onCuFormSubmitError?: null | ((err: Error, cuFormisEdit?: boolean) => false | void)
+    onCuFormCancel?: null | TableUseCUFormProps['onCuFormCancel']
+
+    onBeforeRowDelete?: null | ParamsFormatter
+    onRowDeleteSuccess?: null | CRUDRequestFinish
+    onRowDeleteError?: null | ((error: Error) => boolean | void)
+
+    onExportRequestSuccess?: null | TableUseExportProps['onExportRequestSuccess']
+    onExportSuccess?: null | TableUseExportProps['onExportSuccess']
+    onExportError?: null | TableUseExportProps['onExportError']
+
+    onImportSuccess?: null | TableUseImportProps['onImportSuccess']
+    onImportError?: null | TableUseImportProps['onImportError']
+
     onTemplateRequestSuccess?: null | TableUseDownloadTemplateProps['onTemplateRequestSuccess']
     onTemplateDownloadSuccess?: null | TableUseDownloadTemplateProps['onTemplateDownloadSuccess']
     onTemplateDownloadError?: null | TableUseDownloadTemplateProps['onTemplateDownloadError']
+
+    onCellEditConfirm?: null | TableUseColumnsProps['onCellEditConfirm']
 }
 
 interface controlColumnInfo {
