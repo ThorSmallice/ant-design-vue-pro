@@ -29,7 +29,6 @@ export const base = defineConfig({
         build: {
             rollupOptions: {
                 plugins: [terser()],
-                external,
 
                 output: {
                     globals,
@@ -45,7 +44,7 @@ export const base = defineConfig({
 
             proxy,
         },
-        define: define,
+        // define: define,
     },
 
     themeConfig: {
