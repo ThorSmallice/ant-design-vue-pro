@@ -86,7 +86,7 @@
 | templateFileName                | 模板文件名                                                                                    | string                                                                                        | dayjs().valueOf()                                                                         |  -   |   -    |
 | downloadTempalteParamsFormatter | 下载模板的参数处理函数                                                                        | ( params:object)=>Promise\<object\>                                                           | -                                                                                         |  -   |   \*   |
 | requestParamsFormatter          | 列表数据请求参数最终处理函数                                                                  | ( params:object)=>Promise\<object\>                                                           | -                                                                                         |  -   |   \*   |
-| value[v-model]                  | 表格双向绑定的数据,内部请求的时也能通过该属性在外部获取操作,用于可编辑表格                    | Ref<DataItem[]>                                                                               | -                                                                                         |  -   |   -    |
+| value(v-model)                  | 表格双向绑定的数据,内部请求的时也能通过该属性在外部获取操作,用于可编辑表格                    | Ref<DataItem[]>                                                                               | -                                                                                         |  -   |   -    |
 
 ### TableColumnProps
 
@@ -161,15 +161,16 @@
 
 ### fieldsNames
 
-| 参数     | 说明                                             | 类型              | 默认值     | 版本 | 必填 |
-| :------- | :----------------------------------------------- | :---------------- | :--------- | :--: | :--: |
-| page     | 页码 (调用 apis.list 时参数中的 page )           | string            | 'page'     |  -   |      |
-| pageSize | 每页条目数 (调用 apis.list 时参数中的 pageSize ) | string            | 'pageSize' |  -   |      |
-| total    | 调用 apis.list 后拿取数据总数的字段              | string / string[] | 'total'    |  -   |      |
-| list     | 调用 apis.list 后拿取数据列表的字段              | string / string[] | 'list'     |  -   |      |
-| details  | 调用 apis.details 后拿取数据的字段               | string / string[] | 'data'     |  -   |      |
-| export   | 调用 apis.export 后拿取数据的字段                | string / string[] | 'data'     |  -   |      |
-| template | 调用 apis.template 后拿取数据的字段              | string / string[] | 'data'     |  -   |      |
+| 参数            | 说明                                             | 类型              | 默认值     | 必填 |
+| :-------------- | :----------------------------------------------- | :---------------- | :--------- | :--: |
+| page            | 页码 (调用 apis.list 时参数中的 page )           | string            | 'page'     |  \*  |
+| pageSize        | 每页条目数 (调用 apis.list 时参数中的 pageSize ) | string            | 'pageSize' |  \*  |
+| total           | 调用 apis.list 后拿取数据总数的字段              | string / string[] | 'total'    |  \*  |
+| list            | 调用 apis.list 后拿取数据列表的字段              | string / string[] | 'list'     |  \*  |
+| details         | 调用 apis.details 后拿取数据的字段               | string / string[] | 'data'     |  \*  |
+| export          | 调用 apis.export 后拿取数据的字段                | string / string[] | 'data'     |  \*  |
+| template        | 调用 apis.template 后拿取数据的字段              | string / string[] | 'data'     |  \*  |
+| editCellTempKey | 可编辑单元格绑定值所属的 key,默认取行数据的'id'  | string            | 'id'       |  \*  |
 
 ### controlColumnBtns
 
@@ -349,8 +350,58 @@
 
 ## Slot
 
-| 参数 | 说明 | 类型 | 默认值 | 版本 | global |
-| :--- | :--- | :--- | :----- | :--: | :----: |
+| 参数                    | 说明                                          | 类型                                                                                       |
+| :---------------------- | :-------------------------------------------- | :----------------------------------------------------------------------------------------- |
+| ...                     | 继承 antd-vue-table 原本的 slot               |                                                                                            |
+| customCiesBtns          | 自定义表格按钮 新增/导入/导出/下载模板/列配置 | v-slot:customCiesBtns="[customCiesBtnsOpt](#customciesbtnsopt)"                            |
+| customControlColumnBtns | 自定义操作列内容                              | v-slot:customControlColumnBtns="[customControlColumnBtnsOpt](#customcontrolcolumnbtnsopt)" |
+| customQueryFormBtns     | 自定义筛选表单的按钮组                        | v-slot:customQueryFormBtns="[customQueryFormBtnsOpt](#customqueryformbtnsopt)              |
+
+### customCiesBtnsOpt
+
+```ts
+interface customCiesBtnsOpt {
+    CreateBtn: VNode // 新增按钮
+    ImportBtn: VNode // 导入按钮
+    ExportDropDown: VNode // 下拉导出按钮 （包含导出当前页/全部页 按钮）
+    ExportCurrentPageBtn: VNode // 导出当前页按钮
+    ExportAllBtn: VNode // 导出全部按钮
+    ColumnSettingBtn: VNode // 列配置按钮
+    DownloadTemplateBtn: VNode // 下载模板按钮
+}
+```
+
+### customControlColumnBtnsOpt
+
+```ts
+interface customControlColumnBtnsOpt {
+    DetailBtn: VNode // 详情按钮
+    EditBtn: VNode // 编辑按钮
+    DeleteBtn: VNode // 删除按钮
+    deleteRow: (params: any) => Promise<void> //  删除当前行，自定义删除按钮时 @click绑定这个方法,需传入params供apis.delete请求使用
+    editRow: (params: any) => Promise<void> //  编辑当前行，自定义编辑按钮时 @click绑定这个方法,需传入params供apis.update请求使用
+    openRowDetails: (params: any) => Promise<void> //  打开当前行的详情modal，自定义编辑按钮时 @click绑定这个方法,需传入params供apis.details请求使用
+    rowInfo: obj // 当前行/列的信息
+    metaColumnInfo: TableColumnProps // 当前行列的源配置信息
+}
+```
+
+### customQueryFormBtnsOpt
+
+```ts
+interface customQueryFormBtnsOpt {
+    CreateBtn: VNode // 新增按钮
+    ImportBtn: VNode // 导入按钮
+    ExportDropDown: VNode // 下拉导出按钮 （包含导出当前页/全部页 按钮）
+    ExportCurrentPageBtn: VNode // 导出当前页按钮
+    ExportAllBtn: VNode // 导出全部按钮
+    ColumnSettingBtn: VNode // 列配置按钮
+    DownloadTemplateBtn: VNode // 下载模板按钮
+    SubmitBtn: VNode // 提交按钮
+    ResetBtn: VNode // 重置按钮
+    QueryFormInstance: VNode // 筛选表单的实例对象
+}
+```
 
 ---
 
