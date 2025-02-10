@@ -12,7 +12,7 @@
         "build": "tsc && vite build",
         "docs:dev": "cross-env NODE_ENV=development vitepress dev docs",
         "docs:build": "cross-env NODE_ENV=production vitepress build docs",
-        "docs:preview": "vitepress preview docs",
+        "docs:preview": "cross-env NODE_ENV=production vitepress preview docs",
         "push": "npm publish"
     },
     "files": [
