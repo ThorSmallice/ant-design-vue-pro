@@ -80,6 +80,10 @@ function sidebarDocuments(): DefaultTheme.SidebarItem[] {
                     text: '快速开始',
                     link: 'quickstart',
                 },
+                {
+                    text: '全局配置',
+                    link: 'globalconfig',
+                },
             ],
         },
     ]
