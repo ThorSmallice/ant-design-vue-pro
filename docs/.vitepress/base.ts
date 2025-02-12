@@ -6,6 +6,16 @@ import { defineConfig } from 'vitepress'
 import { envResolve } from '../../utils/env'
 import { alias, define, external, globals, proxy } from '../../vite.config'
 import { search as zhSearch } from './zh'
+import resizeObserverPolyfill from 'resize-observer-polyfill'
+import { visualizer } from 'rollup-plugin-visualizer'
+import pkg from '../../package.json'
+// 判断是否在 Node.js 环境中（SSR）
+if (typeof window === 'undefined') {
+    // 模拟 requestAnimationFrame（这里使用 setTimeout 模拟，16ms 大致等于 60fps）
+    global.requestAnimationFrame = (callback) => setTimeout(callback, 16)
+    // 引入并赋值 ResizeObserver 的 polyfill
+    global.ResizeObserver = resizeObserverPolyfill
+}
 const { VITE_DOCS_BASE_URL } = envResolve()
 export const base = defineConfig({
     title: 'Antd-Vue-Dbthor',
@@ -27,13 +37,53 @@ export const base = defineConfig({
     vite: {
         plugins: [vueJsx(), ReactivityTransform()],
         build: {
+            target: 'esnext',
+            minify: 'terser',
+            cssCodeSplit: true,
             rollupOptions: {
-                plugins: [terser()],
+                plugins: [
+                    terser({
+                        compress: {
+                            drop_console: true,
+                            drop_debugger: true,
+                            pure_funcs: ['console.log'],
+                        },
+                        format: {
+                            comments: false,
+                        },
+                    }),
+                    visualizer({
+                        open: true,
+                        gzipSize: true,
+                        brotliSize: true,
+                    }),
+                ],
 
                 output: {
                     globals,
+                    manualChunks: (id) => {
+                        if (id.includes('node_modules')) {
+                            // 更细致的依赖分包策略
+                            const libMatch = id.match(/node_modules\/(@[^/]+\/[^/]+|[^/]+)/)
+                            if (libMatch) {
+                                const packageName = libMatch[1]
+                                // 将大体积依赖单独分块
+                                const largeLibs = external.concat([pkg.name])
+                                if (largeLibs.some((lib) => packageName.startsWith(lib))) {
+                                    return packageName
+                                }
+                            }
+                            // 其他依赖合并到 vendor
+                            return 'vendor'
+                        }
+                    },
                 },
             },
+            chunkSizeWarningLimit: 1500,
+        },
+
+        ssr: {
+            noExternal: ['dayjs'],
         },
         resolve: {
             alias,
@@ -41,10 +91,9 @@ export const base = defineConfig({
         server: {
             host: '0.0.0.0',
             port: 13801,
-
             proxy,
         },
-        // define: define,
+        define: define,
     },
 
     themeConfig: {

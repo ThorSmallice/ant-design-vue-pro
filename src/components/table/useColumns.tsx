@@ -13,7 +13,8 @@ import {
 } from 'ant-design-vue'
 import { AxiosResponse } from 'axios'
 import Big from 'big.js'
-import dayjs, { Dayjs, isDayjs } from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
+import { isDayjs } from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { cloneDeep, flatten, isFunction, isString, merge, omit } from 'es-toolkit'
 import { get, has, isEmpty, isNumber, isObject, set } from 'es-toolkit/compat'
@@ -846,7 +847,7 @@ const checkColumn = (columns: TableColumnProps[]) => {
         }
     })
     if (!isEmpty(errorObj)) {
-        console.warn(`🚀 ~ ${__PKG_NAME__} ~ Table: 错误的column`, errorObj)
+        // console.warn(`🚀 ~ ${__PKG_NAME__} ~ Table: 错误的column`, errorObj)
     }
 }
 export const checkDateRangeDataIndex = (a: unknown) => {

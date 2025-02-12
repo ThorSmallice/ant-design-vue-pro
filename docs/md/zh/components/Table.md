@@ -1,11 +1,11 @@
 ---
 ---
 
-# Table
+# Table 表格
 
 > 基于 ant-design-vue Table 封装，内置 CRUD、表单搜索、表头排序、数据导入导出等功能
 
-<Table></Table>
+<!-- <Table></Table> -->
 
 ## Props
 

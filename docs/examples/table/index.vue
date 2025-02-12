@@ -32,10 +32,9 @@
 </template>
 
 <script setup lang="tsx">
-import { ControlMapType, Table, TableProps, TableConfig } from 'antd-vue-dbthor'
-import dayjs, { Dayjs } from 'dayjs'
-import { computed, ref, toRaw, watch } from 'vue'
+import { ControlMapType, Table, TableConfig, TableProps } from 'antd-vue-dbthor'
 import request from 'axios'
+import { computed, ref } from 'vue'
 const dataSource = ref([])
 
 const cellEditConfirm = async () => {}
