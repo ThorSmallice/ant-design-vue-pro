@@ -79,6 +79,4 @@ TableConfig.full = true
 
 <<< @/../../src/config/index.tsx
 
-<<< @/../../src/config/table.tsx
-
 :::

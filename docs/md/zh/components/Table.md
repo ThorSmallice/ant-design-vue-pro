@@ -401,7 +401,15 @@ interface customQueryFormBtnsOpt {
 }
 ```
 
----
+## 默认全局配置
+
+::: details table.tsx
+
+<<< @/../../src/config/table.tsx
+
+:::
+
+##
 
 <script lang="ts" setup>
 import { ref,h } from 'vue' 
