@@ -1,9 +1,9 @@
+import { envResolve } from './../../utils/env'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
 import terser from '@rollup/plugin-terser'
 import ReactivityTransform from '@vue-macros/reactivity-transform/vite'
 import { defineConfig } from 'vitepress'
-import { envResolve } from '../../utils/env'
 import { alias, define, external, globals, proxy } from '../../vite.config'
 import { search as zhSearch } from './zh'
 import resizeObserverPolyfill from 'resize-observer-polyfill'
@@ -35,6 +35,7 @@ export const base = defineConfig({
         ],
     ],
     vite: {
+        envDir: process.cwd(),
         plugins: [vueJsx(), ReactivityTransform()],
         build: {
             target: 'esnext',

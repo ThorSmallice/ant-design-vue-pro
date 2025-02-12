@@ -1,7 +1,7 @@
 import Vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import { resolve } from 'path'
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv, UserConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 import pkg from './package.json'
 import ReactivityTransform from '@vue-macros/reactivity-transform/vite'
@@ -9,6 +9,7 @@ import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 import removeConsole from 'vite-plugin-remove-console'
 import terser from '@rollup/plugin-terser'
 import { compression } from 'vite-plugin-compression2'
+import { envResolve } from './utils/env'
 
 export const generateGlobals = (arr: string[]) => {
     const obj = {}
@@ -36,6 +37,11 @@ export const proxy = {
         target: 'https://iot.scet.com.cn',
         changeOrigin: true,
         rewrite: (path: string) => path.replace(/^\/admin-api/, '/micro-dev-api'),
+    },
+    '/test-api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        rewrite: (path: string) => path.replace(/^\/test-api/, '/api/v1'),
     },
 }
 export const alias = {
@@ -74,6 +80,9 @@ export const alias = {
 export const define = {
     __PKG_NAME__: JSON.stringify(pkg.name),
 }
+
+const { VITE_DOCS_BASE_URL } = envResolve()
+
 export default defineConfig({
     plugins: [
         Vue(),

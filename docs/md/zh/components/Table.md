@@ -1,9 +1,32 @@
 ---
 ---
 
+<script lang="ts" setup>
+import { ref,h } from 'vue' 
+import Base from '@docs/examples/table/base.vue';
+import Test from '@docs/examples/table/test.vue';
+import Table from '@examples/table/index.vue';
+import {Modal,Button} from 'ant-design-vue';
+import { FullscreenOutlined } from '@ant-design/icons-vue';
+
+const open = ref(false)
+const click = () => {
+    open.value = true
+}
+
+</script>
+
+<style module>
+
+</style>
+
 # Table 表格
 
 > 基于 ant-design-vue Table 封装，内置 CRUD、表单搜索、表头排序、数据导入导出等功能
+
+## 基本用法
+
+<Base></Base>
 
 <!-- <Table></Table> -->
 
@@ -408,24 +431,3 @@ interface customQueryFormBtnsOpt {
 <<< @/../../src/config/table.tsx
 
 :::
-
-##
-
-<script lang="ts" setup>
-import { ref,h } from 'vue' 
-import Base from '@docs/examples/table/base.vue';
-import Test from '@docs/examples/table/test.vue';
-import Table from '@examples/table/index.vue';
-import {Modal,Button} from 'ant-design-vue';
-import { FullscreenOutlined } from '@ant-design/icons-vue';
-
-const open = ref(false)
-const click = () => {
-    open.value = true
-}
-
-</script>
-
-<style module>
-
-</style>
