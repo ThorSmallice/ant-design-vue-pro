@@ -9,6 +9,7 @@ import { search as zhSearch } from './zh'
 import resizeObserverPolyfill from 'resize-observer-polyfill'
 import { visualizer } from 'rollup-plugin-visualizer'
 import pkg from '../../package.json'
+
 // 判断是否在 Node.js 环境中（SSR）
 if (typeof window === 'undefined') {
     // 模拟 requestAnimationFrame（这里使用 setTimeout 模拟，16ms 大致等于 60fps）

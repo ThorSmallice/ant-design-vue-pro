@@ -2,18 +2,12 @@
 ---
 
 <script lang="ts" setup>
-import { ref,h } from 'vue' 
-import Base from '@docs/examples/table/base.vue';
-import Test from '@docs/examples/table/test.vue';
-import Table from '@examples/table/index.vue';
-import {Modal,Button} from 'ant-design-vue';
-import { FullscreenOutlined } from '@ant-design/icons-vue';
+import { ref,h } from 'vue'   
+import setAntdConfig from '@docs/config/antd-vue-dbthor'
+setAntdConfig()
+import Base from '@docs/examples/table/base.vue'; 
 
-const open = ref(false)
-const click = () => {
-    open.value = true
-}
-
+ 
 </script>
 
 <style module>
@@ -24,9 +18,29 @@ const click = () => {
 
 > 基于 ant-design-vue Table 封装，内置 CRUD、表单搜索、表头排序、数据导入导出等功能
 
+## 配置
+
+::: code-group
+
+<<< @/../config/antd-vue-dbthor.tsx [config.tsx]
+
+<<< @/../apis/request.ts [axiosConfig.ts]
+
+<<< @/../apis/user.ts [apis/user.ts]
+
+:::
+
+> 本页示例均基于以上配置编写
+
 ## 基本用法
 
 <Base></Base>
+
+::: details Base.vue
+
+<<< @/../examples/table/base.vue
+
+:::
 
 <!-- <Table></Table> -->
 

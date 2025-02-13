@@ -1,7 +1,7 @@
 import Vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import { resolve } from 'path'
-import { defineConfig, loadEnv, UserConfig } from 'vite'
+import { defineConfig, loadEnv, ProxyOptions, ServerOptions, UserConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 import pkg from './package.json'
 import ReactivityTransform from '@vue-macros/reactivity-transform/vite'
@@ -27,7 +27,7 @@ export const generateGlobals = (arr: string[]) => {
 export const external = Object.keys(pkg.peerDependencies)
 export const globals = generateGlobals(external)
 
-export const proxy = {
+export const proxy: ServerOptions['proxy'] = {
     '/api': {
         target: 'http://116.177.41.89:8888',
         changeOrigin: true,
@@ -40,7 +40,7 @@ export const proxy = {
     },
     '/test-api': {
         target: 'http://localhost:3000',
-        changeOrigin: true,
+        changeOrigin: false,
         rewrite: (path: string) => path.replace(/^\/test-api/, '/api/v1'),
     },
 }

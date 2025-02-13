@@ -1,17 +1,54 @@
 <template>
     <Table
         :columns="columns"
+        :query-form-items="queryFormItems"
         :apis="{
+            create: createUserApi,
             list: getUsersPageApi,
+            update: updateUserApi,
+            delete: deleteUserApi,
+            details: getUserDetailsApi,
+            template: downloadUserTemplateApi,
+            export: exportUsersApi,
+            import: importUserApi,
+        }"
+        :table-text-config="{
+            ...TableConfig.tableTextConfig,
+            modalTitle: {
+                create: '新增用户',
+                update: '修改用户信息',
+                details: '用户详情',
+            },
         }"
     >
     </Table>
 </template>
 
 <script setup lang="tsx">
-import { ref } from 'vue'
-import { TableProps, Table } from 'antd-vue-dbthor'
-import { getUsersPageApi } from '@docs/apis/user'
+import {
+    createUserApi,
+    deleteUserApi,
+    downloadUserTemplateApi,
+    exportUsersApi,
+    getUserDetailsApi,
+    getUsersPageApi,
+    importUserApi,
+    updateUserApi,
+} from '@docs/apis/user'
+import { ControlMapType, Table, TableConfig, TableProps } from 'antd-vue-dbthor'
+import { computed, ref } from 'vue'
+
+const sexOptions = [
+    {
+        label: '男',
+        value: 1,
+    },
+    {
+        label: '女',
+        value: 0,
+    },
+]
+
 const columns = ref<TableProps['columns']>([
     {
         title: 'id',
@@ -25,43 +62,60 @@ const columns = ref<TableProps['columns']>([
         },
     },
     {
-        title: 'first_name',
-        dataIndex: 'first_name',
+        title: '用户名',
+        dataIndex: 'username',
+    },
+    {
+        title: '昵称',
+        dataIndex: 'nickname',
+    },
+    {
+        title: '性别',
+        dataIndex: 'sex',
         formItemProps: {
-            hidden: true,
+            control: ControlMapType.Select,
+            controlProps: {
+                options: sexOptions,
+            },
+        },
+        customRender: ({ text }) => (text ? '男' : '女'),
+    },
+    {
+        title: '年龄',
+        dataIndex: 'age',
+        formItemProps: {
+            control: ControlMapType.InputNumber,
         },
     },
     {
-        title: 'last_name',
-        dataIndex: 'last_name',
-        formItemProps: {
-            hidden: true,
+        title: '职业',
+        dataIndex: 'occupation',
+    },
+])
+
+const queryFormItems = computed<TableProps['queryFormItems']>(() => [
+    {
+        label: '用户名',
+        name: 'username',
+    },
+    {
+        label: '昵称',
+        name: 'nickname',
+    },
+    {
+        label: '年龄',
+        name: 'age',
+    },
+    {
+        label: '性别',
+        name: 'sex',
+        control: ControlMapType.Select,
+        controlProps: {
+            options: sexOptions,
+            style: {
+                width: '120px',
+            },
         },
-    },
-    {
-        title: 'email',
-        dataIndex: 'email',
-        formItemProps: {
-            hidden: true,
-        },
-    },
-    {
-        title: 'avatar',
-        dataIndex: 'avatar',
-        sorter: false,
-        formItemProps: {
-            hidden: true,
-        },
-    },
-    {
-        title: 'name',
-        dataIndex: 'name',
-        hidden: true,
-    },
-    {
-        title: 'job',
-        dataIndex: 'job',
-        hidden: true,
     },
 ])
 </script>
