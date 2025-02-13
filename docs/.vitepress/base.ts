@@ -54,11 +54,11 @@ export const base = defineConfig({
                             comments: false,
                         },
                     }),
-                    visualizer({
-                        open: true,
-                        gzipSize: true,
-                        brotliSize: true,
-                    }),
+                    // visualizer({
+                    //     open: true,
+                    //     gzipSize: true,
+                    //     brotliSize: true,
+                    // }),
                 ],
 
                 output: {

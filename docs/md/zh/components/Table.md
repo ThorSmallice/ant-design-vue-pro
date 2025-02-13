@@ -6,13 +6,10 @@ import { ref,h } from 'vue'
 import setAntdConfig from '@docs/config/antd-vue-dbthor'
 setAntdConfig()
 import Base from '@docs/examples/table/base.vue'; 
+import Table from '@docs/examples/table/index.vue'; 
 
  
 </script>
-
-<style module>
-
-</style>
 
 # Table 表格
 
@@ -36,7 +33,7 @@ import Base from '@docs/examples/table/base.vue';
 
 <Base></Base>
 
-::: details Base.vue
+::: details Code
 
 <<< @/../examples/table/base.vue
 

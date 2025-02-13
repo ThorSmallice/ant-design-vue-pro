@@ -2,26 +2,18 @@
     <Table
         :columns="columns"
         :query-form-items="queryFormItems"
+        template-file-name="用户列表模板.xlsx"
         :apis="{
-            create: createUserApi,
             list: getUsersPageApi,
+            details: getUserDetailsApi,
+            create: createUserApi,
             update: updateUserApi,
             delete: deleteUserApi,
-            details: getUserDetailsApi,
             template: downloadUserTemplateApi,
             export: exportUsersApi,
             import: importUserApi,
         }"
-        :table-text-config="{
-            ...TableConfig.tableTextConfig,
-            modalTitle: {
-                create: '新增用户',
-                update: '修改用户信息',
-                details: '用户详情',
-            },
-        }"
-    >
-    </Table>
+    ></Table>
 </template>
 
 <script setup lang="tsx">
@@ -35,7 +27,7 @@ import {
     importUserApi,
     updateUserApi,
 } from '@docs/apis/user'
-import { ControlMapType, Table, TableConfig, TableProps } from 'antd-vue-dbthor'
+import { ControlMapType, Table, TableProps } from 'antd-vue-dbthor'
 import { computed, ref } from 'vue'
 
 const sexOptions = [
@@ -49,51 +41,59 @@ const sexOptions = [
     },
 ]
 
-const columns = ref<TableProps['columns']>([
-    {
-        title: 'id',
-        hidden: true,
-        dataIndex: 'id',
-        formItemProps: {
+const columns = computed((): TableProps['columns'] => {
+    return [
+        {
+            title: 'id',
+            dataIndex: 'id',
             hidden: true,
-        },
-        descItemProps: {
-            hidden: true,
-        },
-    },
-    {
-        title: '用户名',
-        dataIndex: 'username',
-    },
-    {
-        title: '昵称',
-        dataIndex: 'nickname',
-    },
-    {
-        title: '性别',
-        dataIndex: 'sex',
-        formItemProps: {
-            control: ControlMapType.Select,
-            controlProps: {
-                options: sexOptions,
+            formItemProps: {
+                hidden: true,
+            },
+            descItemProps: {
+                hidden: true,
             },
         },
-        customRender: ({ text }) => (text ? '男' : '女'),
-    },
-    {
-        title: '年龄',
-        dataIndex: 'age',
-        formItemProps: {
-            control: ControlMapType.InputNumber,
+        {
+            title: '用户名',
+            dataIndex: 'username',
+            width: 100,
         },
-    },
-    {
-        title: '职业',
-        dataIndex: 'occupation',
-    },
-])
+        {
+            title: '昵称',
+            width: 100,
+            dataIndex: 'nickname',
+        },
+        {
+            title: '年龄',
+            width: 100,
+            dataIndex: 'age',
+            type: 'number',
+            formItemProps: {
+                control: ControlMapType.InputNumber,
+            },
+        },
+        {
+            title: '性别',
+            width: 100,
+            dataIndex: 'sex',
+            formItemProps: {
+                control: ControlMapType.Select,
+                controlProps: {
+                    options: sexOptions,
+                },
+            },
+            customRender: ({ text }) => sexOptions?.find?.(({ value }) => value === text)?.label,
+        },
+        {
+            title: '职业',
+            width: 100,
+            dataIndex: 'occupation',
+        },
+    ]
+})
 
-const queryFormItems = computed<TableProps['queryFormItems']>(() => [
+const queryFormItems = computed((): TableProps['queryFormItems'] => [
     {
         label: '用户名',
         name: 'username',

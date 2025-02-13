@@ -16,7 +16,7 @@ export const getUserDetailsApi = async (params?: any, config?: any) =>
     await axios.get('/public/users', { params, ...config })
 
 export const downloadUserTemplateApi = async (params?: any, config?: any) =>
-    await axios.get('/public/users/template', { params, ...config, responseType: 'blob' })
+    await axios.get('/public/users/template', { params, ...config })
 
 export const exportUsersApi = async (params?: any, config?: any) =>
     await axios.get('/public/users/export-excel', { params, ...config, responseType: 'blob' })

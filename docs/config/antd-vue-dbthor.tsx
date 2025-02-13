@@ -13,4 +13,13 @@ export default () => {
         list: ['data', 'list'],
         total: ['data', 'total'],
     }
+    TableConfig.onTemplateRequestSuccess = async (res) => {
+        const blob = new Blob([new Uint8Array(res?.data?.data)], {
+            type: res?.data?.['content-type'],
+        })
+        const thumbUrl = URL.createObjectURL(blob)
+        return {
+            thumbUrl,
+        }
+    }
 }
