@@ -5,8 +5,7 @@
 import { ref,h } from 'vue'   
 import setAntdConfig from '@docs/config/antd-vue-dbthor'
 setAntdConfig()
-import Base from '@docs/examples/table/base.vue'; 
-import Table from '@docs/examples/table/index.vue'; 
+import Base from '@docs/examples/table/base.vue';  
 
  
 </script>
@@ -21,7 +20,7 @@ import Table from '@docs/examples/table/index.vue';
 
 <<< @/../config/antd-vue-dbthor.tsx [config.tsx]
 
-<<< @/../apis/request.ts [axiosConfig.ts]
+<<< @/../apis/request.ts [request.ts]
 
 <<< @/../apis/user.ts [apis/user.ts]
 
@@ -38,8 +37,6 @@ import Table from '@docs/examples/table/index.vue';
 <<< @/../examples/table/base.vue
 
 :::
-
-<!-- <Table></Table> -->
 
 ## Props
 
