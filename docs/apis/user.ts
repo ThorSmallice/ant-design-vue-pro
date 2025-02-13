@@ -19,7 +19,7 @@ export const downloadUserTemplateApi = async (params?: any, config?: any) =>
     await axios.get('/public/users/template', { params, ...config })
 
 export const exportUsersApi = async (params?: any, config?: any) =>
-    await axios.get('/public/users/export-excel', { params, ...config, responseType: 'blob' })
+    await axios.get('/public/users/export-excel', { params, ...config })
 
 export const importUserApi = async (data?: any, config?: any) =>
     await axios.post('/public/users/import-excel', data, {
