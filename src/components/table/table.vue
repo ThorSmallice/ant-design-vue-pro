@@ -114,7 +114,7 @@ const {
     autoSizeConfig = config.table.autoSizeConfig,
     minScollHeight = config.table.minScollHeight,
     autoRequest = config.table.autoRequest,
-    autoRequestDependen = config.table.autoRequestDependen,
+    autoRequestDependencies = config.table.autoRequestDependencies,
     apis,
     fieldsNames = config.table.fieldsNames,
     tableTextConfig = config.table.tableTextConfig,
@@ -308,7 +308,7 @@ const { source, loading, total, updateSource }: any = $$(
         onSourceSuccess,
         onSourceError,
         autoRequest,
-        autoRequestDependen,
+        autoRequestDependencies,
         dataSource,
         onBeforeRequestSource,
     })

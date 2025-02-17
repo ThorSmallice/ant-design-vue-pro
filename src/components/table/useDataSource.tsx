@@ -29,7 +29,7 @@ export interface TableUseDataSourceProps {
     emits?: EmitFn
     dataSource?: any
     autoRequest?: AutoRequestOptions
-    autoRequestDependen?: (obj: {
+    autoRequestDependencies?: (obj: {
         params: TableProps['params']
         apis: TableProps['apis']
     }) => WatchSource
@@ -46,7 +46,7 @@ export default (props: TableUseDataSourceProps) => {
         onBeforeRequestSource,
         emits,
         autoRequest,
-        autoRequestDependen,
+        autoRequestDependencies,
         dataSource,
     } = $(props)
 
@@ -101,7 +101,7 @@ export default (props: TableUseDataSourceProps) => {
 
     if (autoRequest !== false && isObject(autoRequest) && !dataSource) {
         watch(
-            () => autoRequestDependen?.({ params, apis: api }) || params,
+            () => autoRequestDependencies?.({ params, apis: api }) || params,
             () => {
                 requestAnimationFrame(() => {
                     updateSource()

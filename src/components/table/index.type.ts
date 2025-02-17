@@ -149,7 +149,7 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     minScollHeight?: TableUseAutoSizeProps['minScollHeight']
 
     autoRequest?: TableUseDataSourceProps['autoRequest']
-    autoRequestDependen?: TableUseDataSourceProps['autoRequestDependen']
+    autoRequestDependencies?: TableUseDataSourceProps['autoRequestDependencies']
     /**
      * api 请求配置
      */
