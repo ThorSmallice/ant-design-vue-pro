@@ -3,17 +3,9 @@
         :columns="columns"
         :query-form-items="queryFormItems"
         template-file-name="用户列表模板.xlsx"
-        :apis="{
-            list: getUsersPageApi,
-            details: getUserDetailsApi,
-            create: createUserApi,
-            update: updateUserApi,
-            delete: deleteUserApi,
-            template: downloadUserTemplateApi,
-            export: exportUsersApi,
-            import: importUserApi,
-        }"
-    ></Table>
+        :apis="apis"
+    >
+    </Table>
 </template>
 
 <script setup lang="tsx">
@@ -29,7 +21,24 @@ import {
 } from '@docs/apis/user'
 import { ControlMapType, Table, TableProps } from 'antd-vue-dbthor'
 import { computed, ref } from 'vue'
+import { Button } from 'ant-design-vue'
 
+const apis = ref({
+    list: getUsersPageApi,
+    details: getUserDetailsApi,
+    create: createUserApi,
+    update: updateUserApi,
+    delete: deleteUserApi,
+    template: downloadUserTemplateApi,
+    export: exportUsersApi,
+    import: importUserApi,
+})
+
+const click = () => {
+    apis.value.list = async () => {
+        console.log(111)
+    }
+}
 const sexOptions = [
     {
         label: '男',

@@ -12,7 +12,7 @@ import { RenderExpandIconProps } from 'ant-design-vue/es/vc-table/interface'
 import { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { cloneDeep } from 'es-toolkit'
 import { isArray, isObject } from 'es-toolkit/compat'
-import { Reactive, Ref, SetupContext, VNode } from 'vue'
+import { Reactive, Ref, SetupContext, VNode, WatchOptions, WatchSource } from 'vue'
 import { JSX } from 'vue/jsx-runtime'
 import { TableUseAutoSizeProps } from './useAutoSize'
 import { TableColumnCustomRenderArgs, TableColumnProps, TableUseColumnsProps } from './useColumns'
@@ -149,7 +149,7 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     minScollHeight?: TableUseAutoSizeProps['minScollHeight']
 
     autoRequest?: TableUseDataSourceProps['autoRequest']
-
+    autoRequestDependen?: TableUseDataSourceProps['autoRequestDependen']
     /**
      * api 请求配置
      */

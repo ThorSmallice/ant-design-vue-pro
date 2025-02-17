@@ -1,7 +1,16 @@
 import { AxiosResponse } from 'axios'
-import { get, isEmpty, isObject } from 'es-toolkit/compat'
+import { get, isObject } from 'es-toolkit/compat'
 import { isFunction } from 'es-toolkit/predicate'
-import { computed, EmitFn, onBeforeUnmount, ref, unref, watch, WatchOptions } from 'vue'
+import {
+    computed,
+    EmitFn,
+    onBeforeUnmount,
+    ref,
+    unref,
+    watch,
+    WatchOptions,
+    WatchSource,
+} from 'vue'
 import { RequestParams, TableProps } from './index.type'
 export interface TableSourceResult {
     total: number
@@ -20,6 +29,10 @@ export interface TableUseDataSourceProps {
     emits?: EmitFn
     dataSource?: any
     autoRequest?: AutoRequestOptions
+    autoRequestDependen?: (obj: {
+        params: TableProps['params']
+        apis: TableProps['apis']
+    }) => WatchSource
     onBeforeRequestSource?: (params: { [key: string]: any }) => Promise<any | boolean>
 }
 
@@ -33,6 +46,7 @@ export default (props: TableUseDataSourceProps) => {
         onBeforeRequestSource,
         emits,
         autoRequest,
+        autoRequestDependen,
         dataSource,
     } = $(props)
 
@@ -87,7 +101,7 @@ export default (props: TableUseDataSourceProps) => {
 
     if (autoRequest !== false && isObject(autoRequest) && !dataSource) {
         watch(
-            () => params,
+            () => autoRequestDependen?.({ params, apis: api }) || params,
             () => {
                 requestAnimationFrame(() => {
                     updateSource()
