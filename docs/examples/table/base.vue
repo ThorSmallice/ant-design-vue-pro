@@ -22,7 +22,6 @@ import {
 } from '@docs/apis/user'
 import { ControlMapType, Table, TableProps } from 'antd-vue-dbthor'
 import { computed, ref } from 'vue'
-import { Button } from 'ant-design-vue'
 
 const apis = ref({
     list: getUsersPageApi,
@@ -35,11 +34,6 @@ const apis = ref({
     import: importUserApi,
 })
 
-const click = () => {
-    apis.value.list = async () => {
-        console.log(111)
-    }
-}
 const sexOptions = [
     {
         label: '男',
