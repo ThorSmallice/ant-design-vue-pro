@@ -1,5 +1,6 @@
 <template>
     <Table
+        columns-align="center"
         :columns="columns"
         :query-form-items="queryFormItems"
         template-file-name="用户列表模板.xlsx"
@@ -67,6 +68,7 @@ const columns = computed((): TableProps['columns'] => {
             title: '用户名',
             dataIndex: 'username',
             width: 100,
+            editable: true,
         },
         {
             title: '昵称',

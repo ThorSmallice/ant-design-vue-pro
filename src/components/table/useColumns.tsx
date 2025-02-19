@@ -326,6 +326,7 @@ export default (props: TableUseColumnsProps) => {
                         columnsEmptyText,
                         columnsTimeFormat,
                         controlColumnBtns,
+                        columnsAlign,
                         slots,
                         deleteRow,
                         editRow,
@@ -502,6 +503,7 @@ const getCustomRender = (
         editRow,
         openRowDetails,
         fieldsNames,
+        columnsAlign,
         editData,
         onCellEditConfirm,
     }: TableUseColumnsProps
@@ -512,6 +514,7 @@ const getCustomRender = (
         dataIndex,
         customRender,
         editable,
+        align,
         editControl,
         editControlProps,
         emptyText,
@@ -714,7 +717,7 @@ const getCustomRender = (
 
     const RenderControl = () => {
         return (
-            <p class="control-cell">
+            <p class={['control-cell', `control-${align ?? columnsAlign}-cell`]}>
                 {has(cloneDeep(editData.value), path) ? (
                     <>
                         <FormItemControl
