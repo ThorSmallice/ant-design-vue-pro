@@ -80,7 +80,11 @@ export type RequestParams = {
 export type RequestParamsFormatter = (
     params: RequestParams | any
 ) => Promise<RequestParams | any> | RequestParams | any
-export type CRUDRequestFinish = (res: AxiosResponse, info?: any) => boolean | void
+export type CRUDRequestFinish<T = any> = (
+    res: AxiosResponse | Error,
+    info?: any,
+    obj?: T
+) => boolean | void
 export type ParamsFormatter = (
     vals:
         | {
@@ -288,8 +292,8 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     onBeforeRowEditBackFill?: null | TableUseColumnsProps['onBeforeRowEditBackFill']
 
     onBeforeCuFormSubmit?: null | ParamsFormatter
-    onCuFormSubmitSuccess?: null | CRUDRequestFinish
-    onCuFormSubmitError?: null | ((err: Error, cuFormisEdit?: boolean) => false | void)
+    onCuFormSubmitSuccess?: null | CRUDRequestFinish<{ cancelCUModalForm: () => void }>
+    onCuFormSubmitError?: null | CRUDRequestFinish<{ cancelCUModalForm: () => void }>
     onCuFormCancel?: null | TableUseCUFormProps['onCuFormCancel']
 
     onBeforeRowDelete?: null | ParamsFormatter

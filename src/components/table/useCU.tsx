@@ -140,11 +140,15 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
 
             await apis?.[cuModalFormIsEdit.value ? 'update' : 'create']?.(data)
                 .then((res) => {
-                    cancelCUModalForm()
-                    updateSource?.()
-                    if (onCuFormSubmitSuccess?.(res, cuModalFormIsEdit.value) === false) {
+                    if (
+                        onCuFormSubmitSuccess?.(res, cuModalFormIsEdit.value, {
+                            cancelCUModalForm,
+                        }) === false
+                    ) {
                         return
                     }
+                    cancelCUModalForm()
+                    updateSource?.()
                     message.success(
                         `${
                             cuModalFormIsEdit.value
@@ -154,7 +158,11 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                     )
                 })
                 .catch((error) => {
-                    if (onCuFormSubmitError?.(error, cuModalFormIsEdit.value) === false) {
+                    if (
+                        onCuFormSubmitError?.(error, cuModalFormIsEdit.value, {
+                            cancelCUModalForm,
+                        }) === false
+                    ) {
                         return
                     }
                     message.error(
