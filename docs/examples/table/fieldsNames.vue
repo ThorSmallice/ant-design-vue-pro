@@ -1,37 +1,35 @@
 <template>
     <Table
-        columns-align="center"
         :columns="columns"
         :query-form-items="queryFormItems"
-        template-file-name="用户列表模板.xlsx"
         :apis="apis"
-    >
-    </Table>
+        :fieldsNames="{
+            ...TableConfig.fieldsNames, // [!code focus]
+            list: ['data', 'list'], // [!code focus]
+            total: ['data', 'total'], // [!code focus]
+            details: ['data'], // [!code focus]
+        }"
+    ></Table>
 </template>
 
 <script setup lang="tsx">
-import {
-    createUserApi,
-    deleteUserApi,
-    downloadUserTemplateApi,
-    exportUsersApi,
-    getUserDetailsApi,
-    getUsersPageApi,
-    importUserApi,
-    updateUserApi,
-} from '@docs/apis/user'
-import { ControlMapType, Table, TableProps } from 'antd-vue-dbthor'
+import Axios from 'axios'
+
+const axios = Axios.create({
+    baseURL: import.meta.env.VITE_REQUEST_BASE_URL,
+})
+
+axios.interceptors.response.use((resp) => resp.data) // [!code focus]
+
+import { ControlMapType, Table, TableConfig, TableProps } from 'antd-vue-dbthor'
 import { computed, ref } from 'vue'
 
 const apis = ref({
-    list: getUsersPageApi,
-    details: getUserDetailsApi,
-    create: createUserApi,
-    update: updateUserApi,
-    delete: deleteUserApi,
-    template: downloadUserTemplateApi,
-    export: exportUsersApi,
-    import: importUserApi,
+    list: async (params?: any) => await axios.get('/public/users/page', { params }),
+    details: async (params?: any) => await axios.get('/public/users', { params }),
+    create: async (data?: any) => await axios.post('/public/users', data),
+    update: async ({ id, ...data }: any) => await axios.put(`/public/users/${id}`, data),
+    delete: async ({ id }: any) => await axios.delete(`/public/users/${id}`),
 })
 
 const sexOptions = [
@@ -62,7 +60,6 @@ const columns = computed((): TableProps['columns'] => {
             title: '用户名',
             dataIndex: 'username',
             width: 100,
-            editable: true,
         },
         {
             title: '昵称',

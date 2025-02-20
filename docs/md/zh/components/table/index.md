@@ -3,10 +3,12 @@
 
 <script lang="ts" setup>
 import { ref,h } from 'vue'   
+import { Tabs, TabPane } from 'ant-design-vue'
 import setAntdConfig from '@docs/config/antd-vue-dbthor'
+import BasicsTable from '@docs/examples/table/basics.vue';  
+import FieldsNamesEvent from '@docs/examples/table/fieldsNames-event.vue'
+import FieldsNames  from '@docs/examples/table/fieldsNames.vue'
 setAntdConfig()
-import Base from '@docs/examples/table/base.vue';  
-
  
 </script>
 
@@ -14,7 +16,7 @@ import Base from '@docs/examples/table/base.vue';
 
 > 基于 ant-design-vue Table 封装，内置 CRUD、表单搜索、表头排序、数据导入导出等功能
 
-## 配置
+## 示例前提配置
 
 ::: code-group
 
@@ -28,15 +30,9 @@ import Base from '@docs/examples/table/base.vue';
 
 > 本页示例均基于以上配置编写
 
-## 基本用法
+<!-- @include: @/../examples/table/basics.md -->
 
-<Base></Base>
-
-::: details Code
-
-<<< @/../examples/table/base.vue
-
-:::
+<!-- @include: @/../examples/table/value_config.md -->
 
 ## Props
 
@@ -325,39 +321,30 @@ import Base from '@docs/examples/table/base.vue';
 
 ## Event
 
-| 参数                      | 说明                                                                      | 类型                                                                                                                                   | 默认值 | 版本 | global |
-| :------------------------ | :------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------- | :----- | :--: | :----: |
-| onBeforeRequestSource     | 请求列表数据前触发,返回 false 时不请求                                    | (params: object) => Promise\<any/boolean\>                                                                                             | -      |  -   |   -    |
-| onSourceSuccess           | 列表数据请求成功触发,用于处理填入列表的数据                               | (res: AxiosResponse) =>Promise\<[TableSourceResult](#tablesourceresult)\>                                                              | -      |  -   |   \*   |
-| onSourceError             | 列表数据请求失败触发                                                      | (err: Error) => void                                                                                                                   | -      |  -   |   \*   |
-| onBeforeRequestDetails    | 获取单行详情数据前触发,用于处理获取单行详情的参数                         | ( params:object)=>Promise\<object\>                                                                                                    | -      |  -   |   \*   |
-| onGetRowDetail            | 成功获取单行详情数据触发,用于设置填入编辑表单/详情 的数据源               | (res: AxiosResponse) => Promise\<object\>                                                                                              | -      |  -   |   \*   |
-| onBeforeRowEditBackFill   | 点编辑,回填表单内容前触发，用于处理回填进编辑表单的数据                   | (res: AxiosResponse, record?: any ) => Promise\<object\>                                                                               | -      |  -   |   \*   |
-| onBeforeCuFormSubmit      | 新增/编辑表单提交前触发,用于修改将提交的表单数据,返回 false 则不发起请求  | (vals: object,metaValues?: any)=> Promise\<object/false\>                                                                              | -      |  -   |   \*   |
-| onCuFormSubmitSuccess     | 新增/编辑成功触发,返回 false 则中断内置的 message                         | (res: AxiosResponse, info?: any) => boolean/void                                                                                       | -      |  -   |   \*   |
-| onCuFormSubmitError       | 新增/编辑失败触发,返回 false 则中断内置的 message                         | (res: Error, cuModalFormIsEdit?: boolean) => false/void                                                                                | -      |  -   |   \*   |
-| onCuFormCancel            | 新增/编辑 Modal onCancel 时触发,返回 false 则不关闭                       | () => boolean / void                                                                                                                   | -      |  -   |   -    |
-| onBeforeRowDelete         | 删除单行数据前触发,用于处理调用 apis.delete 的参数                        | (vals: object,metaValues?: any)=> Promise\<object/false\>                                                                              | -      |  -   |   \*   |
-| onRowDeleteSuccess        | 删除成功触发,返回 false 则中断内置的 message                              | (res: AxiosResponse, info?: any) => boolean / void                                                                                     | -      |  -   |   \*   |
-| onRowDeleteError          | 删除失败触发,返回 false 则中断内置的 message                              | (err: Error) => false / void                                                                                                           | -      |  -   |   \*   |
-| onExportRequestSuccess    | apis.export 调用成功触发,用于处理返回结果,返回 false 则需自定义下载逻辑   | (res: AxiosResponse) => Promise\<[DownloadResResponse](#downloadresresponse)/false\>                                                   | -      |  -   |   \*   |
-| onExportSuccess           | 导出成功触发,返回 false 则中断内置的 message                              | (downloadRes:JsDownloadFile) => Promise<boolean / void>                                                                                | -      |  -   |   \*   |
-| onExportError             | 导出失败触发,返回 false 则中断内置的 message                              | (err: Error) => Promise<boolean / void>                                                                                                | -      |  -   |   \*   |
-| onImportSuccess           | 导入成功触发,返回 false 则中断内置的 message                              | (res: AxiosResponse) => Promise<void / boolean>                                                                                        | -      |  -   |   \*   |
-| onImportError             | 导入失败触发,返回 false 则中断内置的 message                              | (err: Error) => Promise<boolean / void>                                                                                                | -      |  -   |   \*   |
-| onTemplateRequestSuccess  | apis.template 调用成功触发,用于处理返回结果,返回 false 则需自定义下载逻辑 | (res: AxiosResponse) => Promise<[DownloadResResponse](#downloadresresponse) / false>                                                   | -      |  -   |   \*   |
-| onTemplateDownloadSuccess | 模板下载成功触发,返回 false 则中断内置的 message                          | (downloadRes:JsDownloadFile) => Promise<boolean / void>                                                                                | -      |  -   |   \*   |
-| onTemplateDownloadError   | 模板下载失败触发,返回 false 则中断内置的 message                          | (err: Error) => Promise<boolean / void>                                                                                                | -      |  -   |   \*   |
-| onCellEditConfirm         | 编辑单元格,点击确定时触发,返回 false 则中断内置回填逻辑,需自定义          | (info: [CellEditConfirmInfo](#celleditconfirminfo) ,editData: UnwrapRef<Reactive<Record<string, DataItem>>>) => Promise<boolean/ void> | -      |  -   |   -    |
-
-### TableSourceResult
-
-| 参数     | 说明     | 类型   | 必填 |
-| :------- | :------- | :----- | :--: |
-| total    | 数据总数 | number |  \*  |
-| list     | 数据列表 | any[]  |  \*  |
-| page     | 页码     | number |      |
-| pageSize | 每页条数 | number |      |
+| 参数                      | 说明                                                                                  | 类型                                                                                                                                   | 默认值 | 版本 | global |
+| :------------------------ | :------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------- | :----- | :--: | :----: |
+| onBeforeRequestSource     | 请求列表数据前触发,返回 false 时不请求                                                | (params: object) => Promise\<any/boolean\>                                                                                             | -      |  -   |   -    |
+| onSourceSuccess           | 列表数据请求成功触发,用于处理填入列表的数据 需匹配 fieldsNames.total;fieldsNames.list | (res: AxiosResponse) =>Promise\<object\>                                                                                               | -      |  -   |   \*   |
+| onSourceError             | 列表数据请求失败触发                                                                  | (err: Error) => void                                                                                                                   | -      |  -   |   \*   |
+| onBeforeRequestDetails    | 获取单行详情数据前触发,用于处理获取单行详情的参数                                     | ( params:object)=>Promise\<object\>                                                                                                    | -      |  -   |   \*   |
+| onGetRowDetail            | 成功获取单行详情数据触发,用于设置填入编辑表单/详情 的数据源                           | (res: AxiosResponse) => Promise\<object\>                                                                                              | -      |  -   |   \*   |
+| onBeforeRowEditBackFill   | 点编辑,回填表单内容前触发，用于处理回填进编辑表单的数据                               | (res: AxiosResponse, record?: any ) => Promise\<object\>                                                                               | -      |  -   |   \*   |
+| onBeforeCuFormSubmit      | 新增/编辑表单提交前触发,用于修改将提交的表单数据,返回 false 则不发起请求              | (vals: object,metaValues?: any)=> Promise\<object/false\>                                                                              | -      |  -   |   \*   |
+| onCuFormSubmitSuccess     | 新增/编辑成功触发,返回 false 则中断内置的 message                                     | (res: AxiosResponse, info?: any) => boolean/void                                                                                       | -      |  -   |   \*   |
+| onCuFormSubmitError       | 新增/编辑失败触发,返回 false 则中断内置的 message                                     | (res: Error, cuModalFormIsEdit?: boolean) => false/void                                                                                | -      |  -   |   \*   |
+| onCuFormCancel            | 新增/编辑 Modal onCancel 时触发,返回 false 则不关闭                                   | () => boolean / void                                                                                                                   | -      |  -   |   -    |
+| onBeforeRowDelete         | 删除单行数据前触发,用于处理调用 apis.delete 的参数                                    | (vals: object,metaValues?: any)=> Promise\<object/false\>                                                                              | -      |  -   |   \*   |
+| onRowDeleteSuccess        | 删除成功触发,返回 false 则中断内置的 message                                          | (res: AxiosResponse, info?: any) => boolean / void                                                                                     | -      |  -   |   \*   |
+| onRowDeleteError          | 删除失败触发,返回 false 则中断内置的 message                                          | (err: Error) => false / void                                                                                                           | -      |  -   |   \*   |
+| onExportRequestSuccess    | apis.export 调用成功触发,用于处理返回结果,返回 false 则需自定义下载逻辑               | (res: AxiosResponse) => Promise\<[DownloadResResponse](#downloadresresponse)/false\>                                                   | -      |  -   |   \*   |
+| onExportSuccess           | 导出成功触发,返回 false 则中断内置的 message                                          | (downloadRes:JsDownloadFile) => Promise<boolean / void>                                                                                | -      |  -   |   \*   |
+| onExportError             | 导出失败触发,返回 false 则中断内置的 message                                          | (err: Error) => Promise<boolean / void>                                                                                                | -      |  -   |   \*   |
+| onImportSuccess           | 导入成功触发,返回 false 则中断内置的 message                                          | (res: AxiosResponse) => Promise<void / boolean>                                                                                        | -      |  -   |   \*   |
+| onImportError             | 导入失败触发,返回 false 则中断内置的 message                                          | (err: Error) => Promise<boolean / void>                                                                                                | -      |  -   |   \*   |
+| onTemplateRequestSuccess  | apis.template 调用成功触发,用于处理返回结果,返回 false 则需自定义下载逻辑             | (res: AxiosResponse) => Promise<[DownloadResResponse](#downloadresresponse) / false>                                                   | -      |  -   |   \*   |
+| onTemplateDownloadSuccess | 模板下载成功触发,返回 false 则中断内置的 message                                      | (downloadRes:JsDownloadFile) => Promise<boolean / void>                                                                                | -      |  -   |   \*   |
+| onTemplateDownloadError   | 模板下载失败触发,返回 false 则中断内置的 message                                      | (err: Error) => Promise<boolean / void>                                                                                                | -      |  -   |   \*   |
+| onCellEditConfirm         | 编辑单元格,点击确定时触发,返回 false 则中断内置回填逻辑,需自定义                      | (info: [CellEditConfirmInfo](#celleditconfirminfo) ,editData: UnwrapRef<Reactive<Record<string, DataItem>>>) => Promise<boolean/ void> | -      |  -   |   -    |
 
 ### DownloadResResponse
 

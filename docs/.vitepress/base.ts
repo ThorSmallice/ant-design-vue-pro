@@ -35,6 +35,9 @@ export const base = defineConfig({
             { rel: 'icon', type: 'image/svg+xml', href: `${VITE_DOCS_BASE_URL}images/logo.svg` },
         ],
     ],
+    markdown: {
+        lineNumbers: true,
+    },
     vite: {
         envDir: process.cwd(),
         plugins: [vueJsx(), ReactivityTransform()],

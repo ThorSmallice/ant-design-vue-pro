@@ -24,7 +24,7 @@ export interface TableUseDataSourceProps {
     api: any
     fieldsNames: TableProps['fieldsNames']
     params: TableProps['params']
-    onSourceSuccess: (res: AxiosResponse) => Promise<TableSourceResult>
+    onSourceSuccess: (res: AxiosResponse) => Promise<{ [key: string]: any }>
     onSourceError: (err: Error) => void
     emits?: EmitFn
     dataSource?: any

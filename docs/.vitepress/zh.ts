@@ -62,7 +62,7 @@ export const zh = defineConfig({
 function nav(): DefaultTheme.NavItem[] {
     return [
         { text: '指南', link: '/documents/quickstart', activeMatch: '/documents' },
-        { text: '组件', link: '/components/Table', activeMatch: '/components' },
+        { text: '组件', link: '/components/table', activeMatch: '/components' },
         {
             text: pkg.version,
             items: [{ text: '', link: '' }],
@@ -96,7 +96,7 @@ function sidebarComponents(): DefaultTheme.SidebarItem[] {
             items: [
                 {
                     text: 'Table',
-                    link: 'Table',
+                    link: 'table',
                 },
                 // {
                 //     text: 'Modal',

@@ -10,16 +10,17 @@ export default () => {
     }
     TableConfig.fieldsNames = {
         ...TableConfig.fieldsNames,
-        list: ['data', 'list'],
-        total: ['data', 'total'],
+        list: ['data', 'data', 'list'],
+        total: ['data', 'data', 'total'],
+        details: ['data', 'data'],
     }
-    TableConfig.onTemplateRequestSuccess = async (res) => {
-        const blob = new Blob([new Uint8Array(res?.data?.data)], {
-            type: res?.data?.['content-type'],
-        })
-        const thumbUrl = URL.createObjectURL(blob)
-        return {
-            thumbUrl,
-        }
-    }
+    // TableConfig.onTemplateRequestSuccess = async (res) => {
+    //     const blob = new Blob([new Uint8Array(res?.data?.data)], {
+    //         type: res?.data?.['content-type'],
+    //     })
+    //     const thumbUrl = URL.createObjectURL(blob)
+    //     return {
+    //         thumbUrl,
+    //     }
+    // }
 }
