@@ -422,8 +422,10 @@ export default (props: TableUseColumnsProps) => {
             const backFill = (await onBeforeRowEditBackFill?.(res, record)) || res
 
             cuFormModel.values = backFill
-        } catch (error) {}
-        _cuModalLoading.value = false
+        } catch (error) {
+        } finally {
+            _cuModalLoading.value = false
+        }
     }
     const updateColumnsTitleString = async (columns: TableColumnProps[]) => {
         if (isEmpty(columns)) return []

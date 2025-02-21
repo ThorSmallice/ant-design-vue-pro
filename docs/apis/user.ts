@@ -19,7 +19,7 @@ export const downloadUserTemplateApi = async (params?: any, config?: any) =>
     await axios.get('/public/users/template', { params, ...config })
 
 export const downloadUserTemplateByBlobApi = async (params?: any) =>
-    await axios.get('/public/user/template/blob', {
+    await axios.get('/public/users/template/blob', {
         responseType: 'blob',
     })
 

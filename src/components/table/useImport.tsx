@@ -47,7 +47,6 @@ export default (props: TableUseImportProps) => {
 
         try {
             const res = await apis?.import(requestData)
-            importBtnLoading.value = false
 
             updateSource?.()
             if (isFunction(onImportSuccess) && (await onImportSuccess?.(res)) === false) {
@@ -55,15 +54,13 @@ export default (props: TableUseImportProps) => {
             }
             message.success(tableTextConfig?.message?.importSuccess)
         } catch (error) {
-            importBtnLoading.value = false
-
             if (isFunction(onImportError) && (await onImportError?.(error)) === false) {
                 return
             }
             message.error(tableTextConfig?.message?.importError)
+        } finally {
+            importBtnLoading.value = false
         }
-
-        importBtnLoading.value = false
     }
     const ImportBtn = (props?: OwnBtnProps) => {
         if (!importBtn || !apis?.import) return null

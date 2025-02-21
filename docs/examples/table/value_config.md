@@ -12,14 +12,13 @@
 
 :::
 
-<Tabs>
-    <TabPane key="1" tab="配置 fieldsNames"> 
+<Tabs  >
+    <TabPane key="1" tab="配置 fieldsNames" forceRender> 
         <FieldsNames></FieldsNames>
     </TabPane>
-    <TabPane key="2" tab="配置event">
+    <TabPane key="2" tab="配置event" forceRender>
         <FieldsNamesEvent></FieldsNamesEvent>
-    </TabPane>
-
+    </TabPane> 
 </Tabs>
 
 ::: details Code
