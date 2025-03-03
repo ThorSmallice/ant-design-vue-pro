@@ -2,14 +2,17 @@
 ---
 
 <script lang="ts" setup>
-import { ref,h } from 'vue'   
+import { ref,h ,onMounted} from 'vue'   
 import { Tabs, TabPane } from 'ant-design-vue'
 import setAntdConfig from '@docs/config/antd-vue-dbthor'
 import BasicsTable from '@docs/examples/table/basics.vue';  
 import FieldsNamesEvent from '@docs/examples/table/fieldsNames-event.vue'
 import FieldsNames  from '@docs/examples/table/fieldsNames.vue'
+import EdBlob from '@docs/examples/table/ed-blob.vue'
+import EdBuffer from '@docs/examples/table/ed-buffer.vue'
+
 setAntdConfig()
- 
+
 </script>
 
 # Table 表格
@@ -33,6 +36,8 @@ setAntdConfig()
 <!-- @include: @/../examples/table/basics.md -->
 
 <!-- @include: @/../examples/table/value_config.md -->
+
+<!-- @include: @/../examples/table/ed.md -->
 
 ## Props
 

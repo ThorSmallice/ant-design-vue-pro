@@ -15,8 +15,8 @@ export const deleteUserApi = async ({ id }: any, config?: any) =>
 export const getUserDetailsApi = async (params?: any, config?: any) =>
     await axios.get('/public/users', { params, ...config })
 
-export const downloadUserTemplateApi = async (params?: any, config?: any) =>
-    await axios.get('/public/users/template', { params, ...config })
+export const downloadUserTemplateByBufferApi = async (params?: any, config?: any) =>
+    await axios.get('/public/users/template/buffer', { params, ...config })
 
 export const downloadUserTemplateByBlobApi = async (params?: any) =>
     await axios.get('/public/users/template/blob', {

@@ -17,6 +17,7 @@ import {
     getUserDetailsApi,
     getUsersPageApi,
     updateUserApi,
+    downloadUserTemplateByBlobApi,
 } from '@docs/apis/user'
 import { ControlMapType, Table, TableProps } from 'antd-vue-dbthor'
 import { computed, ref } from 'vue'
@@ -27,6 +28,7 @@ const apis = ref<TableProps['apis']>({
     create: createUserApi,
     update: updateUserApi,
     delete: deleteUserApi,
+    template: downloadUserTemplateByBlobApi,
 })
 
 const sexOptions = [
