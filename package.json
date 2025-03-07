@@ -3,7 +3,7 @@
     "homepage": "https://www.dbice.cn/antd-vue-dbthor/docs/",
     "type": "module",
     "private": false,
-    "version": "1.0.78",
+    "version": "1.0.79",
     "description": "",
     "main": "index.js",
     "scripts": {

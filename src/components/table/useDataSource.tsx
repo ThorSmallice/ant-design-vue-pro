@@ -3,15 +3,23 @@ import { get, isObject } from 'es-toolkit/compat'
 import { isFunction } from 'es-toolkit/predicate'
 import {
     computed,
+    ComputedRef,
     EmitFn,
     onBeforeUnmount,
+    onWatcherCleanup,
+    Ref,
     ref,
+    toValue,
     unref,
     watch,
+    WatchCallback,
+    WatchHandle,
     WatchOptions,
     WatchSource,
 } from 'vue'
 import { RequestParams, TableProps } from './index.type'
+import { deepFreeze, idleSetRef } from '@src/tools'
+import { cloneDeep } from 'es-toolkit'
 export interface TableSourceResult {
     total: number
     list: any[] | null
@@ -19,7 +27,11 @@ export interface TableSourceResult {
     pageSize?: number | string
 }
 
-type AutoRequestOptions = false | WatchOptions
+export type AutoRequestOptions = false | WatchOptions | Ref<false | WatchOptions>
+export type AutoRequestDependenciesSource = {
+    params: TableProps['params']
+    apis: TableProps['apis']
+}
 export interface TableUseDataSourceProps {
     api: any
     fieldsNames: TableProps['fieldsNames']
@@ -29,10 +41,12 @@ export interface TableUseDataSourceProps {
     emits?: EmitFn
     dataSource?: any
     autoRequest?: AutoRequestOptions
-    autoRequestDependencies?: (obj: {
-        params: TableProps['params']
-        apis: TableProps['apis']
-    }) => WatchSource
+    autoRequestDependencies?: <T>(
+        obj: AutoRequestDependenciesSource
+    ) =>
+        | WatchSource<Ref<any> | ComputedRef<any> | (() => T)>
+        | WatchSource<Ref<any> | ComputedRef<any>>[]
+    onBeforeUpdateSourceFromWatch?: WatchCallback
     onBeforeRequestSource?: (params: { [key: string]: any }) => Promise<any | boolean>
 }
 
@@ -47,6 +61,7 @@ export default (props: TableUseDataSourceProps) => {
         emits,
         autoRequest,
         autoRequestDependencies,
+        onBeforeUpdateSourceFromWatch,
         dataSource,
     } = $(props)
 
@@ -54,7 +69,9 @@ export default (props: TableUseDataSourceProps) => {
     const loading = ref(false)
     const total = ref(0)
     let controller: AbortController | null
-
+    const cancelRequest = () => {
+        controller?.abort?.()
+    }
     const getSource = async (params: RequestParams) => {
         if (
             isFunction(onBeforeRequestSource) &&
@@ -63,10 +80,10 @@ export default (props: TableUseDataSourceProps) => {
             return
         }
 
-        controller?.abort?.()
         loading.value = true
 
         controller = new AbortController()
+
         api?.list?.(params, {
             signal: controller?.signal,
         })
@@ -81,7 +98,8 @@ export default (props: TableUseDataSourceProps) => {
                     }
                 })
 
-                own_source.value = get(res_trans, fieldsNames.list) || []
+                idleSetRef(own_source, get(res_trans, fieldsNames.list) || [])
+
                 total.value = get(res_trans, fieldsNames.total) || 0
             })
             ?.catch?.((err) => {
@@ -91,25 +109,54 @@ export default (props: TableUseDataSourceProps) => {
             })
             ?.finally?.(() => {
                 loading.value = false
-                controller = null
             })
     }
 
-    const updateSource = async () => {
-        api?.list && getSource(params)
+    const updateSource = () => {
+        return api?.list && getSource(params)
     }
 
-    if (autoRequest !== false && isObject(autoRequest) && !dataSource) {
-        watch(
-            () => autoRequestDependencies?.({ params, apis: api }) || params,
-            () => {
-                requestAnimationFrame(() => {
-                    updateSource()
-                })
+    const requestDependencies = computed(() => {
+        const options = deepFreeze({
+            params: cloneDeep(params),
+            apis: cloneDeep(api),
+        })
+        return autoRequestDependencies?.(options) || params
+    })
+
+    const createListener = () => {
+        return watch(
+            () => requestDependencies.value,
+            (...args) => {
+                if (
+                    onBeforeUpdateSourceFromWatch &&
+                    onBeforeUpdateSourceFromWatch(...args) === false
+                ) {
+                    return
+                }
+
+                updateSource()
+                onWatcherCleanup(cancelRequest)
             },
-            autoRequest
+            toValue(autoRequest as WatchOptions)
         )
     }
+    const listener = ref<WatchHandle>(null)
+    watch(
+        () => [autoRequest, props?.dataSource],
+        () => {
+            if (listener.value) {
+                listener.value.stop()
+                listener.value = null
+            }
+            if (autoRequest === false || dataSource) return
+
+            listener.value = createListener()
+        },
+        {
+            immediate: true,
+        }
+    )
 
     const source = computed(() => {
         if (dataSource) return unref(dataSource)
@@ -117,7 +164,7 @@ export default (props: TableUseDataSourceProps) => {
     })
 
     onBeforeUnmount(() => {
-        controller?.abort?.()
+        cancelRequest()
     })
     return {
         source,

@@ -143,6 +143,7 @@ const {
     columnSettingBtn = config.table.columnSettingBtn,
     requestParamsFormatter = config.table.requestParamsFormatter,
     onBeforeRequestSource,
+    onBeforeUpdateSourceFromWatch,
 
     onBeforeRequestDetails = config.table.onBeforeRequestDetails,
     onSourceSuccess = config.table.onSourceSuccess,
@@ -311,13 +312,17 @@ const { source, loading, total, updateSource }: any = $$(
         autoRequestDependencies,
         dataSource,
         onBeforeRequestSource,
+        onBeforeUpdateSourceFromWatch,
     })
 )
 
 watch(
-    () => source?.value,
+    () => source,
     () => {
         data_source.value = source?.value
+    },
+    {
+        deep: true,
     }
 )
 const { ImportBtn } = $$(

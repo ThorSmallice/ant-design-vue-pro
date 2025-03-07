@@ -35,9 +35,14 @@ setAntdConfig()
 
 <!-- @include: @/../examples/table/basics.md -->
 
+<!--
+
+
 <!-- @include: @/../examples/table/value_config.md -->
 
 <!-- @include: @/../examples/table/ed.md -->
+
+-->
 
 ## Props
 
