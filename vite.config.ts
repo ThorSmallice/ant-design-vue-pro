@@ -59,24 +59,6 @@ export const alias = {
     ),
 }
 
-// export const alias = [
-//     { find: '@src', replacement: resolve(__dirname, './src') },
-//     { find: '@comps', replacement: resolve(__dirname, './src/components') },
-//     { find: '@hooks', replacement: resolve(__dirname, './src/hooks') },
-//     { find: '@config', replacement: resolve(__dirname, './src/config') },
-//     { find: '@tools', replacement: resolve(__dirname, './src/tools') },
-//     { find: '@examples', replacement: resolve(__dirname, './docs/examples') },
-//     { find: '@docs', replacement: resolve(__dirname, './docs') },
-
-//     {
-//         find: pkg.name,
-//         replacement: resolve(
-//             __dirname,
-//             process.env.NODE_ENV === 'production' ? './dist/lib/index.es.js' : './src/main.ts'
-//         ),
-//     },
-// ]
-
 export const define = {
     __PKG_NAME__: JSON.stringify(pkg.name),
 }
