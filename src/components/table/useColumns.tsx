@@ -254,6 +254,7 @@ export default (props: TableUseColumnsProps) => {
             return null
         }
         const tempColumns = cloneDeep(columns)
+
         if (indexColumn) {
             tempColumns?.unshift?.({
                 title: '序号',
@@ -312,7 +313,11 @@ export default (props: TableUseColumnsProps) => {
                         {title}
                     </span>
                 ),
-                width: width || computedTitleWidth(titleArr[i]) || String(title)?.length * 16,
+                width:
+                    width ||
+                    computedTitleWidth(titleArr[indexColumn ? i - 1 : i]) ||
+                    String(title)?.length * 16,
+
                 align: columnsAlign,
                 fixed,
                 ellipsis: ellipsis ?? columnsEllipsis,
@@ -334,6 +339,11 @@ export default (props: TableUseColumnsProps) => {
                         editData,
                         onCellEditConfirm,
                         fieldsNames,
+                        ellipsis: ellipsis ?? columnsEllipsis,
+                        width:
+                            width ||
+                            computedTitleWidth(titleArr[indexColumn ? i - 1 : i]) ||
+                            String(title)?.length * 16,
                     }),
 
                 show: true,
@@ -439,6 +449,7 @@ export default (props: TableUseColumnsProps) => {
 
     const updateColumns = async (columns: TableColumnProps[]) => {
         const title_arr = await updateColumnsTitleString(columns)
+
         const arr = transformColumns(columns, title_arr)
         transedColumns.value = arr
     }
@@ -489,6 +500,34 @@ export default (props: TableUseColumnsProps) => {
     return { resColumns, ColumnSettingBtn }
 }
 
+const renderWithEllipsis = (
+    {
+        ellipsis,
+        width,
+        textAlign,
+    }: {
+        ellipsis: boolean
+        width: number
+        textAlign: TableUseColumnsProps['columnsAlign']
+    },
+    content: any
+) => {
+    // if (ellipsis) {
+    //     return (
+    //         <span
+    //             class="w-full  text-ellipsis overflow-hidden whitespace-nowrap"
+    //             style={{
+    //                 // width: `${width}px`,
+    //                 // maxWidth: `${width}px`,
+    //                 textAlign,
+    //             }}
+    //         >
+    //             {/* {content} */}
+    //         </span>
+    //     )
+    // }
+    return content
+}
 const getCustomRender = (
     opt: TableColumnCustomRenderArgs,
     metaColumn: TableColumnProps,
@@ -508,6 +547,8 @@ const getCustomRender = (
         columnsAlign,
         editData,
         onCellEditConfirm,
+        ellipsis,
+        width,
     }: TableUseColumnsProps
 ) => {
     const { text, record, index, column } = opt
@@ -550,33 +591,45 @@ const getCustomRender = (
     const renderText = () => {
         if (customRender && isFunction(customRender)) return customRender?.(opt)
         if (type === 'index') {
-            return pagination.page * pagination.pageSize - pagination.pageSize + (index + 1)
+            return renderWithEllipsis(
+                { ellipsis, width, textAlign: align ?? columnsAlign },
+                pagination.page * pagination.pageSize - pagination.pageSize + (index + 1)
+            )
         }
 
         if (type === 'date-range') {
-            return (dataIndex as string[][])
-                ?.map?.((keypath) => {
-                    return get(record, keypath)
-                        ? dayjs(get(record, keypath))?.format?.(timeFormat || columnsTimeFormat)
-                        : emptyText || columnsEmptyText
-                })
-                ?.join?.('~')
+            return renderWithEllipsis(
+                { ellipsis, width, textAlign: align ?? columnsAlign },
+                (dataIndex as string[][])
+                    ?.map?.((keypath) => {
+                        return get(record, keypath)
+                            ? dayjs(get(record, keypath))?.format?.(timeFormat || columnsTimeFormat)
+                            : emptyText || columnsEmptyText
+                    })
+                    ?.join?.('~')
+            )
         }
         if (type === 'date') {
-            return text
-                ? dayjs(text)?.format?.(timeFormat || columnsTimeFormat)
-                : text || emptyText || columnsEmptyText
+            return renderWithEllipsis(
+                { ellipsis, width, textAlign: align ?? columnsAlign },
+                text
+                    ? dayjs(text)?.format?.(timeFormat || columnsTimeFormat)
+                    : text || emptyText || columnsEmptyText
+            )
         }
 
         if (type === 'number') {
             const val = Number(text)
-            return isFunction(numberFormat)
-                ? numberFormat?.(numeral(val), text)
-                : numeral?.(
-                      isFunction(numberComputed) ? numberComputed?.(new Big(val), Big) : val
-                  )?.format?.((numberFormat as unknown as string) || '0[.]00') ||
-                      emptyText ||
-                      columnsEmptyText
+            return renderWithEllipsis(
+                { ellipsis, width, textAlign: align ?? columnsAlign },
+                isFunction(numberFormat)
+                    ? numberFormat?.(numeral(val), text)
+                    : numeral?.(
+                          isFunction(numberComputed) ? numberComputed?.(new Big(val), Big) : val
+                      )?.format?.((numberFormat as unknown as string) || '0[.]00') ||
+                          emptyText ||
+                          columnsEmptyText
+            )
         }
 
         if (type === 'control') {
@@ -657,7 +710,10 @@ const getCustomRender = (
             )
         }
 
-        return text || emptyText || columnsEmptyText
+        return renderWithEllipsis(
+            { ellipsis, width, textAlign: align ?? columnsAlign },
+            text || emptyText || columnsEmptyText
+        )
     }
 
     const openEdit = (record: DataItem) => {
@@ -752,11 +808,11 @@ const getCustomRender = (
         )
     }
 
-    return editable && !excludesBaseColumns?.includes(type) ? (
-        <RenderControl></RenderControl>
-    ) : (
-        renderText()
-    )
+    if (editable && !excludesBaseColumns?.includes(type)) {
+        return <RenderControl></RenderControl>
+    }
+
+    return renderText()
 }
 
 const localSort = ({ type, dataIndex, sorter }: TableColumnProps) => {

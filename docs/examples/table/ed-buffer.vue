@@ -34,7 +34,6 @@ const apis = ref<TableProps['apis']>({
 })
 
 const onTemplateRequestSuccess = async ({ data, headers }: AxiosResponse) => {
-    console.log('🚀 ~ onTemplateRequestSuccess ~ res:', headers)
     const blob = new Blob([new Uint8Array(data?.data?.data)], {
         type: headers['content-type'],
     })

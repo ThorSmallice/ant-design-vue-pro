@@ -1,5 +1,6 @@
 <template>
     <Table
+        :index-column="false"
         columns-align="center"
         :columns="columns"
         :query-form-items="queryFormItems"
@@ -20,7 +21,6 @@ import {
 } from '@docs/apis/user'
 import { ControlMapType, Table, TableProps } from 'antd-vue-dbthor'
 import { computed, ref } from 'vue'
-
 const apis = ref<TableProps['apis']>({
     list: getUsersPageApi,
     details: getUserDetailsApi,
@@ -53,19 +53,19 @@ const columns = computed((): TableProps['columns'] => {
                 hidden: true,
             },
         },
+
         {
             title: '用户名',
             dataIndex: 'username',
-            width: 100,
         },
+
         {
             title: '昵称',
-            width: 100,
+
             dataIndex: 'nickname',
         },
         {
             title: '年龄',
-            width: 100,
             dataIndex: 'age',
             type: 'number',
             formItemProps: {
@@ -74,7 +74,6 @@ const columns = computed((): TableProps['columns'] => {
         },
         {
             title: '性别',
-            width: 100,
             dataIndex: 'sex',
             formItemProps: {
                 control: ControlMapType.Select,
@@ -86,7 +85,6 @@ const columns = computed((): TableProps['columns'] => {
         },
         {
             title: '职业',
-            width: 100,
             dataIndex: 'occupation',
         },
     ]

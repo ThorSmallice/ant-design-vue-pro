@@ -117,17 +117,8 @@ export type TableTextConfig = Partial<{
         [key: string]: any
     }
 }>
-export type ciesBtnsVNode = Ref<
-    Partial<{
-        CreateBtn: VNode | JSX.Element
-        ImportBtn: VNode | JSX.Element
-        ExportDropDown: VNode | JSX.Element
-        ExportCurrentPageBtn: VNode | JSX.Element
-        ExportAllBtn: VNode | JSX.Element
-        ColumnSettingBtn: VNode | JSX.Element
-        DownloadTemplateBtn: VNode | JSX.Element
-    }>
->
+
+export type ciesBtnsVNode = Ref<Partial<ciesBtnsSlotOptions>>
 
 export type controlColumnMethods = {
     deleteRow: (record: any) => Promise<any>
@@ -141,11 +132,20 @@ export type controlColumnSlotOptions = {
 } & controlColumnMethods &
     controlColumnInfo
 
+export type ciesBtnsSlotOptions = {
+    CreateBtn: VNode | JSX.Element
+    ImportBtn: VNode | JSX.Element
+    ExportDropDown: VNode | JSX.Element
+    ExportCurrentPageBtn: VNode | JSX.Element
+    ExportAllBtn: VNode | JSX.Element
+    ColumnSettingBtn: VNode | JSX.Element
+    DownloadTemplateBtn: VNode | JSX.Element
+}
 export type queryFormSlotOptions = {
     SubmitBtn: VNode | JSX.Element
     ResetBtn: VNode | JSX.Element
     QueryFormInstance: TableQueryFormInstance
-} & ciesBtnsVNode
+} & ciesBtnsSlotOptions
 export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 'scroll'> {
     full?: boolean // 高度100%
     scroll?: TableUseAutoSizeProps['scroll']
@@ -346,15 +346,7 @@ export type TableSlots = {
         info: controlColumnInfo
     ) => VNode[] | JSX.Element[]
 
-    customCiesBtns?: (orgNode: {
-        CreateBtn: VNode
-        ImportBtn: VNode
-        ExportDropDown: VNode
-        ExportCurrentPageBtn: VNode
-        ExportAllBtn: VNode
-        ColumnSettingBtn: VNode
-        DownloadTemplateBtn: VNode
-    }) => VNode | JSX.Element
+    customCiesBtns?: (orgNode: ciesBtnsSlotOptions) => VNode | JSX.Element
 }
 export const ATableSlotsWhiteList = [
     'emptyText',
