@@ -68,7 +68,7 @@ export const idleSetRef = <T>(
 
     function pushChunk(deadline: IdleDeadline) {
         while (index < transSource?.length && deadline?.timeRemaining() > 0) {
-            const arr = source.slice(index, index + stepNum + 1)
+            const arr = source.slice(index, index + stepNum)
 
             arr.forEach((item) => {
                 transTarget.push(item)
