@@ -3,8 +3,12 @@
     "homepage": "https://www.dbice.cn/antd-vue-dbthor/docs/",
     "type": "module",
     "private": false,
-    "version": "1.0.82",
+    "version": "1.0.83",
     "description": "",
+    "repository": {
+        "type": "git",
+        "url": "https://gitee.com/db-thor/antd-vue-dbthor.git"
+    },
     "main": "index.js",
     "scripts": {
         "dev": "cross-env NODE_ENV=development vite",

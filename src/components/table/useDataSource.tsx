@@ -117,10 +117,10 @@ export default (props: TableUseDataSourceProps) => {
 
     const requestDependencies = computed(() => {
         const options = deepFreeze({
-            params: cloneDeep(toValue(params)),
-            apis: cloneDeep(toValue(api)),
+            params: { ...(params.value || {}) },
+            apis: { ...(api.value || {}) },
         })
-        return autoRequestDependencies?.(options) || toValue(params)
+        return autoRequestDependencies?.(options) || { ...(params.value || {}) }
     })
 
     const createListener = () => {
