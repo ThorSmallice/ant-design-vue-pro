@@ -99,7 +99,6 @@ export default (props: TableUseDataSourceProps) => {
                 })
 
                 idleSetRef(own_source, get(res_trans, fieldsNames.list) || [])
-
                 total.value = get(res_trans, fieldsNames.total) || 0
             })
             ?.catch?.((err) => {
@@ -118,10 +117,10 @@ export default (props: TableUseDataSourceProps) => {
 
     const requestDependencies = computed(() => {
         const options = deepFreeze({
-            params: cloneDeep(params),
-            apis: cloneDeep(api),
+            params: cloneDeep(toValue(params)),
+            apis: cloneDeep(toValue(api)),
         })
-        return autoRequestDependencies?.(options) || params
+        return autoRequestDependencies?.(options) || toValue(params)
     })
 
     const createListener = () => {
