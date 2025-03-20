@@ -10,6 +10,7 @@ import {
 } from '@ant-design/icons-vue'
 
 export const TableConfig: TableProps = {
+    idleRender: true,
     showSorterTooltip: true,
     full: false,
     autoRequest: {

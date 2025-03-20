@@ -33,6 +33,7 @@ export type AutoRequestDependenciesSource = {
     apis: TableProps['apis']
 }
 export interface TableUseDataSourceProps {
+    idleRender?: boolean
     api: any
     fieldsNames: TableProps['fieldsNames']
     params: TableProps['params']
@@ -63,6 +64,7 @@ export default (props: TableUseDataSourceProps) => {
         autoRequestDependencies,
         onBeforeUpdateSourceFromWatch,
         dataSource,
+        idleRender,
     } = $(props)
 
     const own_source = ref([])
@@ -98,8 +100,12 @@ export default (props: TableUseDataSourceProps) => {
                     }
                 })
 
-                idleSetRef(own_source, get(res_trans, fieldsNames.list) || [])
                 total.value = get(res_trans, fieldsNames.total) || 0
+
+                if (!idleRender) {
+                    return (own_source.value = get(res_trans, fieldsNames.list) || [])
+                }
+                return idleSetRef(own_source, get(res_trans, fieldsNames.list) || [])
             })
             ?.catch?.((err) => {
                 own_source.value = []
