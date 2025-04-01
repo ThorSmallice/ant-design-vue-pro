@@ -106,11 +106,13 @@ const columns = computed((): TableProps['columns'] => {
             title: '创建时间',
             dataIndex: 'createTime',
             type: 'date',
+            width: 100,
         },
         {
             title: '更新时间',
             dataIndex: 'updateTime',
             type: 'date',
+            width: 100,
         },
     ]
 })

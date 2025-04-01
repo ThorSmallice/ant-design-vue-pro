@@ -140,8 +140,8 @@ export default (props: TableUseDataSourceProps) => {
                     return
                 }
 
-                updateSource()
                 onWatcherCleanup(cancelRequest)
+                updateSource()
             },
             toValue(autoRequest as WatchOptions)
         )

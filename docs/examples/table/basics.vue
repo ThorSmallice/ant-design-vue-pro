@@ -57,10 +57,12 @@ const columns = computed((): TableProps['columns'] => {
         {
             title: '用户名',
             dataIndex: 'username',
+            width: 100,
         },
 
         {
             title: '昵称',
+            width: 100,
 
             dataIndex: 'nickname',
         },
@@ -71,6 +73,7 @@ const columns = computed((): TableProps['columns'] => {
             formItemProps: {
                 control: ControlMapType.InputNumber,
             },
+            width: 100,
         },
         {
             title: '性别',
@@ -81,11 +84,14 @@ const columns = computed((): TableProps['columns'] => {
                     options: sexOptions,
                 },
             },
+            width: 100,
+
             customRender: ({ text }) => sexOptions?.find?.(({ value }) => value === text)?.label,
         },
         {
             title: '职业',
             dataIndex: 'occupation',
+            width: 100,
         },
     ]
 })
