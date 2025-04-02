@@ -109,7 +109,6 @@ const onResizeColumn = (w: number, col: TableColumnProps) => {
 }
 
 const {
-    idleRender = config.table.idleRender,
     full = config.table.full,
     scroll = config.table.scroll,
     autoSizeConfig = config.table.autoSizeConfig,
@@ -314,7 +313,6 @@ const { source, loading, total, updateSource }: any = $$(
         dataSource,
         onBeforeRequestSource,
         onBeforeUpdateSourceFromWatch,
-        idleRender,
     })
 )
 

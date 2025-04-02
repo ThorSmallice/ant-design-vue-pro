@@ -33,7 +33,6 @@ export type AutoRequestDependenciesSource = {
     apis: TableProps['apis']
 }
 export interface TableUseDataSourceProps {
-    idleRender?: boolean
     api: any
     fieldsNames: TableProps['fieldsNames']
     params: TableProps['params']
@@ -64,7 +63,6 @@ export default (props: TableUseDataSourceProps) => {
         autoRequestDependencies,
         onBeforeUpdateSourceFromWatch,
         dataSource,
-        idleRender,
     } = $(props)
 
     const own_source = ref([])
@@ -101,11 +99,7 @@ export default (props: TableUseDataSourceProps) => {
                 })
 
                 total.value = get(res_trans, fieldsNames.total) || 0
-
-                if (!idleRender) {
-                    return (own_source.value = get(res_trans, fieldsNames.list) || [])
-                }
-                return idleSetRef(own_source, get(res_trans, fieldsNames.list) || [])
+                own_source.value = get(res_trans, fieldsNames.list) || []
             })
             ?.catch?.((err) => {
                 own_source.value = []
@@ -123,10 +117,10 @@ export default (props: TableUseDataSourceProps) => {
 
     const requestDependencies = computed(() => {
         const options = deepFreeze({
-            params: { ...(params.value || {}) },
-            apis: { ...(api.value || {}) },
+            params: { ...(params?.value || {}) },
+            apis: { ...(api?.value || {}) },
         })
-        return autoRequestDependencies?.(options) || { ...(params.value || {}) }
+        return autoRequestDependencies?.(options) || { ...(params?.value || {}) }
     })
 
     const createListener = () => {
