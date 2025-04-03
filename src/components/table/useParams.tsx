@@ -75,6 +75,16 @@ export default (props: TableUseParmasProps) => {
                 queryFormParamsRaw[k] = queryFormParamsRaw[k].format(queryFormTimeFormat)
             }
             if (queryFormParamsRaw[k]?.every?.((t: any) => dayjs.isDayjs(t))) {
+                if (k?.split('-')?.length === 2) {
+                    const ks = k?.split?.('-')
+                    queryFormParamsRaw[k]?.forEach?.(
+                        (t: Dayjs, i: number) =>
+                            (queryFormParamsRaw[ks[i]] = t?.format?.(queryFormTimeFormat))
+                    )
+                    delete queryFormParamsRaw[k]
+                    break
+                }
+
                 queryFormParamsRaw[k] = queryFormParamsRaw[k]?.map?.((t: Dayjs) =>
                     t?.format?.(queryFormTimeFormat)
                 )
