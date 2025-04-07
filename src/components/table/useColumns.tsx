@@ -1,5 +1,5 @@
 import { CheckOutlined, EditOutlined } from '@ant-design/icons-vue'
-// import pkg from '@/package.json'
+
 import {
     TableColumnProps as ATableColumnProps,
     Button,
@@ -13,8 +13,9 @@ import {
 } from 'ant-design-vue'
 import { AxiosResponse } from 'axios'
 import Big from 'big.js'
-import dayjs, { Dayjs } from 'dayjs'
-import { isDayjs } from 'dayjs'
+import dayjs from 'dayjs'
+import type { Dayjs } from 'dayjs/esm'
+
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { cloneDeep, flatten, isFunction, isString, merge, omit } from 'es-toolkit'
 import { get, has, isEmpty, isNumber, isObject, set } from 'es-toolkit/compat'
@@ -46,6 +47,7 @@ import {
 import { TableUseCUFormItemProps, TableUseCUReturnOptions } from './useCU'
 import { TableDescItemsProps } from './useDetail'
 
+const isDayjs = dayjs.isDayjs
 dayjs.extend(customParseFormat)
 
 const excludesBaseColumns = ['index', 'control']
@@ -188,7 +190,7 @@ const vnodeToString = async (vnode: VNode) => {
 
 const computedTitleWidth = (title: string): number => {
     const rootFontSize = parseFloat(
-        window.getComputedStyle(document.querySelector('html')).fontSize
+        window?.getComputedStyle?.(document?.querySelector?.('html'))?.fontSize
     )
     return title?.length ? title?.length * Math.floor(rootFontSize) : rootFontSize * 6
 }
