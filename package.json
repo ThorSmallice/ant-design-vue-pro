@@ -3,7 +3,7 @@
     "homepage": "https://www.dbice.cn/antd-vue-dbthor/docs/",
     "type": "module",
     "private": false,
-    "version": "1.0.89",
+    "version": "1.0.90",
     "description": "",
     "repository": {
         "type": "git",
@@ -17,8 +17,7 @@
         "docs:dev": "cross-env NODE_ENV=development vitepress dev docs",
         "docs:build": "cross-env NODE_ENV=production vitepress build docs",
         "docs:preview": "cross-env NODE_ENV=production vitepress preview docs",
-        "push": "npm publish",
-        "postinstall": "patch-package"
+        "push": "npm publish"
     },
     "files": [
         "dist"
@@ -63,7 +62,6 @@
         "js-file-downloader": "^1.1.25",
         "mime": "^4.0.6",
         "numeral": "^2.0.6",
-        "patch-package": "^8.0.0",
         "path": "^0.12.7",
         "pinyin-pro": "^3.26.0",
         "postcss": "^8.4.49",
