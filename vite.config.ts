@@ -73,6 +73,7 @@ export default defineConfig({
             outDir: 'dist',
             staticImport: true,
             insertTypesEntry: true,
+            exclude: ['node_modules'],
         }),
         compression(),
         cssInjectedByJsPlugin({

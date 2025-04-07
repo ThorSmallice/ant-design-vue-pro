@@ -67,10 +67,10 @@
     </div>
 </template>
 
-<script setup lang="tsx" async>
+<script setup lang="tsx">
 import config from '@config/index'
 import { Table as ATable, Flex, TableColumnProps } from 'ant-design-vue'
-import { computed, reactive, readonly, ref, toRaw, unref, watch } from 'vue'
+import { computed, reactive, ref, unref, watch } from 'vue'
 import { ATableSlotsWhiteList, TableInstance, TableProps, TableSlots } from './index.type'
 import useAutoSize from './useAutoSize'
 import useColumns from './useColumns'
