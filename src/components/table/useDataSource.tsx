@@ -79,6 +79,7 @@ export default (props: TableUseDataSourceProps) => {
         ) {
             return
         }
+        cancelRequest()
 
         loading.value = true
 
