@@ -69,7 +69,7 @@
 <script setup lang="tsx">
 import config from '@config/index'
 import { Table as ATable, Flex, TableColumnProps } from 'ant-design-vue'
-import { computed, reactive, ref, unref, watch } from 'vue'
+import { computed, reactive, ref, toValue, unref, watch } from 'vue'
 import { TableInstance, TableProps, TableSlots } from './index.d'
 import useAutoSize from './useAutoSize'
 import useColumns from './useColumns'
@@ -320,6 +320,7 @@ watch(
     },
     {
         deep: true,
+        immediate: true,
     }
 )
 const { ImportBtn } = $$(

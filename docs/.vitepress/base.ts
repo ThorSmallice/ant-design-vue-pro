@@ -18,7 +18,6 @@ if (typeof window === 'undefined') {
     global.ResizeObserver = resizeObserverPolyfill
 }
 const { VITE_DOCS_BASE_URL, VITE_REQUEST_BASE_URL } = envResolve()
-console.log('🚀 ~ process.env.NODE_ENV base:', process.env.NODE_ENV)
 
 export const base = defineConfig({
     title: 'Antd-Vue-Dbthor',

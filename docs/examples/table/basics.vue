@@ -20,7 +20,8 @@ import {
     updateUserApi,
 } from '@docs/apis/user'
 import { ControlMapType, Table, TableProps } from 'antd-vue-dbthor'
-import { computed, ref } from 'vue'
+import { computed, ref, reactive } from 'vue'
+
 const apis = ref<TableProps['apis']>({
     list: getUsersPageApi,
     details: getUserDetailsApi,

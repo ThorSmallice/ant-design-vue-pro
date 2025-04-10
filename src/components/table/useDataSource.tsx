@@ -161,7 +161,7 @@ export default (props: TableUseDataSourceProps) => {
     )
 
     const source = computed(() => {
-        if (dataSource) return toValue(dataSource)
+        if (dataSource) return unref(dataSource)
         return unref(own_source)
     })
 
