@@ -17,7 +17,9 @@ if (typeof window === 'undefined') {
     // 引入并赋值 ResizeObserver 的 polyfill
     global.ResizeObserver = resizeObserverPolyfill
 }
-const { VITE_DOCS_BASE_URL } = envResolve()
+const { VITE_DOCS_BASE_URL, VITE_REQUEST_BASE_URL } = envResolve()
+console.log('🚀 ~ process.env.NODE_ENV base:', process.env.NODE_ENV)
+
 export const base = defineConfig({
     title: 'Antd-Vue-Dbthor',
     description: 'Antd增强版',
@@ -39,6 +41,7 @@ export const base = defineConfig({
         lineNumbers: true,
     },
     vite: {
+        mode: process.env.NODE_ENV,
         envDir: process.cwd(),
         plugins: [vueJsx(), ReactivityTransform()],
         build: {

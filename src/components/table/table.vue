@@ -55,7 +55,6 @@
                 <template v-for="slot in aTableSlots" :key="slot" v-slot:[slot]="temp">
                     <slot :name="slot" v-bind="temp"></slot>
                 </template>
-                <slot name="default"></slot>
             </ATable>
         </div>
 
@@ -71,7 +70,7 @@
 import config from '@config/index'
 import { Table as ATable, Flex, TableColumnProps } from 'ant-design-vue'
 import { computed, reactive, ref, unref, watch } from 'vue'
-import { ATableSlotsWhiteList, TableInstance, TableProps, TableSlots } from './index.type'
+import { TableInstance, TableProps, TableSlots } from './index.d'
 import useAutoSize from './useAutoSize'
 import useColumns from './useColumns'
 import useCU from './useCU'
@@ -99,9 +98,7 @@ const emits = defineEmits<{
     (e: 'queryFormModelChange', currentModel: any, prevModel: any): void
 }>()
 const aTableSlots = computed(() => {
-    return Object?.keys?.(slots)?.filter?.(
-        (key: string) => ATableSlotsWhiteList?.indexOf(key) !== -1
-    )
+    return Object?.keys?.(slots)
 })
 
 const onResizeColumn = (w: number, col: TableColumnProps) => {

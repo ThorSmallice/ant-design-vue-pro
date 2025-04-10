@@ -6,7 +6,7 @@ import { get, isEmpty } from 'es-toolkit/compat'
 import JsFileDownloader, { OptionalParams } from 'js-file-downloader'
 import mime from 'mime'
 import { ref } from 'vue'
-import { OwnBtnProps, ownBtnProps, ownDropDownProps, OwnDropProps, TableProps } from './index.type'
+import { OwnBtnProps, ownBtnProps, ownDropDownProps, OwnDropProps, TableProps } from '.'
 import { LoadingOutlined } from '@ant-design/icons-vue'
 export type ExportResponse = {
     thumbUrl: string

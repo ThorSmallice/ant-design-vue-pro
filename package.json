@@ -3,7 +3,7 @@
     "homepage": "https://www.dbice.cn/antd-vue-dbthor/docs/",
     "type": "module",
     "private": false,
-    "version": "1.0.92",
+    "version": "1.0.93",
     "description": "",
     "repository": {
         "type": "git",
@@ -12,11 +12,11 @@
     "main": "index.js",
     "scripts": {
         "dev": "cross-env NODE_ENV=development vite",
+        "dev:preview": "cross-env NODE_ENV=preview vite",
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "tsc && vite build",
-        "docs:dev": "cross-env NODE_ENV=development vitepress dev docs",
-        "docs:build": "cross-env NODE_ENV=production vitepress build docs",
-        "docs:preview": "cross-env NODE_ENV=production vitepress preview docs",
+        "docs:dev": "cross-env NODE_ENV=development vitepress dev docs", 
+        "docs:build": "cross-env NODE_ENV=production vitepress build docs", 
         "push": "npm publish"
     },
     "files": [

@@ -4,7 +4,7 @@ import type { Dayjs } from 'dayjs/esm'
 import { isFunction } from 'es-toolkit/predicate'
 import qs from 'qs'
 import { computed, ComputedRef, Reactive, reactive, Ref, toRaw, unref, watch } from 'vue'
-import { TableProps } from './index.type'
+import { TableProps } from '.'
 const isDayjs = dayjs.isDayjs
 type paramsObj = {
     [key: string]: any

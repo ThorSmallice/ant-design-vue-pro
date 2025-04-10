@@ -18,7 +18,7 @@ import {
     WatchOptions,
     WatchSource,
 } from 'vue'
-import { RequestParams, TableProps } from './index.type'
+import { RequestParams, TableProps } from '.'
 export interface TableSourceResult {
     total: number
     list: any[] | null
@@ -161,7 +161,7 @@ export default (props: TableUseDataSourceProps) => {
     )
 
     const source = computed(() => {
-        if (dataSource) return unref(dataSource)
+        if (dataSource) return toValue(dataSource)
         return unref(own_source)
     })
 

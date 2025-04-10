@@ -17,7 +17,7 @@ import { cloneDeep, isFunction, merge } from 'es-toolkit'
 import { computed, Reactive, reactive, Ref, ref, toRaw, VNode, watch } from 'vue'
 import { JSX } from 'vue/jsx-runtime'
 import { ControlMapProps, FormItemControl } from './control'
-import { OwnBtnProps, ownBtnProps, TableProps, TableTextConfig } from './index.type'
+import { OwnBtnProps, ownBtnProps, TableProps, TableTextConfig } from '.'
 import { FormInstance } from './useQueryForm'
 
 export interface TableCUFormInstance extends FormInstance {}

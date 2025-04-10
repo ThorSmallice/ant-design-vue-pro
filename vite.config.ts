@@ -29,7 +29,7 @@ export const globals = generateGlobals(external)
 
 export const proxy: ServerOptions['proxy'] = {
     '/api': {
-        target: 'http://116.177.41.89:8888',
+        target: 'https://www.dbicn.cn/admin-server/api/v1',
         changeOrigin: true,
         rewrite: (path: string) => path.replace(/^\/api/, '/hnz/admin-api'),
     },
@@ -66,6 +66,8 @@ export const define = {
 const { VITE_DOCS_BASE_URL } = envResolve()
 
 export default defineConfig({
+    mode: process.env.NODE_ENV,
+    envDir: process.cwd(),
     plugins: [
         Vue(),
         vueJsx(),
