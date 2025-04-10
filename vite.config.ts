@@ -29,9 +29,9 @@ export const globals = generateGlobals(external)
 
 export const proxy: ServerOptions['proxy'] = {
     '/api': {
-        target: 'https://www.dbicn.cn/admin-server/api/v1',
+        target: 'https://www.dbice.cn',
         changeOrigin: true,
-        rewrite: (path: string) => path.replace(/^\/api/, '/hnz/admin-api'),
+        rewrite: (path: string) => path.replace(/^\/api/, '/admin-server/api/v1'),
     },
     '/admin-api': {
         target: 'https://iot.scet.com.cn',
