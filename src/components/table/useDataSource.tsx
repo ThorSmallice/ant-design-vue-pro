@@ -1,5 +1,6 @@
+import { deepFreeze } from '@src/tools'
 import { AxiosResponse } from 'axios'
-import { get, isObject } from 'es-toolkit/compat'
+import { get } from 'es-toolkit/compat'
 import { isFunction } from 'es-toolkit/predicate'
 import {
     computed,
@@ -18,8 +19,6 @@ import {
     WatchSource,
 } from 'vue'
 import { RequestParams, TableProps } from './index.type'
-import { deepFreeze, idleSetRef } from '@src/tools'
-import { cloneDeep } from 'es-toolkit'
 export interface TableSourceResult {
     total: number
     list: any[] | null
@@ -36,7 +35,7 @@ export interface TableUseDataSourceProps {
     api: any
     fieldsNames: TableProps['fieldsNames']
     params: TableProps['params']
-    onSourceSuccess: (res: AxiosResponse) => Promise<{ [key: string]: any }>
+    onSourceSuccess: (res: AxiosResponse) => Promise<TableSourceResult | false>
     onSourceError: (err: Error) => void
     emits?: EmitFn
     dataSource?: any
@@ -100,7 +99,10 @@ export default (props: TableUseDataSourceProps) => {
                 })
 
                 total.value = get(res_trans, fieldsNames.total) || 0
-                own_source.value = get(res_trans, fieldsNames.list) || []
+                own_source.value =
+                    fieldsNames?.total === 'self'
+                        ? res_trans
+                        : get(res_trans, fieldsNames.list) || []
             })
             ?.catch?.((err) => {
                 own_source.value = []

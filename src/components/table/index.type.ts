@@ -29,7 +29,7 @@ import {
 } from './useQueryForm'
 import { TableUseParmasProps } from './useParams'
 
-type TableFieldNames = string | string[]
+type TableFieldNames = string | string[] | 'self'
 
 export interface TableInstance {
     source: any[]

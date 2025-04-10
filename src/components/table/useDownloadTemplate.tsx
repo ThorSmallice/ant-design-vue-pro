@@ -90,7 +90,7 @@ export default (props: TableUseDownloadTemplateProps) => {
     }
 
     const transFormBlob = (res: AxiosResponse): DownloadResResponse => {
-        const data = get(res, fieldsNames?.export)
+        const data = fieldsNames?.template === 'self' ? res : get(res, fieldsNames?.template)
 
         const href = URL.createObjectURL(data)
         return {

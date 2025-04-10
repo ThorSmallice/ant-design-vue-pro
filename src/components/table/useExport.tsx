@@ -131,7 +131,7 @@ export default (props: TableUseExportProps) => {
     }
 
     const transFormBlob = (res: AxiosResponse): ExportResponse => {
-        const data = get(res, fieldsNames?.export)
+        const data = fieldsNames?.export === 'self' ? res : get(res, fieldsNames?.export)
 
         const href = URL.createObjectURL(data)
         return {
