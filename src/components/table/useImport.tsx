@@ -2,7 +2,7 @@ import { Button, message, Upload, UploadProps } from 'ant-design-vue'
 import { UploadRequestOption } from 'ant-design-vue/es/vc-upload/interface'
 import { isFunction, merge } from 'es-toolkit'
 import { ref } from 'vue'
-import { OwnBtnProps, ownBtnProps, TableProps } from './index.type'
+import { OwnBtnProps, ownBtnProps, TableProps } from '.'
 import { AxiosResponse } from 'axios'
 import { isEmpty } from 'es-toolkit/compat'
 

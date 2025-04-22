@@ -16,7 +16,7 @@ import { Props, ValidateInfo, validateInfos, validateOptions } from 'ant-design-
 import { cloneDeep, isFunction, omit } from 'es-toolkit'
 import { computed, h, Reactive, reactive, ref, Ref, toRaw, useSlots, VNode, watch } from 'vue'
 import { ControlMapProps, FormItemControl } from './control'
-import { ciesBtnsVNode, OwnBtnProps } from './index.type'
+import { ciesBtnsVNode, OwnBtnProps } from '.'
 import { TableUseCUReturnOptions } from './useCU'
 interface DebounceSettings {
     leading?: boolean

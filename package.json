@@ -3,7 +3,7 @@
     "homepage": "https://www.dbice.cn/antd-vue-dbthor/docs/",
     "type": "module",
     "private": false,
-    "version": "1.0.84",
+    "version": "1.0.94",
     "description": "",
     "repository": {
         "type": "git",
@@ -12,11 +12,11 @@
     "main": "index.js",
     "scripts": {
         "dev": "cross-env NODE_ENV=development vite",
+        "dev:preview": "cross-env NODE_ENV=preview vite",
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "tsc && vite build",
-        "docs:dev": "cross-env NODE_ENV=development vitepress dev docs",
-        "docs:build": "cross-env NODE_ENV=production vitepress build docs",
-        "docs:preview": "cross-env NODE_ENV=production vitepress preview docs",
+        "docs:dev": "cross-env NODE_ENV=development vitepress dev docs", 
+        "docs:build": "cross-env NODE_ENV=production vitepress build docs", 
         "push": "npm publish"
     },
     "files": [
@@ -38,10 +38,6 @@
     "publishConfig": {
         "registry": "https://registry.npmjs.org/"
     },
-    "dependencies": {
-        "dayjs": "^1.11.13",
-        "vue": "^3.5.13"
-    },
     "devDependencies": {
         "@ant-design/icons-vue": "^7.0.1",
         "@rollup/plugin-terser": "^0.4.4",
@@ -54,6 +50,8 @@
         "@vitejs/plugin-vue": "^5.2.0",
         "@vitejs/plugin-vue-jsx": "^4.1.0",
         "@vue-macros/reactivity-transform": "^1.1.4",
+        "@vue/compiler-sfc": "^3.5.13",
+        "@vue/runtime-core": "^3.5.13",
         "ant-design-vue": "~4.2.6",
         "autoprefixer": "^10.4.20",
         "axios": "^1.7.8",
@@ -77,13 +75,11 @@
         "vite": "^5.4.11",
         "vite-plugin-compression2": "^1.3.1",
         "vite-plugin-css-injected-by-js": "^3.5.2",
-        "vite-plugin-dts": "4.0.0-beta.1",
+        "vite-plugin-dts": "4.5.3",
         "vite-plugin-remove-console": "^2.2.0",
         "vitepress": "^1.5.0",
-        "volar": "^0.0.2",
         "vue": "^3.5.13",
-        "vue-router": "^4.5.0",
-        "vue-types": "^5.1.3"
+        "vue-router": "^4.5.0"
     },
     "peerDependencies": {
         "@ant-design/icons-vue": "^7.0.1",

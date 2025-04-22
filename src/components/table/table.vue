@@ -55,7 +55,6 @@
                 <template v-for="slot in aTableSlots" :key="slot" v-slot:[slot]="temp">
                     <slot :name="slot" v-bind="temp"></slot>
                 </template>
-                <slot name="default"></slot>
             </ATable>
         </div>
 
@@ -67,11 +66,11 @@
     </div>
 </template>
 
-<script setup lang="tsx" async>
+<script setup lang="tsx">
 import config from '@config/index'
 import { Table as ATable, Flex, TableColumnProps } from 'ant-design-vue'
-import { computed, reactive, readonly, ref, toRaw, unref, watch } from 'vue'
-import { ATableSlotsWhiteList, TableInstance, TableProps, TableSlots } from './index.type'
+import { computed, reactive, ref, toValue, unref, watch } from 'vue'
+import { TableInstance, TableProps, TableSlots } from './index.d'
 import useAutoSize from './useAutoSize'
 import useColumns from './useColumns'
 import useCU from './useCU'
@@ -99,9 +98,7 @@ const emits = defineEmits<{
     (e: 'queryFormModelChange', currentModel: any, prevModel: any): void
 }>()
 const aTableSlots = computed(() => {
-    return Object?.keys?.(slots)?.filter?.(
-        (key: string) => ATableSlotsWhiteList?.indexOf(key) !== -1
-    )
+    return Object?.keys?.(slots)
 })
 
 const onResizeColumn = (w: number, col: TableColumnProps) => {
@@ -109,7 +106,6 @@ const onResizeColumn = (w: number, col: TableColumnProps) => {
 }
 
 const {
-    idleRender = config.table.idleRender,
     full = config.table.full,
     scroll = config.table.scroll,
     autoSizeConfig = config.table.autoSizeConfig,
@@ -314,7 +310,6 @@ const { source, loading, total, updateSource }: any = $$(
         dataSource,
         onBeforeRequestSource,
         onBeforeUpdateSourceFromWatch,
-        idleRender,
     })
 )
 
@@ -325,6 +320,7 @@ watch(
     },
     {
         deep: true,
+        immediate: true,
     }
 )
 const { ImportBtn } = $$(

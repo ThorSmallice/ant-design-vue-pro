@@ -1,5 +1,5 @@
 import { get, isEmpty, isFunction } from 'es-toolkit/compat'
-import { ownBtnProps, OwnBtnProps, RequestParamsFormatter, TableProps } from './index.type'
+import { ownBtnProps, OwnBtnProps, RequestParamsFormatter, TableProps } from '.'
 import { Button, message } from 'ant-design-vue'
 import { ref } from 'vue'
 import { cloneDeep, merge } from 'es-toolkit'
@@ -90,7 +90,7 @@ export default (props: TableUseDownloadTemplateProps) => {
     }
 
     const transFormBlob = (res: AxiosResponse): DownloadResResponse => {
-        const data = get(res, fieldsNames?.export)
+        const data = fieldsNames?.template === 'self' ? res : get(res, fieldsNames?.template)
 
         const href = URL.createObjectURL(data)
         return {

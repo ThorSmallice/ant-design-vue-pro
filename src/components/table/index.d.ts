@@ -10,9 +10,7 @@ import { DropdownProps } from 'ant-design-vue/es/dropdown'
 import { ColumnType } from 'ant-design-vue/es/table'
 import { RenderExpandIconProps } from 'ant-design-vue/es/vc-table/interface'
 import { AxiosRequestConfig, AxiosResponse } from 'axios'
-import { cloneDeep } from 'es-toolkit'
-import { isArray, isObject } from 'es-toolkit/compat'
-import { Reactive, Ref, SetupContext, VNode, WatchOptions, WatchSource } from 'vue'
+import { Reactive, Ref, SetupContext, VNode } from 'vue'
 import { JSX } from 'vue/jsx-runtime'
 import { TableUseAutoSizeProps } from './useAutoSize'
 import { TableColumnCustomRenderArgs, TableColumnProps, TableUseColumnsProps } from './useColumns'
@@ -22,14 +20,14 @@ import { TableUseDetailProps } from './useDetail'
 import { TableUseDownloadTemplateProps } from './useDownloadTemplate'
 import { TableUseExportProps } from './useExport'
 import { TableUseImportProps } from './useImport'
+import { TableUseParmasProps } from './useParams'
 import {
     TableQueryFormInstance,
     TableQueryFormItemProps,
     TableQueryFormProps,
 } from './useQueryForm'
-import { TableUseParmasProps } from './useParams'
 
-type TableFieldNames = string | string[]
+type TableFieldNames = string | string[] | 'self'
 
 export interface TableInstance {
     source: any[]
@@ -147,7 +145,6 @@ export type queryFormSlotOptions = {
     QueryFormInstance: TableQueryFormInstance
 } & ciesBtnsSlotOptions
 export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 'scroll'> {
-    idleRender?: boolean // 空闲渲染
     full?: boolean // 高度100%
     scroll?: TableUseAutoSizeProps['scroll']
     autoSizeConfig?: TableUseAutoSizeProps['autoSizeConfig']
@@ -349,38 +346,20 @@ export type TableSlots = {
 
     customCiesBtns?: (orgNode: ciesBtnsSlotOptions) => VNode | JSX.Element
 }
-export const ATableSlotsWhiteList = [
-    'emptyText',
-    'expandIcon',
-    'title',
-    'footer',
-    'summary',
-    'expandedRowRender',
-    'expandColumnTitle',
-    'bodyCell',
-    'headerCell',
-    'customFilterIcon',
-    'customFilterDropdown',
-    // 'default',
-]
+// export const ATableSlotsWhiteList = [
+//     'emptyText',
+//     'expandIcon',
+//     'title',
+//     'footer',
+//     'summary',
+//     'expandedRowRender',
+//     'expandColumnTitle',
+//     'bodyCell',
+//     'headerCell',
+//     'customFilterIcon',
+//     'customFilterDropdown',
+// ]
 
 export interface TableSetupCtx extends Omit<SetupContext, 'slots'> {
     slots: TableSlots
-}
-
-export const mergeConfigProps = <T>(
-    props: T
-): {
-    [key: string]: any
-} => {
-    const obj = cloneDeep(props)
-
-    for (let k in obj) {
-        if (isArray(obj[k]) || isObject(obj[k])) {
-            obj[k] = (function () {
-                return obj[k]
-            })()
-        }
-    }
-    return obj
 }

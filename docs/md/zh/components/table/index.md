@@ -48,7 +48,6 @@ setAntdConfig()
 | 参数                            | 说明                                                                                          | 类型                                                                                          | 默认值                                                                                    | 版本 | global |
 | :------------------------------ | :-------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------- | :--: | :----: |
 | ...                             | 继承 antd-vue [TableProps](https://www.antdv.com/components/table-cn#api)                     | -                                                                                             | -                                                                                         |  -   |   -    |
-| idleRender                      | 列表数据空闲渲染                                                                              | boolean                                                                                       | true                                                                                      |  -   |   \*   |
 | full                            | 表格是否撑满容器                                                                              | boolean                                                                                       | false                                                                                     |  -   |   \*   |
 | scroll                          | 表格是否可滚动，也可以指定滚动区域的宽、高 [配置项](#scroll)                                  | object                                                                                        | -                                                                                         |  -   |   \*   |
 | autoSizeConfig                  | 表格自动计算高度函数防抖配置 [配置项](#autosizeconfig)                                        | object                                                                                        | -                                                                                         |  -   |   \*   |
@@ -166,9 +165,7 @@ setAntdConfig()
 ::: tip 注意
 
 -   autoRequest 配置项同步 vue watch 的 Options,详见[Vue-Watch](https://cn.vuejs.org/api/reactivity-core.html#watch);
--   默认情况下 Table 将监听 queryFormParams、params、page、pageSize 最终组成的参数 resParams 去调用 apis.list, 虽然内部只 watch 了 resParams,但由于依赖问题,apis.list 在发生变化时也会触发数据更新
 -   autoRequest 为 false 时将不创建 watch, 意味着将不自动发起请求
--   autoRequest 配置只有初始化时生效,不能动态修改
 
 :::
 

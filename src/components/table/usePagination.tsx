@@ -1,6 +1,6 @@
 import { Pagination as APagination } from 'ant-design-vue'
 import { Ref } from 'vue'
-import { TableProps } from './index.type'
+import { TableProps } from '.'
 
 export default (props: {
     pagination: Ref<{ page: number; pageSize: number }>

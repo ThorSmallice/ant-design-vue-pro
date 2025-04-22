@@ -7,6 +7,7 @@
         "module": "ESNext",
         "moduleResolution": "node",
         "experimentalDecorators": true,
+        "allowImportingTsExtensions":true,
         "strict": true,
         "jsx": "preserve",
         "jsxImportSource": "vue",
@@ -22,8 +23,8 @@
         "noUnusedLocals": false,
         "noImplicitAny": false,
         "noEmit": true,
-        "types": ["vite/client", "node", "@vue-macros/reactivity-transform/macros-global"],
-
+        "types": ["vite/client", "node", "vue"],
+       
         "outDir": "./dist",
         "strictNullChecks": false,
         "verbatimModuleSyntax": false,
@@ -43,7 +44,7 @@
         "src/**/*.d.ts",
         "src/**/*.tsx",
         "src/**/*.vue",
-        "*.d.ts",
+        "./*.d.ts",
         "docs/**/*.md",
         "docs/**/*.vue",
         "docs/**/*.ts",
@@ -52,7 +53,5 @@
         "utils/**/*.ts"
     ],
     "exclude": ["node_modules"],
-    "vueCompilerOptions": {
-        "plugins": ["unplugin-vue-macros/volar"]
-    }
+     
 }

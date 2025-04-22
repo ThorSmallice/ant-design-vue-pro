@@ -10,7 +10,7 @@ import { get, isFunction } from 'es-toolkit/compat'
 import numeral from 'numeral'
 import { computed, Reactive, reactive, Ref, ref, VNode } from 'vue'
 import { JSX } from 'vue/jsx-runtime'
-import { TableTextConfig } from './index.type'
+import { TableTextConfig } from '.'
 import { TableColumnProps } from './useColumns'
 
 export interface TableUseDetailProps {
