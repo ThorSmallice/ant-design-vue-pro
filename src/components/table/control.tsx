@@ -21,7 +21,7 @@ import {
 import { RangePickerProps } from 'ant-design-vue/es/date-picker'
 import { DefaultOptionType } from 'ant-design-vue/es/select'
 import { flatten, get, join, set } from 'es-toolkit/compat'
-import { computed, Reactive } from 'vue'
+import { computed, Reactive, ref, watch } from 'vue'
 import { TableColumnProps } from './useColumns'
 const { TextArea } = Input
 const ControlMap = {
@@ -100,8 +100,24 @@ const ControlPlaceholder = {
     TextArea: '请输入',
 }
 
-export const FormItemControl = ({ type = 'Input', model, name, customControl, ...props }: any) => {
+export const FormItemControl = ({
+    type = 'Input',
+    getInstance,
+    model,
+    name,
+    customControl,
+    ...props
+}: any) => {
     const Comp = ControlMap[type]
+
+    const controlRef = ref(null)
+
+    watch(
+        () => controlRef.value,
+        () => {
+            getInstance?.(controlRef.value)
+        }
+    )
 
     const value = computed({
         get: () => get(model, name),
@@ -114,7 +130,14 @@ export const FormItemControl = ({ type = 'Input', model, name, customControl, ..
 
     switch (FormItemControlModelFields[type]) {
         case ControlModelFields.Checked:
-            return <Comp v-model:checked={value.value} placeholder={placeholder} {...props}></Comp>
+            return (
+                <Comp
+                    v-model:checked={value.value}
+                    placeholder={placeholder}
+                    ref={controlRef}
+                    {...props}
+                ></Comp>
+            )
 
         default:
             if (type === ControlMapType.Select) {
@@ -135,6 +158,7 @@ export const FormItemControl = ({ type = 'Input', model, name, customControl, ..
                         placeholder={placeholder}
                         showSearch
                         filterOption={filterOption}
+                        ref={controlRef}
                         {...props}
                     ></Comp>
                 )
@@ -145,6 +169,7 @@ export const FormItemControl = ({ type = 'Input', model, name, customControl, ..
                     v-model:value={value.value}
                     class={['w-full']}
                     placeholder={placeholder}
+                    ref={controlRef}
                     {...props}
                 ></Comp>
             )

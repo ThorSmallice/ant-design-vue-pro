@@ -9,6 +9,7 @@ import {
     FormProps,
     Row,
     RowProps,
+    FormInstance as AntdFormInstance,
 } from 'ant-design-vue'
 import { FieldNamesType } from 'ant-design-vue/es/cascader'
 import { Callbacks, RuleError, RuleObject } from 'ant-design-vue/es/form/interface'
@@ -24,22 +25,22 @@ interface DebounceSettings {
     trailing?: boolean
 }
 type namesType = string | string[]
-export interface FormInstance {
-    modelRef: Props | Ref<Props>
-    rulesRef: Props | Ref<Props>
-    initialModel: Props
-    validateInfos: validateInfos
-    resetFields: (newValues?: Props) => void
-    validate: <T = any>(names?: FieldNamesType, option?: validateOptions) => Promise<T>
+export interface FormInstance extends AntdFormInstance {
+    // modelRef: Props | Ref<Props>
+    // rulesRef: Props | Ref<Props>
+    // initialModel: Props
+    // validateInfos: validateInfos
+    // resetFields: (newValues?: Props) => void
+    // validate: <T = any>(names?: FieldNamesType, option?: validateOptions) => Promise<T>
     /** This is an internal usage. Do not use in your prod */
-    validateField: (
-        name: string,
-        value: any,
-        rules: Record<string, unknown>[],
-        option?: validateOptions
-    ) => Promise<RuleError[]>
-    mergeValidateInfo: (items: ValidateInfo | ValidateInfo[]) => ValidateInfo
-    clearValidate: (names?: namesType) => void
+    // validateField: (
+    //     name: string,
+    //     value: any,
+    //     rules: Record<string, unknown>[],
+    //     option?: validateOptions
+    // ) => Promise<RuleError[]>
+    // mergeValidateInfo: (items: ValidateInfo | ValidateInfo[]) => ValidateInfo
+    // clearValidate: (names?: namesType) => void
 }
 export interface TableQueryFormInstance extends FormInstance {
     submit: (vals: any) => void
@@ -186,7 +187,7 @@ const useQueryForm = (props: TableQueryFormProps) => {
             onFinish={onQueryFormFinish}
             {...queryFormProps}
         >
-            <Flex justify="space-between" {...queryFormFlexProps}>
+            <Flex justify="space-between" align="flex-start" {...queryFormFlexProps}>
                 <Row gutter={[10, 10]} class={['flex-1']} {...queryFormRowProps}>
                     {queryFormItems?.map((item, i) => {
                         const {

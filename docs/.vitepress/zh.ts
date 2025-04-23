@@ -65,7 +65,12 @@ function nav(): DefaultTheme.NavItem[] {
         { text: '组件', link: '/components/table', activeMatch: '/components' },
         {
             text: pkg.version,
-            items: [{ text: '', link: '' }],
+            items: [
+                {
+                    text: '更新日志',
+                    link: '/',
+                },
+            ],
         },
     ]
 }

@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+.anticon svg {
+    @apply block;
+}
 .db-table {
     @apply w-full flex flex-col relative   overflow-hidden;
 
@@ -54,6 +57,10 @@
     }
     .control-cell {
         @apply m-0 flex items-center;
+
+        .edit-btn {
+            @apply absolute top-0 right-0 cursor-pointer;
+        }
         .edit-btn {
             @apply opacity-0;
         }

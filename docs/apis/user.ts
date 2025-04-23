@@ -23,8 +23,11 @@ export const downloadUserTemplateByBlobApi = async (params?: any) =>
         responseType: 'blob',
     })
 
-export const exportUsersApi = async (params?: any, config?: any) =>
+export const exportUsersByBufferApi = async (params?: any, config?: any) =>
     await axios.get('/public/users/export-excel', { params, ...config })
+
+export const exportUsersByBlobApi = async (params?: any, config?: any) =>
+    await axios.get('/public/users/export-excel', { params, responseType: 'blob' })
 
 export const importUserApi = async (data?: any, config?: any) =>
     await axios.post('/public/users/import-excel', data, {

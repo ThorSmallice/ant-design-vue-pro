@@ -39,7 +39,7 @@ export const proxy: ServerOptions['proxy'] = {
         rewrite: (path: string) => path.replace(/^\/admin-api/, '/micro-dev-api'),
     },
     '/test-api': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:30001',
         changeOrigin: false,
         rewrite: (path: string) => path.replace(/^\/test-api/, '/api/v1'),
     },

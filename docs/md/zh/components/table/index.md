@@ -10,7 +10,8 @@ import FieldsNamesEvent from '@docs/examples/table/fieldsNames-event.vue'
 import FieldsNames  from '@docs/examples/table/fieldsNames.vue'
 import EdBlob from '@docs/examples/table/ed-blob.vue'
 import EdBuffer from '@docs/examples/table/ed-buffer.vue'
-
+import ExtendedBtns from '@docs/examples/table/extended-btns.vue'
+import Editable from '@docs/examples/table/editable.vue'
 setAntdConfig()
 
 </script>
@@ -40,6 +41,8 @@ setAntdConfig()
 <!-- @include: @/../examples/table/ed.md -->
 
 <!-- @include: @/../examples/table/extended-btns.md -->
+
+<!-- @include: @/../examples/table/editable.md -->
 
 ## Props
 
@@ -278,7 +281,7 @@ setAntdConfig()
 | 参数                     | 说明                                                                                                                                        | 类型                            | 默认值        | 版本 | global |
 | :----------------------- | :------------------------------------------------------------------------------------------------------------------------------------------ | :------------------------------ | :------------ | :--: | :----: |
 | scrollToFirstRowOnChange | 当分页、排序、筛选变化后是否滚动到表格顶部                                                                                                  | boolean                         | true          |  -   |   \*   |
-| x                        | 设置横向滚动，也可用于指定滚动区域的宽，<br/>可以设置为像素值，百分比，true 和 'max-content'                                                | string / number / 'max-content' | 'max-content' |  -   |   \*   |
+| x                        | 设置横向滚动，也可用于指定滚动区域的宽，<br/>可以设置为像素值，百分比，'auto',true 和 'max-content'                                         | string / number / 'max-content' | 'max-content' |  -   |   \*   |
 | y                        | 设置纵向滚动，也可用于指定滚动区域的高，可以设置为像素值。<br/>值为'auto'时将自动计算高度，<br/>注意 Table 的父容器需有高度或者为 flex 容器 | string / number / 'auto'        | 'auto'        |  -   |   \*   |
 
 ### autoSizeConfig

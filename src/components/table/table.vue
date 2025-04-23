@@ -4,21 +4,12 @@
             <QueryForm></QueryForm>
         </div>
 
-        <div
-            :class="['db-table-cies-btns-wrap']"
-            v-if="!ciesBtnsInQueryForm && (ciesBtns || columnSettingBtn)"
-        >
+        <div :class="['db-table-cies-btns-wrap']" v-if="!ciesBtnsInQueryForm && (ciesBtns)">
             <template v-if="slots?.customCiesBtns">
-                <slot
-                    name="customCiesBtns"
-                    :CreateBtn="CreateBtn"
-                    :ImportBtn="ImportBtn"
-                    :ExportDropDown="ExportDropDown"
-                    :ExportCurrentPageBtn="ExportCurrentPageBtn"
-                    :ExportAllBtn="ExportAllBtn"
-                    :ColumnSettingBtn="ColumnSettingBtn"
-                    :DownloadTemplateBtn="DownloadTemplateBtn"
-                ></slot>
+                <slot name="customCiesBtns" :CreateBtn="CreateBtn" :ImportBtn="ImportBtn"
+                    :ExportDropDown="ExportDropDown" :ExportCurrentPageBtn="ExportCurrentPageBtn"
+                    :ExportAllBtn="ExportAllBtn" :ColumnSettingBtn="ColumnSettingBtn"
+                    :DownloadTemplateBtn="DownloadTemplateBtn"></slot>
             </template>
             <template v-else>
                 <Flex justify="space-between">
@@ -30,28 +21,18 @@
                         <ExportAllBtn v-if="exportBtnMode === 'all'"></ExportAllBtn>
                         <DownloadTemplateBtn></DownloadTemplateBtn>
                     </Flex>
-                    <Flex>
-                        <ColumnSettingBtn></ColumnSettingBtn>
-                    </Flex>
+
+
+                    <ColumnSettingBtn></ColumnSettingBtn>
+
                 </Flex>
             </template>
         </div>
 
         <div :class="['db-table-wrap']" ref="tableWrapRef">
-            <ATable
-                :sticky="true"
-                :rowKey="rowKey"
-                :pagination="false"
-                :columns="resColumns"
-                :data-source="data_source"
-                :loading="loading"
-                @resize-column="onResizeColumn"
-                :scroll="resScroll"
-                :table-layout="tableLayout"
-                :showHeader="showHeader"
-                :showSorterTooltip="showSorterTooltip"
-                v-bind="o"
-            >
+            <ATable :sticky="true" :rowKey="rowKey" :pagination="false" :columns="resColumns" :data-source="data_source"
+                :loading="loading" @resize-column="onResizeColumn" :scroll="resScroll" :table-layout="tableLayout"
+                :showHeader="showHeader" :showSorterTooltip="showSorterTooltip" v-bind="o">
                 <template v-for="slot in aTableSlots" :key="slot" v-slot:[slot]="temp">
                     <slot :name="slot" v-bind="temp"></slot>
                 </template>
@@ -415,6 +396,7 @@ const { Pagination } = $$(usePagination({ pagination, total, ownPaginProps }))
 
 const { x, y, scrollToFirstRowOnChange, onResize } = $$(
     useAutoSize({
+        resColumns,
         scroll,
         autoSizeConfig,
         minScollHeight,

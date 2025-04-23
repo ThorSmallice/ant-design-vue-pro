@@ -1,42 +1,39 @@
 <template>
-    <Table columns-align="center" :columns="columns" :query-form-items="queryFormItems" template-file-name="用户列表模板.xlsx"
-        export-file-name="用户列表数据.xlsx" :apis="apis" @template-request-success="onTemplateRequestSuccess">
+    <Table v-model:value="value" columns-align="center" :columns="columns" :query-form-items="queryFormItems"
+        template-file-name="用户列表模板.xlsx" export-file-name="用户列表数据.xlsx" :apis="apis">
     </Table>
+    <Table :cies-btns="false" :own-pagin="false" columns-align="center" :query-form="false" :control-column="false"
+        :data-source="value" bordered :columns="columns1"></Table>
 </template>
 
 <script setup lang="tsx">
 import {
     createUserApi,
     deleteUserApi,
+    downloadUserTemplateByBlobApi,
+    exportUsersByBufferApi,
     getUserDetailsApi,
     getUsersPageApi,
+    importUserApi,
     updateUserApi,
-    downloadUserTemplateByBufferApi,
-    exportUsersByBufferApi,
 } from '@docs/apis/user'
 import { ControlMapType, Table, TableProps } from 'antd-vue-dbthor'
-import { AxiosResponse } from 'axios'
 import { computed, ref } from 'vue'
 
+
+const value = ref<TableProps['dataSource']>([])
 const apis = ref<TableProps['apis']>({
     list: getUsersPageApi,
     details: getUserDetailsApi,
     create: createUserApi,
     update: updateUserApi,
     delete: deleteUserApi,
-    template: downloadUserTemplateByBufferApi,
-    export: exportUsersByBufferApi
+    template: downloadUserTemplateByBlobApi,
+    export: exportUsersByBufferApi,
+    import: importUserApi
+
 })
 
-const onTemplateRequestSuccess = async ({ data, headers }: AxiosResponse) => {
-    const blob = new Blob([new Uint8Array(data?.data?.data)], {
-        type: headers['content-type'],
-    })
-    const thumbUrl = URL.createObjectURL(blob)
-    return {
-        thumbUrl,
-    }
-}
 const sexOptions = [
     {
         label: '男',
@@ -61,28 +58,34 @@ const columns = computed((): TableProps['columns'] => {
                 hidden: true,
             },
         },
+
         {
             title: '用户名',
             dataIndex: 'username',
-            width: 100,
+            width: 200,
+            editable: true,
+
         },
+
         {
             title: '昵称',
             width: 100,
             dataIndex: 'nickname',
+            editable: true
         },
         {
             title: '年龄',
-            width: 100,
             dataIndex: 'age',
             type: 'number',
             formItemProps: {
                 control: ControlMapType.InputNumber,
             },
+            width: 100,
+            editable: true,
+            editControl: ControlMapType.InputNumber
         },
         {
             title: '性别',
-            width: 100,
             dataIndex: 'sex',
             formItemProps: {
                 control: ControlMapType.Select,
@@ -90,27 +93,45 @@ const columns = computed((): TableProps['columns'] => {
                     options: sexOptions,
                 },
             },
+            width: 150,
+            editable: true,
+            editControl: ControlMapType.Select,
+            editControlProps: {
+                options: sexOptions
+            },
+
             customRender: ({ text }) => sexOptions?.find?.(({ value }) => value === text)?.label,
         },
         {
             title: '职业',
-            width: 100,
             dataIndex: 'occupation',
+            width: 100,
         },
         {
-            title: '创建时间',
+            title: "创建时间",
             dataIndex: 'createTime',
             type: 'date',
-            width: 100,
+            width: 200,
+            formItemProps: {
+                hidden: true
+            }
         },
         {
-            title: '更新时间',
+            title: "更新时间",
             dataIndex: 'updateTime',
             type: 'date',
-            width: 100,
-        },
+            width: 200,
+            formItemProps: {
+                hidden: true
+            }
+
+        }
     ]
 })
+
+const columns1 = computed(() => columns.value.map((item => ({ ...item, editable: false }))))
+
+
 
 const queryFormItems = computed((): TableProps['queryFormItems'] => [
     {
@@ -136,7 +157,10 @@ const queryFormItems = computed((): TableProps['queryFormItems'] => [
             },
         },
     },
+
 ])
+
+
 </script>
 
 <style scoped></style>

@@ -1,5 +1,6 @@
+import { ColumnProps } from 'ant-design-vue/es/table'
 import { debounce } from 'es-toolkit'
-import { merge } from 'es-toolkit/compat'
+import { isNumber, isString, merge } from 'es-toolkit/compat'
 import { computed, nextTick, onBeforeMount, onMounted, Ref, ref, watch } from 'vue'
 
 export interface TableUseAutoSizeProps {
@@ -21,6 +22,7 @@ export interface TableUseAutoSizeProps {
     subtractEleClasses?: string[]
     tableRealRegionClasses?: string[]
     tableScrollWrapClass?: string
+    resColumns?: ColumnProps[]
 }
 const useAutoSize = (props: TableUseAutoSizeProps) => {
     const {
@@ -32,9 +34,30 @@ const useAutoSize = (props: TableUseAutoSizeProps) => {
         tableRealRegionClasses,
         minScollHeight = 50,
         tableScrollWrapClass,
+        resColumns,
     } = $(props)
     const y = ref<string | number>(null)
-    const x = ref(scroll?.x)
+
+    const x = computed(() => {
+        const reg = /\d+/
+        if (scroll?.x === 'auto') {
+            return resColumns?.reduce?.((pre: number, cur: ColumnProps) => {
+                const width = cur?.width
+                let computedWidth = 0
+                if (isNumber(width)) {
+                    computedWidth = width
+                }
+                if (isString(width)) {
+                    computedWidth = Number(width.match(reg)?.[0] || 0)
+                }
+
+                return pre + computedWidth
+            }, 0)
+        }
+
+        return scroll?.x
+    })
+
     const scrollToFirstRowOnChange = ref<boolean>(scroll?.scrollToFirstRowOnChange || false)
     const resizeConfig = computed((): TableUseAutoSizeProps['autoSizeConfig'] => {
         return merge(

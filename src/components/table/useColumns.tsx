@@ -25,6 +25,7 @@ import {
     computed,
     createSSRApp,
     FunctionalComponent,
+    nextTick,
     Reactive,
     Ref,
     ref,
@@ -264,6 +265,7 @@ export default (props: TableUseColumnsProps) => {
                 fixed: 'left',
                 align: 'center',
                 width: indexColumnWidth,
+                key: 'index',
                 ...indexColumnProps,
             })
         }
@@ -272,6 +274,7 @@ export default (props: TableUseColumnsProps) => {
             tempColumns?.push?.({
                 title: '操作',
                 type: 'control',
+                key: 'control',
                 fixed: 'right',
                 align: 'center',
                 width: controlColumnWidth,
@@ -316,8 +319,8 @@ export default (props: TableUseColumnsProps) => {
                     </span>
                 ),
                 width:
-                    width ||
-                    computedTitleWidth(titleArr[indexColumn ? i - 1 : i]) ||
+                    width ??
+                    computedTitleWidth(titleArr[indexColumn ? i - 1 : i]) ??
                     String(title)?.length * 16,
 
                 align: columnsAlign,
@@ -468,9 +471,9 @@ export default (props: TableUseColumnsProps) => {
         const content = (
             <Flex vertical>
                 {transedColumns.value?.map?.((col: TableColumnProps & { show }, i) => {
-                    const { dataIndex, title } = col
+                    const { dataIndex, title, key } = col
                     return (
-                        <Space key={JSON.stringify(dataIndex) || i}>
+                        <Space key={JSON.stringify(dataIndex || key || title)}>
                             <Checkbox v-model:checked={col.show} />
                             <span>{title}</span>
                         </Space>
@@ -720,9 +723,13 @@ const getCustomRender = (
         )
     }
 
-    const openEdit = (record: DataItem) => {
+    const controlRef = ref(null)
+
+    const openEdit = async (record: DataItem) => {
         const obj = set({}, path, val)
         merge(editData.value, obj)
+        await nextTick()
+        controlRef.value?.select?.()
     }
     const confirmEdit = async (record: DataItem) => {
         let val = get(editData.value, path)
@@ -779,15 +786,20 @@ const getCustomRender = (
 
     const RenderControl = () => {
         return (
-            <p class={['control-cell', `control-${align ?? columnsAlign}-cell`]}>
+            <p class={['control-cell', 'relative', `control-${align ?? columnsAlign}-cell`]}>
                 {has(cloneDeep(editData.value), path) ? (
                     <>
                         <FormItemControl
+                            getInstance={(e) => {
+                                controlRef.value = e
+                            }}
                             type={editControl || formItemProps?.control}
                             model={editData.value}
                             name={path}
                             {...(editControlProps || formItemProps?.controlProps)}
+                            onPressEnter={() => confirmEdit(record)}
                         ></FormItemControl>
+
                         <Button
                             onClick={() => confirmEdit(record)}
                             class="flex items-center ml-2"
@@ -798,14 +810,13 @@ const getCustomRender = (
                     </>
                 ) : (
                     <>
-                        <span>{renderText()}</span>
-                        <Button
-                            title="编辑"
-                            onClick={() => openEdit(record)}
-                            class="edit-btn flex items-center ml-2"
-                            icon={<EditOutlined />}
-                            type="link"
-                        ></Button>
+                        <span
+                            title="双击鼠标左键进行编辑"
+                            onDblclick={async () => openEdit(record)}
+                        >
+                            {renderText()}
+                        </span>
+                        <EditOutlined class="edit-btn" onClick={async () => openEdit(record)} />
                     </>
                 )}
             </p>
