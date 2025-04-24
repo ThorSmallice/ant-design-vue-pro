@@ -64,7 +64,9 @@ const columns = computed((): TableProps['columns'] => {
             dataIndex: 'username',
             width: 200,
             editable: true,
-
+            editControlProps: {
+                bordered: false
+            }
         },
 
         {
@@ -72,6 +74,8 @@ const columns = computed((): TableProps['columns'] => {
             width: 100,
             dataIndex: 'nickname',
             editable: true
+            // editable 默认会取formItemProps中的控件配置  
+
         },
         {
             title: '年龄',
@@ -79,10 +83,11 @@ const columns = computed((): TableProps['columns'] => {
             type: 'number',
             formItemProps: {
                 control: ControlMapType.InputNumber,
+
             },
             width: 100,
             editable: true,
-            editControl: ControlMapType.InputNumber
+
         },
         {
             title: '性别',
@@ -91,15 +96,11 @@ const columns = computed((): TableProps['columns'] => {
                 control: ControlMapType.Select,
                 controlProps: {
                     options: sexOptions,
+                    allowClear: false
                 },
             },
             width: 150,
             editable: true,
-            editControl: ControlMapType.Select,
-            editControlProps: {
-                options: sexOptions
-            },
-
             customRender: ({ text }) => sexOptions?.find?.(({ value }) => value === text)?.label,
         },
         {
@@ -114,7 +115,8 @@ const columns = computed((): TableProps['columns'] => {
             width: 200,
             formItemProps: {
                 hidden: true
-            }
+            },
+
         },
         {
             title: "更新时间",
@@ -122,8 +124,28 @@ const columns = computed((): TableProps['columns'] => {
             type: 'date',
             width: 200,
             formItemProps: {
-                hidden: true
-            }
+                control: ControlMapType.DatePicker,
+                controlProps: {
+                    showTime: true
+                }
+            },
+            editable: true,
+
+
+        },
+        {
+            title: '时间范围',
+            dataIndex: [['createTime'], ['updateTime']],
+            type: 'date-range',
+            width: 400,
+            formItemProps: {
+                name: "createTime-updateTime",
+                control: ControlMapType.RangePicker,
+                controlProps: {
+                    showTime: true
+                }
+            },
+            editable: true,
 
         }
     ]
@@ -157,6 +179,12 @@ const queryFormItems = computed((): TableProps['queryFormItems'] => [
             },
         },
     },
+    {
+        label: '时间范围',
+        name: "createTime-updateTime",
+        control: ControlMapType.RangePicker,
+
+    }
 
 ])
 

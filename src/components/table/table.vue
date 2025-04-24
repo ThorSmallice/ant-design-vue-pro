@@ -323,6 +323,7 @@ const { CreateBtn, CUModalForm, openCUModalForm, cuFormModel, cuModalLoading, cu
             apis,
             createBtn,
             columns,
+            columnsTimeFormat,
             cuFormProps,
             onCuFormCancel,
             cuFormRules,

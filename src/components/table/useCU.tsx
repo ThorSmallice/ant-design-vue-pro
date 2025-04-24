@@ -19,6 +19,7 @@ import { JSX } from 'vue/jsx-runtime'
 import { ControlMapProps, FormItemControl } from './control'
 import { OwnBtnProps, ownBtnProps, TableProps, TableTextConfig } from '.'
 import { FormInstance } from './useQueryForm'
+import dayjs, { Dayjs } from 'dayjs'
 
 export interface TableCUFormInstance extends FormInstance {}
 
@@ -73,6 +74,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         apis,
         createBtn,
         columns,
+        columnsTimeFormat,
         tableTextConfig,
 
         cuFormProps,
@@ -124,6 +126,32 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
     const submitCUModalForm = async () => {
         try {
             const vals = await formRef.value.validate?.()
+
+            for (let k in vals) {
+                const valueIsDayjs =
+                    dayjs.isDayjs(vals[k]) || vals[k]?.every?.((t: any) => dayjs.isDayjs(t))
+
+                if (valueIsDayjs) {
+                    const { timeFormat } = columns?.find?.(({ formItemProps, dataIndex }) => {
+                        return (formItemProps?.name || dataIndex) === k
+                    })
+
+                    if (Array.isArray(vals[k])) {
+                        const ks = k?.split?.('-')
+
+                        if (ks?.length === 2) {
+                            vals[k]?.forEach?.(
+                                (t: Dayjs, i: number) =>
+                                    (vals[ks[i]] = t?.format?.(timeFormat || columnsTimeFormat))
+                            )
+                        }
+                        delete vals[k]
+                        break
+                    } else {
+                        vals[k] = vals[k].format(timeFormat)
+                    }
+                }
+            }
 
             submitBtnLoading.value = true
 

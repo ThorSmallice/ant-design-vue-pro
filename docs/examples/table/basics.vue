@@ -1,13 +1,6 @@
 <template>
-    <Table
-        :index-column="false"
-        columns-align="center"
-        :columns="columns"
-        :query-form-items="queryFormItems"
-        template-file-name="用户列表模板.xlsx"
-        export-file-name="用户列表数据.xlsx"
-        :apis="apis"
-    >
+    <Table :index-column="false" columns-align="center" :columns="columns" :query-form-items="queryFormItems"
+        template-file-name="用户列表模板.xlsx" export-file-name="用户列表数据.xlsx" :apis="apis">
     </Table>
 </template>
 
@@ -15,8 +8,11 @@
 import {
     createUserApi,
     deleteUserApi,
+    downloadUserTemplateByBlobApi,
+    exportUsersByBufferApi,
     getUserDetailsApi,
     getUsersPageApi,
+    importUserApi,
     updateUserApi,
 } from '@docs/apis/user'
 import { ControlMapType, Table, TableProps } from 'antd-vue-dbthor'
@@ -28,6 +24,10 @@ const apis = ref<TableProps['apis']>({
     create: createUserApi,
     update: updateUserApi,
     delete: deleteUserApi,
+    template: downloadUserTemplateByBlobApi,
+    export: exportUsersByBufferApi,
+    import: importUserApi
+
 })
 
 const sexOptions = [

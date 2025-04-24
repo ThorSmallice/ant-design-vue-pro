@@ -21,6 +21,11 @@ export const zh = defineConfig({
                 base: '/components/',
                 items: sidebarComponents(),
             },
+
+            '/help/': {
+                base: '/help/',
+                items: sidebarHelp(),
+            },
         },
 
         editLink: {
@@ -68,7 +73,8 @@ function nav(): DefaultTheme.NavItem[] {
             items: [
                 {
                     text: '更新日志',
-                    link: '/',
+                    link: '/help/update-log',
+                    activeMatch: '/help',
                 },
             ],
         },
@@ -103,11 +109,16 @@ function sidebarComponents(): DefaultTheme.SidebarItem[] {
                     text: 'Table',
                     link: 'table',
                 },
-                // {
-                //     text: 'Modal',
-                //     link: 'Modal',
-                // },
             ],
+        },
+    ]
+}
+
+function sidebarHelp(): DefaultTheme.SidebarItem[] {
+    return [
+        {
+            text: '更新日志',
+            link: 'update-log',
         },
     ]
 }
