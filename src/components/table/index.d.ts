@@ -43,6 +43,8 @@ export interface TableInstance {
     ExportDropDown: (props?: OwnDropProps) => JSX.Element | VNode
     ExportCurrentPageBtn: (props?: OwnBtnProps) => JSX.Element | VNode
     ExportAllBtn: (props?: OwnBtnProps) => JSX.Element | VNode
+    ColumnSettingBtn: (props?: OwnBtnProps) => JSX.Element | VNode
+    DownloadTemplateBtn: (props?: OwnBtnProps) => JSX.Element | VNode
     onResize: (entries?: any) => void
 }
 export interface OwnBtnProps extends ButtonProps {
@@ -206,6 +208,7 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     /**
      * 分页配置
      */
+    showOwnPager?: boolean
     ownPagin?: boolean
     ownPaginProps?: Partial<PaginationProps> & { [key: string]: any }
 

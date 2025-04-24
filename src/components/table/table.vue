@@ -39,7 +39,7 @@
             </ATable>
         </div>
 
-        <div :class="['db-table-pagination-wrap']" v-if="ownPagin">
+        <div :class="['db-table-pagination-wrap']" v-if="showOwnPager && ownPagin">
             <Pagination></Pagination>
         </div>
         <component :is="CUModalForm"></component>
@@ -50,7 +50,7 @@
 <script setup lang="tsx">
 import config from '@config/index'
 import { Table as ATable, Flex, TableColumnProps } from 'ant-design-vue'
-import { computed, reactive, ref, toValue, unref, watch } from 'vue'
+import { computed, reactive, readonly, ref, toValue, unref, watch } from 'vue'
 import { TableInstance, TableProps, TableSlots } from './index.d'
 import useAutoSize from './useAutoSize'
 import useColumns from './useColumns'
@@ -136,6 +136,7 @@ const {
     onRowDeleteSuccess = config.table.onRowDeleteSuccess,
     onRowDeleteError = config.table.onRowDeleteError,
 
+    showOwnPager = config.table.showOwnPager,
     ownPagin = config.table.ownPagin,
     ownPaginProps = config.table.ownPaginProps,
 
@@ -449,20 +450,39 @@ watch(
     }
 )
 
-defineExpose<TableInstance>({
-    source: source,
+// defineExpose<TableInstance>({
+//     source: source,
+//     updateSource,
+//     QueryForm: unref(QueryForm),
+//     queryFormModel: unref(queryFormState),
+//     QueryFormInstance: unref(QueryFormInstance),
+//     Pagination: unref(Pagination),
+//     cuModalFormIsEdit: cuModalFormIsEdit,
+//     cuFormModel: unref(cuFormModel),
+//     CreateBtn: unref(CreateBtn),
+//     ImportBtn: unref(ImportBtn),
+//     ExportDropDown: unref(ExportDropDown),
+//     ExportCurrentPageBtn: unref(ExportCurrentPageBtn),
+//     ExportAllBtn: unref(ExportAllBtn),
+//     onResize: unref(onResize),
+// })
+
+defineExpose<Readonly<TableInstance>>({
+    source: readonly(source),
     updateSource,
-    QueryForm: unref(QueryForm),
-    queryFormModel: unref(queryFormState),
-    QueryFormInstance: unref(QueryFormInstance),
-    Pagination: unref(Pagination),
-    cuModalFormIsEdit: cuModalFormIsEdit,
-    cuFormModel: unref(cuFormModel),
-    CreateBtn: unref(CreateBtn),
-    ImportBtn: unref(ImportBtn),
-    ExportDropDown: unref(ExportDropDown),
-    ExportCurrentPageBtn: unref(ExportCurrentPageBtn),
+    QueryForm: (unref(QueryForm)),
+    queryFormModel: readonly(unref(queryFormState)),
+    QueryFormInstance: readonly(unref(QueryFormInstance)),
+    Pagination: (unref(Pagination)),
+    cuModalFormIsEdit,
+    cuFormModel: readonly(unref(cuFormModel)),
+    CreateBtn: (unref(CreateBtn)),
+    ImportBtn: (unref(ImportBtn)),
+    ExportDropDown: (unref(ExportDropDown)),
+    ExportCurrentPageBtn: (unref(ExportCurrentPageBtn)),
     ExportAllBtn: unref(ExportAllBtn),
+    ColumnSettingBtn: unref(ColumnSettingBtn),
+    DownloadTemplateBtn: unref(DownloadTemplateBtn),
     onResize: unref(onResize),
 })
 </script>

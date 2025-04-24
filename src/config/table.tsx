@@ -53,6 +53,7 @@ export const TableConfig: TableProps = {
     onTemplateDownloadSuccess: null,
     onTemplateDownloadError: null,
 
+    showOwnPager: true,
     ownPagin: true,
     ownPaginProps: {
         showSizeChanger: true,

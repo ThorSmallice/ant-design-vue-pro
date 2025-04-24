@@ -11,7 +11,7 @@ import FieldsNames  from '@docs/examples/table/fieldsNames.vue'
 import EdBlob from '@docs/examples/table/ed-blob.vue'
 import EdBuffer from '@docs/examples/table/ed-buffer.vue'
 import ExtendedBtns from '@docs/examples/table/extended-btns.vue'
-import Editable from '@docs/examples/table/editable.vue'
+import Editable from '@docs/examples/table/editable.vue' 
 setAntdConfig()
 
 </script>
@@ -76,7 +76,8 @@ setAntdConfig()
 | controlColumnWidthProps         | 操作列 Props                                                                                  | [TableColumnProps](#tablecolumnprops)                                                         | -                                                                                         |  -   |   \*   |
 | controlColumnBtns               | 操作列按钮配置项                                                                              | [controlColumnBtns](#controlcolumnbtns)                                                       | -                                                                                         |  -   |   \*   |
 | columnSettingBtn                | 列配置按钮                                                                                    | false / [OwnPopoverProps](#ownpopoverprops)                                                   | true                                                                                      |  -   |   \*   |
-| ownPagin                        | 开启内置分页                                                                                  | boolean                                                                                       | true                                                                                      |  -   |   \*   |
+| showOwnPager                    | 显示内置分页器                                                                                | boolean                                                                                       | true                                                                                      |  -   |   \*   |
+| ownPagin                        | 开启内置分页,值为 false 时请求数据参数将不加入分页参数                                        | boolean                                                                                       | true                                                                                      |  -   |   \*   |
 | ownPaginProps                   | 内置分页器 Props                                                                              | [paginationProps](https://www.antdv.com/components/pagination-cn#api)                         | [object](#ownpaginprops)                                                                  |  -   |   \*   |
 | queryForm                       | 显示筛选表单                                                                                  | boolean                                                                                       | true                                                                                      |  -   |   \*   |
 | queryFormDefaultValues          | 筛选表单默认值                                                                                | object                                                                                        | -                                                                                         |  -   |   -    |
@@ -425,6 +426,29 @@ interface customQueryFormBtnsOpt {
     SubmitBtn: VNode // 提交按钮
     ResetBtn: VNode // 重置按钮
     QueryFormInstance: VNode // 筛选表单的实例对象
+}
+```
+
+## TableInstance
+
+```ts
+interface TableInstance {
+    source: any[] // 通过api或者dataSource属性传入的数据列表
+    updateSource: () => Promise<void> // 更新数据列表的方法
+    QueryForm: () => JSX.Element | VNode // 查询表单组件
+    queryFormModel: Reactive<{ values: any }> // 查询表单绑定的数据
+    QueryFormInstance: Partial<TableQueryFormInstance> // 查询表单实例
+    Pagination: () => JSX.Element | VNode // 内置分页器组件
+    cuModalFormIsEdit: Ref<boolean> // 新增/编辑表单 当前是否为编辑模式 ,false为新增模式
+    cuFormModel: Reactive<{ values: any }> // 新增/编辑表单绑定的数据
+    CreateBtn: (props?: OwnBtnProps) => JSX.Element | VNode // 新增按钮
+    ImportBtn: (props?: OwnBtnProps) => JSX.Element | VNode // 导入按钮
+    ExportDropDown: (props?: OwnDropProps) => JSX.Element | VNode // 导出数据下拉菜单
+    ExportCurrentPageBtn: (props?: OwnBtnProps) => JSX.Element | VNode // 导出当前页数据按钮
+    ExportAllBtn: (props?: OwnBtnProps) => JSX.Element | VNode // 导出全部数据按钮
+    ColumnSettingBtn: (props?: OwnBtnProps) => JSX.Element | VNode // 列头控件按钮
+    DownloadTemplateBtn: (props?: OwnBtnProps) => JSX.Element | VNode // 下载模板按钮
+    onResize: (entries?: any) => void // 重新计算scroll.y值
 }
 ```
 
