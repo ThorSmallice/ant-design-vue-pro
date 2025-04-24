@@ -55,9 +55,9 @@
         <!-- 操作列 -->
         <template
             #customControlColumnBtns="{ DetailBtn, EditBtn, DeleteBtn, openRowDetails, editRow, deleteRow, rowInfo }">
-            <Button type="link" @click="() => openRowDetails(rowInfo)" size="small">详情</Button>
-            <Button type="link" @click="() => editRow(rowInfo)" size="small">编辑</Button>
-            <Button type="link" @click="() => deleteRow(rowInfo)" size="small" danger>删除</Button>
+            <Button type="link" @click="() => openRowDetails(rowInfo?.record)" size="small">详情</Button>
+            <Button type="link" @click="() => editRow(rowInfo?.record)" size="small">编辑</Button>
+            <Button type="link" @click="() => deleteRow(rowInfo?.record)" size="small" danger>删除</Button>
             <component :is="DetailBtn" type="primary" size="small" />
             <component :is="EditBtn" type="primary" size="small" />
             <component :is="DeleteBtn" type="primary" size="small" />
