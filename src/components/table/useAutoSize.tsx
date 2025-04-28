@@ -39,21 +39,21 @@ const useAutoSize = (props: TableUseAutoSizeProps) => {
     const y = ref<string | number>(null)
 
     const x = computed(() => {
-        const reg = /\d+/
-        if (scroll?.x === 'auto') {
-            return resColumns?.reduce?.((pre: number, cur: ColumnProps) => {
-                const width = cur?.width
-                let computedWidth = 0
-                if (isNumber(width)) {
-                    computedWidth = width
-                }
-                if (isString(width)) {
-                    computedWidth = Number(width.match(reg)?.[0] || 0)
-                }
+        // const reg = /\d+/
+        // if (scroll?.x === 'auto') {
+        //     return resColumns?.reduce?.((pre: number, cur: ColumnProps) => {
+        //         const width = cur?.width
+        //         let computedWidth = 0
+        //         if (isNumber(width)) {
+        //             computedWidth = width
+        //         }
+        //         if (isString(width)) {
+        //             computedWidth = Number(width.match(reg)?.[0] || 0)
+        //         }
 
-                return pre + computedWidth
-            }, 0)
-        }
+        //         return pre + computedWidth
+        //     }, 0)
+        // }
 
         return scroll?.x
     })

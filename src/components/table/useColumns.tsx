@@ -318,10 +318,7 @@ export default (props: TableUseColumnsProps) => {
                         {title}
                     </span>
                 ),
-                width:
-                    width ??
-                    computedTitleWidth(titleArr[indexColumn ? i - 1 : i]) ??
-                    String(title)?.length * 16,
+                width: width,
 
                 align: columnsAlign,
                 fixed,
@@ -345,10 +342,7 @@ export default (props: TableUseColumnsProps) => {
                         onCellEditConfirm,
                         fieldsNames,
                         ellipsis: ellipsis ?? columnsEllipsis,
-                        width:
-                            width ||
-                            computedTitleWidth(titleArr[indexColumn ? i - 1 : i]) ||
-                            String(title)?.length * 16,
+                        width: width,
                     }),
 
                 show: true,
