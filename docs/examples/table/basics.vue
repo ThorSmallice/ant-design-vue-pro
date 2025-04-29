@@ -1,8 +1,6 @@
 <template>
     <Table columns-align="center" :index-column-width="80" :columns="columns" :query-form-items="queryFormItems"
-        template-file-name="用户列表模板.xlsx" export-file-name="用户列表数据.xlsx" :apis="apis" :scroll="{
-            x: true
-        }">
+        template-file-name="用户列表模板.xlsx" export-file-name="用户列表数据.xlsx" :apis="apis">
     </Table>
 </template>
 
@@ -75,7 +73,7 @@ const columns = computed((): TableProps['columns'] => {
             formItemProps: {
                 control: ControlMapType.InputNumber,
             },
-            // width: 100,
+            width: 100,
         },
         {
             title: '性别',
@@ -86,7 +84,7 @@ const columns = computed((): TableProps['columns'] => {
                     options: sexOptions,
                 },
             },
-            // width: 100,
+            width: 100,
 
             customRender: ({ text }) => sexOptions?.find?.(({ value }) => value === text)?.label,
         },

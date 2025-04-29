@@ -66,6 +66,9 @@
 </template>
 
 <script setup lang="tsx">
+defineOptions({
+    name: 'extended-btns'
+})
 import {
     createUserApi,
     deleteUserApi,

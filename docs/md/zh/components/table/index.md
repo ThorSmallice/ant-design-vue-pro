@@ -12,6 +12,7 @@ import EdBlob from '@docs/examples/table/ed-blob.vue'
 import EdBuffer from '@docs/examples/table/ed-buffer.vue'
 import ExtendedBtns from '@docs/examples/table/extended-btns.vue'
 import Editable from '@docs/examples/table/editable.vue' 
+import CustomControl from '@docs/examples/table/custom-control.vue' 
 setAntdConfig()
 
 </script>
@@ -43,6 +44,8 @@ setAntdConfig()
 <!-- @include: @/../examples/table/extended-btns.md -->
 
 <!-- @include: @/../examples/table/editable.md -->
+
+<!-- @include: @/../examples/table/custom-control.md -->
 
 ## Props
 

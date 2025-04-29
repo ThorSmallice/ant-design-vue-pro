@@ -791,7 +791,7 @@ const getCustomRender = (
                             model={editData.value}
                             name={path}
                             {...(editControlProps || formItemProps?.controlProps)}
-                            onPressEnter={() => confirmEdit(record)}
+                            onPressEnter={() => controlRef.value?.blur?.()}
                             onBlur={() => confirmEdit(record)}
                         ></FormItemControl>
 
