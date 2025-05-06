@@ -71,7 +71,6 @@ const columns = computed((): TableProps['columns'] => {
             }
 
         },
-
         {
             title: '昵称',
             width: 100,
@@ -135,6 +134,13 @@ const columns = computed((): TableProps['columns'] => {
 
                     }
 
+                    const removeRow = ({id}) => {
+                        const index = model.values.userList?.findIndex((item) => item.id === id )
+
+                        model.values.userList.splice(index,1)
+                         
+                    }
+
                     return <Flex vertical>
                         <Divider  >请填写用户列表</Divider>
                         <Form.Item name="userList">
@@ -177,8 +183,15 @@ const columns = computed((): TableProps['columns'] => {
                                     dataIndex: 'occupation',
                                     width: 100,
                                     editable: true,
-
                                 },
+                                {
+                                    title:'操作',
+                                    type:'control',
+                                    width: 100,
+                                    customRender: ({record}:any) => {
+                                        return <Button size="small" danger onClick={() =>removeRow(record) }>删除</Button>
+                                    }
+                                }
                             ]} ownPagin={false} columnSettingBtn={false} indexColumn={false} controlColumn={false} queryForm={false} autoRequest={false} v-model:value={model.values['userList']} >
                             </Table>
                             <Button class="ml-2" onClick={() => add()}>新增一行</Button>
@@ -196,8 +209,10 @@ const columns = computed((): TableProps['columns'] => {
 
 
 const onBeforeSubmit = async (vals) => {
-    console.log("🚀 ~ onBeforeSubmit ~ vals:", vals)
-    return false
+    // 处理成接口需要的格式返回
+    return vals
+
+    // return false 则不执行内置的提交处理
 }
 
 const CustomControl = (props, { emit }) => {
