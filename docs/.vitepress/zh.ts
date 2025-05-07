@@ -109,6 +109,10 @@ function sidebarComponents(): DefaultTheme.SidebarItem[] {
                     text: 'Table',
                     link: 'table',
                 },
+                {
+                    text: 'Modal',
+                    link: 'modal',
+                },
             ],
         },
     ]

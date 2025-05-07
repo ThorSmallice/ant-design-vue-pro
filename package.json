@@ -3,7 +3,7 @@
     "homepage": "https://www.dbice.cn/antd-vue-dbthor/docs/",
     "type": "module",
     "private": false,
-    "version": "1.0.96",
+    "version": "1.0.97",
     "description": "",
     "repository": {
         "type": "git",
@@ -52,6 +52,7 @@
         "@vue-macros/reactivity-transform": "^1.1.4",
         "@vue/compiler-sfc": "^3.5.13",
         "@vue/runtime-core": "^3.5.13",
+        "@vueuse/core": "^13.1.0",
         "ant-design-vue": "~4.2.6",
         "autoprefixer": "^10.4.20",
         "axios": "^1.7.8",
@@ -69,6 +70,7 @@
         "resize-observer-polyfill": "^1.5.1",
         "rimraf": "^6.0.1",
         "rollup-plugin-visualizer": "^5.14.0",
+        "sass-embedded": "^1.87.0",
         "tailwindcss": "^3.4.15",
         "typescript": "^5.7.2",
         "unplugin-vue-macros": "^2.13.8",
@@ -83,6 +85,7 @@
     },
     "peerDependencies": {
         "@ant-design/icons-vue": "^7.0.1",
+        "@vueuse/core": "^13.1.0",
         "ant-design-vue": "4.x",
         "axios": "^1.7.8",
         "big.js": "^6.2.2",

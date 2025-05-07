@@ -10,7 +10,13 @@ import dts from 'vite-plugin-dts'
 import removeConsole from 'vite-plugin-remove-console'
 import pkg from './package.json'
 import { envResolve } from './utils/env'
+import writeExport from './script/generated-exports'
 
+await writeExport(
+    resolve(__dirname, './src/components'),
+    resolve(__dirname, './src/components/components.ts'),
+    '@comps'
+)
 export const generateGlobals = (arr: string[]) => {
     const obj = {}
     arr?.forEach?.((key) => {
@@ -52,6 +58,7 @@ export const alias = {
     '@tools': resolve(__dirname, './src/tools'),
     '@examples': resolve(__dirname, './docs/examples'),
     '@docs': resolve(__dirname, './docs'),
+    '@script': resolve(__dirname, './script'),
     '@/': resolve(__dirname, './'),
     [pkg.name]: resolve(
         __dirname,

@@ -4,7 +4,7 @@
 import { camelCase, upperFirst } from 'es-toolkit'
 import { closeSync, openSync, readdirSync, statSync, writeSync } from 'fs'
 import { join } from 'path'
-export default (dirPath: string, inputFilePath: string, exportsPathPrefix: string = '.') => {
+export default async (dirPath: string, inputFilePath: string, exportsPathPrefix: string = '.') => {
     try {
         let fileContent = ''
         const dirs = readdirSync(dirPath)?.filter?.((item) =>
@@ -24,5 +24,8 @@ export default (dirPath: string, inputFilePath: string, exportsPathPrefix: strin
         const file = openSync(inputFilePath, 'w')
         writeSync(file, fileContent)
         closeSync(file)
-    } catch (error) {}
+        Promise.resolve()
+    } catch (error) {
+        Promise.reject()
+    }
 }
