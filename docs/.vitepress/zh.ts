@@ -109,6 +109,11 @@ function sidebarComponents(): DefaultTheme.SidebarItem[] {
                     text: 'Table',
                     link: 'table',
                 },
+            ],
+        },
+        {
+            text: '反馈',
+            items: [
                 {
                     text: 'Modal',
                     link: 'modal',
