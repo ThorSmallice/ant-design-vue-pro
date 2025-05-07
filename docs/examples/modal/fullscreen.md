@@ -1,7 +1,9 @@
 ## 显示全屏切换按钮
 
-<Fullscreen></Fullscreen>
+<ClientOnly>
 
+<Fullscreen></Fullscreen>
+</ClientOnly>
 ::: details Code
 
 <<< @/../examples/modal/fullscreen.vue

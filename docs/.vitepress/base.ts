@@ -89,9 +89,9 @@ export const base = defineConfig({
             chunkSizeWarningLimit: 1500,
         },
 
-        // ssr: {
-        //     noExternal: ['dayjs'],
-        // },
+        ssr: {
+            noExternal: ['document'],
+        },
         resolve: {
             alias,
         },

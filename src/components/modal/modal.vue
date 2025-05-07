@@ -43,7 +43,7 @@ const {
     centered,
     closable = true,
     showFullScreen,
-    getContainer = () => document.body,
+    getContainer = () => document?.body,
     visible,
     ...others
 } = defineProps<ModalProps>()
@@ -78,7 +78,7 @@ const initialPosition = reactive({
     y: 100
 })
 const { style } = useDraggable(modalRef, {
-    containerElement: document.body,
+    containerElement: document?.body,
     handle: dragHandleRef,
     initialValue: initialPosition
 })
@@ -92,21 +92,21 @@ watch(() => [open, centered, modalRef.value], async () => {
 })
 
 const toggleFullScreen = () => {
-    if (!document.fullscreenElement) {
+    if (!document?.fullscreenElement) {
         modalRef.value?.requestFullscreen?.();
     } else {
-        document?.exitFullscreen();
+        document?.exitFullscreen?.();
     }
 }
 const onFullscreenchange = () => {
-    isFullScreen.value = document.fullscreenElement ? true : false
+    isFullScreen.value = document?.fullscreenElement ? true : false
 }
 watch(() => modalRef.value, () => {
     modalRef.value?.addEventListener('fullscreenchange', onFullscreenchange)
 })
 watch(() => open, () => {
-    if (!open && document.fullscreenElement) {
-        document.exitFullscreen()
+    if (!open && document?.fullscreenElement) {
+        document?.exitFullscreen?.()
     }
 })
 

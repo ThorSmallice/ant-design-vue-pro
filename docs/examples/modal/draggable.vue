@@ -1,4 +1,5 @@
 <template>
+
     <Button @click="open = true">open</Button>
     <Modal draggable :open="open" @cancel="open = false" title="可拖拽">
     </Modal>

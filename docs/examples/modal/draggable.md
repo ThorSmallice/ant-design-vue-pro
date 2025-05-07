@@ -1,6 +1,8 @@
 ## 可拖拽
 
-<Draggable></Draggable>
+<ClientOnly>
+    <Draggable></Draggable>
+</ClientOnly>
 
 ::: details Code
 
