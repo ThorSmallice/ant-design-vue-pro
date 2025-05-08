@@ -57,21 +57,15 @@ const slots = computed(() => {
 const $style = useCssModule()
 
 
-// const getHandlerRef = (e: any) => {
-//     const modalEl = e?.closest?.(`.${$style['ant-draggable-modal']}`)
-//     // modalRef.value = modalEl
-//     dragHandleRef.value = e
-// }
 
 const isFullScreen = ref(false)
 
-// const modalRef = ref<HTMLElement>()
 const dragHandleRef = ref<HTMLElement>()
 
 const modalRef = computed<any>(() => {
     const modalEl = dragHandleRef.value?.closest?.(`.${$style['ant-draggable-modal']}`) as HTMLElement
 
-    console.log("🚀 ~ modalEl:", modalEl?.offsetWidth, modalEl?.offsetHeight)
+
     return modalEl
 })
 
