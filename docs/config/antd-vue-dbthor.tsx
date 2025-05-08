@@ -2,7 +2,7 @@ import { TableConfig } from 'antd-vue-dbthor'
 
 export default () => {
     TableConfig.indexColumnWidth = 40
-    TableConfig.controlColumnWidth = 80
+    TableConfig.controlColumnWidth = 150
     TableConfig.cuFormProps = {
         labelCol: {
             span: 4,

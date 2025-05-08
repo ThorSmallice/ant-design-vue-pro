@@ -1,5 +1,5 @@
 <template>
-    <Table columns-align="center" :index-column-width="80" :columns="columns" :query-form-items="queryFormItems"
+    <Table columns-align="center" :index-column-width="60" :columns="columns" :query-form-items="queryFormItems"
         template-file-name="用户列表模板.xlsx" export-file-name="用户列表数据.xlsx" :apis="apis">
     </Table>
 </template>

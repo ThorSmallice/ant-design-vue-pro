@@ -4,10 +4,10 @@
         :style="draggable && style" :open="open" :centered="draggable ? false : draggable" :mask="mask"
         :closable="closable" :get-container="getContainer" v-bind="others">
         <template #title>
-            <div @dblclick="toggleFullScreen" :ref="getHandlerRef" :class="$style['ant-draggable-modal-handle']"
-                v-if="draggable"></div>
+            <div @dblclick="showFullScreen && toggleFullScreen" ref="dragHandleRef"
+                :class="$style['ant-draggable-modal-handle']" v-if="draggable"></div>
             <Button @click="toggleFullScreen" :title="isFullScreen ? '退出全屏' : '全屏'" size="small" type="text"
-                v-if="showFullScreen" class="ant-modal-full-screen-btn">
+                v-if="showFullScreen" :class="$style['ant-modal-full-screen-btn']">
                 <template #icon>
                     <FullscreenOutlined v-if="!isFullScreen" />
                     <FullscreenExitOutlined v-else />
@@ -57,34 +57,43 @@ const slots = computed(() => {
 const $style = useCssModule()
 
 
-const getHandlerRef = (e: any) => {
-    const modalEl = e?.closest?.(`.${$style['ant-draggable-modal']}`)
-    modalRef.value = modalEl
-    dragHandleRef.value = e
-}
+// const getHandlerRef = (e: any) => {
+//     const modalEl = e?.closest?.(`.${$style['ant-draggable-modal']}`)
+//     // modalRef.value = modalEl
+//     dragHandleRef.value = e
+// }
 
 const isFullScreen = ref(false)
 
-const modalRef = ref<HTMLElement>()
+// const modalRef = ref<HTMLElement>()
 const dragHandleRef = ref<HTMLElement>()
 
+const modalRef = computed<any>(() => {
+    const modalEl = dragHandleRef.value?.closest?.(`.${$style['ant-draggable-modal']}`) as HTMLElement
 
+    console.log("🚀 ~ modalEl:", modalEl?.offsetWidth, modalEl?.offsetHeight)
+    return modalEl
+})
 
 // 动态计算包裹层类名
 const windowWidth = window.innerWidth
 const windowHeight = window.innerHeight
+
+
 const initialPosition = reactive({
     x: 0,
     y: 100
 })
+
+
 const { style } = useDraggable(modalRef, {
-    containerElement: document?.body,
     handle: dragHandleRef,
     initialValue: initialPosition
 })
 
 
 watch(() => [open, centered, modalRef.value], async () => {
+
     await nextTick()
     initialPosition.x = (windowWidth - modalRef.value?.offsetWidth) / 2
     initialPosition.y = centered ? (windowHeight - modalRef.value?.offsetHeight) / 2 : full ? 0 : 100
@@ -169,6 +178,7 @@ onUnmounted(() => {
         :global(.ant-modal-body) {
             max-height: 100%;
             overflow-y: auto;
+            overflow-x: hidden;
         }
     }
 
@@ -190,9 +200,7 @@ onUnmounted(() => {
         }
     }
 }
-</style>
 
-<style lang="scss" scoped>
 .ant-modal-full-screen-btn {
     position: absolute;
     top: 17px;

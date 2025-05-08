@@ -7,8 +7,8 @@ import {
     FormItemProps,
     FormProps,
     message,
-    Modal,
-    ModalProps,
+    // Modal,
+    // ModalProps,
     Row,
     RowProps,
     Skeleton,
@@ -20,7 +20,8 @@ import { ControlMapProps, FormItemControl } from './control'
 import { OwnBtnProps, ownBtnProps, TableProps, TableTextConfig } from '.'
 import { FormInstance } from './useQueryForm'
 import dayjs, { Dayjs } from 'dayjs'
-
+import Modal from '../modal'
+import { ModalProps } from '../modal'
 export interface TableCUFormInstance extends FormInstance {}
 
 export interface TableUseCUReturnOptions {
@@ -231,6 +232,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
     const CUModalForm = () => {
         return (
             <Modal
+                draggable
                 v-model:open={cuModalOpen.value}
                 title={
                     !cuModalFormIsEdit.value
