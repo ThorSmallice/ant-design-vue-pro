@@ -1,9 +1,10 @@
 <template>
-    <Table v-model:value="value" columns-align="center" :columns="columns" :query-form-items="queryFormItems"
-        template-file-name="用户列表模板.xlsx" export-file-name="用户列表数据.xlsx" :apis="apis">
+    <Table :index-column-width="80" :control-column-width="200" v-model:value="value" columns-align="center"
+        :columns="columns" :query-form-items="queryFormItems" template-file-name="用户列表模板.xlsx"
+        export-file-name="用户列表数据.xlsx" :apis="apis">
     </Table>
-    <Table :cies-btns="false" :own-pagin="false" columns-align="center" :query-form="false" :control-column="false"
-        :data-source="value" bordered :columns="columns1"></Table>
+    <Table :index-column-width="80" :cies-btns="false" :own-pagin="false" columns-align="center" :query-form="false"
+        :control-column="false" :data-source="value" bordered :columns="columns1"></Table>
 </template>
 
 <script setup lang="tsx">
