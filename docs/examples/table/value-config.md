@@ -12,6 +12,8 @@
 
 :::
 
+<ClientOnly>
+
 <Tabs  >
     <TabPane key="1" tab="配置 fieldsNames" forceRender> 
         <FieldsNames></FieldsNames>
@@ -20,6 +22,7 @@
         <FieldsNamesEvent></FieldsNamesEvent>
     </TabPane> 
 </Tabs>
+</ClientOnly>
 
 ::: details Code
 

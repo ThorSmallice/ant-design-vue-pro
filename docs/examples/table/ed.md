@@ -1,5 +1,7 @@
 ## 导出、下载模板
 
+<ClientOnly>
+
 <Tabs  >
     <TabPane key="1" tab="blob 形式" forceRender> 
        <EdBlob></EdBlob>
@@ -8,6 +10,7 @@
         <EdBuffer></EdBuffer>
     </TabPane> 
 </Tabs>
+</ClientOnly>
 
 ::: details Code
 
