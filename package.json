@@ -3,7 +3,7 @@
     "homepage": "https://www.dbice.cn/antd-vue-dbthor/docs/",
     "type": "module",
     "private": false,
-    "version": "1.0.99",
+    "version": "1.0.100",
     "description": "",
     "repository": {
         "type": "git",
@@ -22,18 +22,13 @@
     "files": [
         "dist"
     ],
-    "types": "./dist/index.d.ts",
+    "types": "./dist/types/src/main.d.ts",
     "exports": {
         ".": {
             "import": "./dist/lib/index.es.js",
             "require": "./dist/lib/index.umd.js",
-            "types": "./dist/index.d.ts",
-            "default": "./dist/lib/index.umd.js",
-            "node": {
-                "import": "./dist/lib/index.es.js",
-                "require": "./dist/lib/index.umd.js",
-                "default": "./dist/lib/index.umd.js"
-            }
+            "types": "./dist/types/src/main.d.ts",
+            "default": "./dist/lib/index.umd.js"
         },
         "./*": "./*"
     },

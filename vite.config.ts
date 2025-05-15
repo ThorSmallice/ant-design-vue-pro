@@ -79,7 +79,7 @@ export default defineConfig({
         Vue(),
         vueJsx(),
         dts({
-            outDir: 'dist',
+            outDir: 'dist/types',
             staticImport: true,
             insertTypesEntry: true,
             exclude: ['node_modules'],
