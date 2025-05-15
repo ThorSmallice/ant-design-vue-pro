@@ -4,12 +4,18 @@
             <QueryForm></QueryForm>
         </div>
 
-        <div :class="['db-table-cies-btns-wrap']" v-if="!ciesBtnsInQueryForm && (ciesBtns)">
+        <div :class="['db-table-cies-btns-wrap']" v-if="!ciesBtnsInQueryForm && ciesBtns">
             <template v-if="slots?.customCiesBtns">
-                <slot name="customCiesBtns" :CreateBtn="CreateBtn" :ImportBtn="ImportBtn"
-                    :ExportDropDown="ExportDropDown" :ExportCurrentPageBtn="ExportCurrentPageBtn"
-                    :ExportAllBtn="ExportAllBtn" :ColumnSettingBtn="ColumnSettingBtn"
-                    :DownloadTemplateBtn="DownloadTemplateBtn"></slot>
+                <slot
+                    name="customCiesBtns"
+                    :CreateBtn="CreateBtn"
+                    :ImportBtn="ImportBtn"
+                    :ExportDropDown="ExportDropDown"
+                    :ExportCurrentPageBtn="ExportCurrentPageBtn"
+                    :ExportAllBtn="ExportAllBtn"
+                    :ColumnSettingBtn="ColumnSettingBtn"
+                    :DownloadTemplateBtn="DownloadTemplateBtn"
+                ></slot>
             </template>
             <template v-else>
                 <Flex justify="space-between">
@@ -22,17 +28,26 @@
                         <DownloadTemplateBtn></DownloadTemplateBtn>
                     </Flex>
 
-
                     <ColumnSettingBtn></ColumnSettingBtn>
-
                 </Flex>
             </template>
         </div>
 
         <div :class="['db-table-wrap']" ref="tableWrapRef">
-            <ATable :sticky="true" :rowKey="rowKey" :pagination="false" :columns="resColumns" :data-source="data_source"
-                :loading="loading" @resize-column="onResizeColumn" :scroll="resScroll" :table-layout="tableLayout"
-                :showHeader="showHeader" :showSorterTooltip="showSorterTooltip" v-bind="o">
+            <ATable
+                :sticky="true"
+                :rowKey="rowKey"
+                :pagination="false"
+                :columns="resColumns"
+                :data-source="data_source"
+                :loading="loading"
+                @resize-column="onResizeColumn"
+                :scroll="resScroll"
+                :table-layout="tableLayout"
+                :showHeader="showHeader"
+                :showSorterTooltip="showSorterTooltip"
+                v-bind="o"
+            >
                 <template v-for="slot in aTableSlots" :key="slot" v-slot:[slot]="temp">
                     <slot :name="slot" v-bind="temp"></slot>
                 </template>
@@ -51,7 +66,7 @@
 import config from '@config/index'
 import { Table as ATable, Flex, TableColumnProps } from 'ant-design-vue'
 import { computed, reactive, readonly, ref, toValue, unref, watch } from 'vue'
-import { TableInstance, TableProps, TableSlots } from './index.d'
+import { TableInstance, TableProps, TableSlots } from './index.type'
 import useAutoSize from './useAutoSize'
 import useColumns from './useColumns'
 import useCU from './useCU'
@@ -470,16 +485,16 @@ watch(
 defineExpose<Readonly<TableInstance>>({
     source: readonly(source),
     updateSource,
-    QueryForm: (unref(QueryForm)),
+    QueryForm: unref(QueryForm),
     queryFormModel: readonly(unref(queryFormState)),
     QueryFormInstance: readonly(unref(QueryFormInstance)),
-    Pagination: (unref(Pagination)),
+    Pagination: unref(Pagination),
     cuModalFormIsEdit,
     cuFormModel: readonly(unref(cuFormModel)),
-    CreateBtn: (unref(CreateBtn)),
-    ImportBtn: (unref(ImportBtn)),
-    ExportDropDown: (unref(ExportDropDown)),
-    ExportCurrentPageBtn: (unref(ExportCurrentPageBtn)),
+    CreateBtn: unref(CreateBtn),
+    ImportBtn: unref(ImportBtn),
+    ExportDropDown: unref(ExportDropDown),
+    ExportCurrentPageBtn: unref(ExportCurrentPageBtn),
     ExportAllBtn: unref(ExportAllBtn),
     ColumnSettingBtn: unref(ColumnSettingBtn),
     DownloadTemplateBtn: unref(DownloadTemplateBtn),

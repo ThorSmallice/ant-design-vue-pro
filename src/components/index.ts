@@ -1,6 +1,6 @@
-import * as components from '@comps/components'
+import * as components from '@comps/components.ts'
 import type { App } from 'vue'
-export * from '@comps/components'
+export * from '@comps/components.ts'
 
 export const install = (app: App) => {
     Object.keys(components).forEach((key) => {

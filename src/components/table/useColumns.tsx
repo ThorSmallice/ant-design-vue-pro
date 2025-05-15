@@ -44,7 +44,7 @@ import {
     TableProps,
     TableSlots,
     TableTextConfig,
-} from './index.d'
+} from './index.type'
 import { TableUseCUFormItemProps, TableUseCUReturnOptions } from './useCU'
 import { TableDescItemsProps } from './useDetail'
 

@@ -1,13 +1,33 @@
 <template>
     <Modal
-        :class="[draggable && $style['ant-draggable-modal'], $style['ant-modal'], (full || isFullScreen) && $style['ant-full-modal']]"
-        :style="draggable && style" :open="open" :centered="draggable ? false : draggable" :mask="mask"
-        :closable="closable" :get-container="getContainer" v-bind="others">
+        :class="[
+            draggable && $style['ant-draggable-modal'],
+            $style['ant-modal'],
+            (full || isFullScreen) && $style['ant-full-modal'],
+        ]"
+        :style="draggable && style"
+        :open="open"
+        :centered="draggable ? false : draggable"
+        :mask="mask"
+        :closable="closable"
+        :get-container="getContainer"
+        v-bind="others"
+    >
         <template #title>
-            <div @dblclick="showFullScreen && toggleFullScreen" ref="dragHandleRef"
-                :class="$style['ant-draggable-modal-handle']" v-if="draggable"></div>
-            <Button @click="toggleFullScreen" :title="isFullScreen ? '退出全屏' : '全屏'" size="small" type="text"
-                v-if="showFullScreen" :class="$style['ant-modal-full-screen-btn']">
+            <div
+                @dblclick="showFullScreen && toggleFullScreen"
+                ref="dragHandleRef"
+                :class="$style['ant-draggable-modal-handle']"
+                v-if="draggable"
+            ></div>
+            <Button
+                @click="toggleFullScreen"
+                :title="isFullScreen ? '退出全屏' : '全屏'"
+                size="small"
+                type="text"
+                v-if="showFullScreen"
+                :class="$style['ant-modal-full-screen-btn']"
+            >
                 <template #icon>
                     <FullscreenOutlined v-if="!isFullScreen" />
                     <FullscreenExitOutlined v-else />
@@ -29,11 +49,23 @@
 </template>
 
 <script setup lang="tsx">
-import { useDraggable } from '@vueuse/core';
-import { Button, Modal } from 'ant-design-vue';
-import { computed, nextTick, onMounted, onUnmounted, reactive, ref, useCssModule, useSlots, useTemplateRef, VNodeRef, watch } from 'vue';
-import { ModalProps } from './index.d';
-import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons-vue';
+import { useDraggable } from '@vueuse/core'
+import { Button, Modal } from 'ant-design-vue'
+import {
+    computed,
+    nextTick,
+    onMounted,
+    onUnmounted,
+    reactive,
+    ref,
+    useCssModule,
+    useSlots,
+    useTemplateRef,
+    VNodeRef,
+    watch,
+} from 'vue'
+import { ModalProps } from './index.type'
+import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons-vue'
 const {
     title,
     open,
@@ -56,15 +88,14 @@ const slots = computed(() => {
 
 const $style = useCssModule()
 
-
-
 const isFullScreen = ref(false)
 
 const dragHandleRef = ref<HTMLElement>()
 
 const modalRef = computed<any>(() => {
-    const modalEl = dragHandleRef.value?.closest?.(`.${$style['ant-draggable-modal']}`) as HTMLElement
-
+    const modalEl = dragHandleRef.value?.closest?.(
+        `.${$style['ant-draggable-modal']}`
+    ) as HTMLElement
 
     return modalEl
 })
@@ -73,50 +104,57 @@ const modalRef = computed<any>(() => {
 const windowWidth = window.innerWidth
 const windowHeight = window.innerHeight
 
-
 const initialPosition = reactive({
     x: 0,
-    y: 100
+    y: 100,
 })
-
 
 const { style } = useDraggable(modalRef, {
     handle: dragHandleRef,
-    initialValue: initialPosition
+    initialValue: initialPosition,
 })
 
-
-watch(() => [open, centered, modalRef.value], async () => {
-
-    await nextTick()
-    initialPosition.x = (windowWidth - modalRef.value?.offsetWidth) / 2
-    initialPosition.y = centered ? (windowHeight - modalRef.value?.offsetHeight) / 2 : full ? 0 : 100
-
-})
+watch(
+    () => [open, centered, modalRef.value],
+    async () => {
+        await nextTick()
+        initialPosition.x = (windowWidth - modalRef.value?.offsetWidth) / 2
+        initialPosition.y = centered
+            ? (windowHeight - modalRef.value?.offsetHeight) / 2
+            : full
+            ? 0
+            : 100
+    }
+)
 
 const toggleFullScreen = () => {
     if (!document?.fullscreenElement) {
-        modalRef.value?.requestFullscreen?.();
+        modalRef.value?.requestFullscreen?.()
     } else {
-        document?.exitFullscreen?.();
+        document?.exitFullscreen?.()
     }
 }
 const onFullscreenchange = () => {
     isFullScreen.value = document?.fullscreenElement ? true : false
 }
-watch(() => modalRef.value, () => {
-    modalRef.value?.addEventListener('fullscreenchange', onFullscreenchange)
-})
-watch(() => open, () => {
-    if (!open && document?.fullscreenElement) {
-        document?.exitFullscreen?.()
+watch(
+    () => modalRef.value,
+    () => {
+        modalRef.value?.addEventListener('fullscreenchange', onFullscreenchange)
     }
-})
+)
+watch(
+    () => open,
+    () => {
+        if (!open && document?.fullscreenElement) {
+            document?.exitFullscreen?.()
+        }
+    }
+)
 
 onUnmounted(() => {
     modalRef.value?.removeEventListener('fullscreenchange', onFullscreenchange)
 })
-
 </script>
 
 <style lang="scss" module>
@@ -127,8 +165,6 @@ onUnmounted(() => {
 .ant-draggable-modal {
     margin: 0 !important;
     padding-bottom: 0 !important;
-
-
 
     & .ant-draggable-modal-handle {
         display: block;
@@ -144,23 +180,17 @@ onUnmounted(() => {
     }
 }
 
-
-
-
-
 .ant-modal {
     max-height: 100%;
     overflow: hidden;
     display: flex;
     flex-direction: column;
 
-    &>div:first-child {
+    & > div:first-child {
         max-height: 100%;
         overflow: hidden;
         display: flex;
         flex-direction: column;
-
-
     }
 
     :global(.ant-modal-content) {
@@ -175,15 +205,13 @@ onUnmounted(() => {
             overflow-x: hidden;
         }
     }
-
 }
 
 .ant-full-modal {
     height: 100%;
 
-    &>div:first-child {
+    & > div:first-child {
         height: 100%;
-
     }
 
     :global(.ant-modal-content) {
