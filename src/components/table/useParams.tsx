@@ -3,7 +3,7 @@ import type { Dayjs } from 'dayjs/esm'
 
 import { isFunction } from 'es-toolkit/predicate'
 import qs from 'qs'
-import { computed, ComputedRef, Reactive, reactive, Ref, toRaw, unref, watch } from 'vue'
+import { computed, ComputedRef, nextTick, Reactive, reactive, Ref, toRaw, unref, watch } from 'vue'
 import { TableProps } from '.'
 const isDayjs = dayjs.isDayjs
 type paramsObj = {
@@ -19,6 +19,11 @@ export interface TableUseParmasProps {
     fieldsNames: TableProps['fieldsNames']
     params: Ref<paramsObj> | Reactive<paramsObj> | ComputedRef<paramsObj>
     requestParamsFormatter: TableProps['requestParamsFormatter']
+}
+
+export interface PaginationDefault {
+    page?: number
+    pageSize?: number
 }
 export default (props: TableUseParmasProps) => {
     const {
@@ -36,8 +41,10 @@ export default (props: TableUseParmasProps) => {
         pageSize: ownPaginProps?.defaultPageSize || 10,
     })
 
-    const resetPage = () => {
-        pagination.page = 1
+    const resetPage = (pagin?: PaginationDefault) => {
+        pagination.page = pagin?.page || ownPaginProps?.defaultCurrent || 1
+        pagination.pageSize = pagin?.pageSize || ownPaginProps?.defaultPageSize || 10
+        return nextTick()
     }
 
     watch(
@@ -104,7 +111,7 @@ export default (props: TableUseParmasProps) => {
             : qs.parse(requestParams)
     })
 
-    return { resultParams, pagination }
+    return { resultParams, pagination, resetPage }
 }
 
 const isSameValue = (a: unknown, b: unknown) => {

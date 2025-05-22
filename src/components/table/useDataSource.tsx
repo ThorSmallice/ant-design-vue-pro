@@ -114,8 +114,8 @@ export default (props: TableUseDataSourceProps) => {
             })
     }
 
-    const updateSource = () => {
-        return api?.list && getSource(params)
+    const updateSource = (extraParams?: any) => {
+        return api?.list && getSource(Object.assign({}, toValue(params), extraParams || {}))
     }
 
     const requestDependencies = computed(() => {

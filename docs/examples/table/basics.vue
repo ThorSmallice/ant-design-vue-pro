@@ -1,6 +1,24 @@
 <template>
-    <Table columns-align="center" :index-column-width="60" :columns="columns" :query-form-items="queryFormItems"
-        template-file-name="用户列表模板.xlsx" export-file-name="用户列表数据.xlsx" :apis="apis">
+    <Table
+        ref="tableRef"
+        columns-align="center"
+        :index-column-width="60"
+        :columns="columns"
+        :query-form-items="queryFormItems"
+        template-file-name="用户列表模板.xlsx"
+        export-file-name="用户列表数据.xlsx"
+        :apis="apis"
+    >
+        <template #customCiesBtns="{ CreateBtn, ImportBtn, ExportAllBtn, DownloadTemplateBtn }">
+            <Space>
+                <component :is="CreateBtn" />
+                <component :is="ImportBtn" />
+                <component :is="ExportAllBtn" />
+                <component :is="DownloadTemplateBtn" />
+                <Button @click="() => tableRef.resetPage()">重置分页</Button>
+                <Button @click="() => tableRef.updateSource()">刷新列表</Button>
+            </Space>
+        </template>
     </Table>
 </template>
 
@@ -15,9 +33,11 @@ import {
     importUserApi,
     updateUserApi,
 } from '@docs/apis/user'
+import { Button, Space } from 'ant-design-vue'
 import { ControlMapType, Table, TableProps } from 'antd-vue-dbthor'
-import { computed, ref, reactive } from 'vue'
+import { computed, ref } from 'vue'
 
+const tableRef = ref<InstanceType<typeof Table>>() // 表格实例
 const apis = ref<TableProps['apis']>({
     list: getUsersPageApi,
     details: getUserDetailsApi,
@@ -26,8 +46,7 @@ const apis = ref<TableProps['apis']>({
     delete: deleteUserApi,
     template: downloadUserTemplateByBlobApi,
     export: exportUsersByBufferApi,
-    import: importUserApi
-
+    import: importUserApi,
 })
 
 const sexOptions = [

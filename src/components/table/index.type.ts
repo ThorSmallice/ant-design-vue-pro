@@ -20,7 +20,7 @@ import { TableUseDetailProps } from './useDetail'
 import { TableUseDownloadTemplateProps } from './useDownloadTemplate'
 import { TableUseExportProps } from './useExport'
 import { TableUseImportProps } from './useImport'
-import { TableUseParmasProps } from './useParams'
+import { PaginationDefault, TableUseParmasProps } from './useParams'
 import {
     TableQueryFormInstance,
     TableQueryFormItemProps,
@@ -31,7 +31,8 @@ type TableFieldNames = string | string[] | 'self'
 
 export interface TableInstance {
     source: any[]
-    updateSource: () => Promise<void>
+    updateSource: (extraParams?: any) => Promise<void>
+    resetPage: (pagin?: PaginationDefault) => Promise<void>
     QueryForm: () => JSX.Element | VNode
     queryFormModel: Reactive<{ values: any }>
     QueryFormInstance: Partial<TableQueryFormInstance>

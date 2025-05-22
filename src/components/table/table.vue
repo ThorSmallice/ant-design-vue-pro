@@ -251,7 +251,7 @@ const handleSearch = (selectedKeys, confirm, dataIndex) => {
 const handleReset = (clearFilters) => {
     clearFilters({ confirm: true })
 }
-const { resultParams, pagination } = $$(
+const { resultParams, pagination, resetPage } = $$(
     useParams({
         params,
         ownPagin,
@@ -484,7 +484,7 @@ watch(
 
 defineExpose<Readonly<TableInstance>>({
     source: readonly(source),
-    updateSource,
+    updateSource: unref(updateSource),
     QueryForm: unref(QueryForm),
     queryFormModel: readonly(unref(queryFormState)),
     QueryFormInstance: readonly(unref(QueryFormInstance)),
@@ -499,6 +499,7 @@ defineExpose<Readonly<TableInstance>>({
     ColumnSettingBtn: unref(ColumnSettingBtn),
     DownloadTemplateBtn: unref(DownloadTemplateBtn),
     onResize: unref(onResize),
+    resetPage: unref(resetPage),
 })
 </script>
 
