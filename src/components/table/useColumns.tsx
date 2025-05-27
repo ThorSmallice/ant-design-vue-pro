@@ -74,7 +74,7 @@ export const formatterObjValueWithDate = (
                 break
             case 'date':
                 val = get(temp, dataIndex as string | string[])
-                temp[dataIndex as string] = val && isDate(val) ? dayjs(val) : null
+                temp[dataIndex as string] = val && dayjs(val).isValid() ? dayjs(val) : null
                 break
             default:
                 break
@@ -374,6 +374,7 @@ export default (props: TableUseColumnsProps) => {
                 columns,
                 ({ descItemProps }) => descItemProps?.hidden
             )
+            console.log('🚀 ~ openRowDetails ~ res:', res)
 
             detailsDataSource.values = res
         } catch (error) {}
