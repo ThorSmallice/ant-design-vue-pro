@@ -47,6 +47,7 @@ export interface TableInstance {
     ColumnSettingBtn: (props?: OwnBtnProps) => JSX.Element | VNode
     DownloadTemplateBtn: (props?: OwnBtnProps) => JSX.Element | VNode
     onResize: (entries?: any) => void
+    loading: Ref<boolean>
 }
 export interface OwnBtnProps extends ButtonProps {
     children?: JSX.Element[] | VNode[] | string

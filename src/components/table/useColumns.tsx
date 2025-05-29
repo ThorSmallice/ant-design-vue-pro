@@ -374,7 +374,6 @@ export default (props: TableUseColumnsProps) => {
                 columns,
                 ({ descItemProps }) => descItemProps?.hidden
             )
-            console.log('🚀 ~ openRowDetails ~ res:', res)
 
             detailsDataSource.values = res
         } catch (error) {}

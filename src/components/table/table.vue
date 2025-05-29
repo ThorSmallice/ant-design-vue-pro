@@ -19,14 +19,14 @@
             </template>
             <template v-else>
                 <Flex justify="space-between">
-                    <Flex :gap="8">
+                    <div class="flex gap-2">
                         <CreateBtn></CreateBtn>
                         <ImportBtn></ImportBtn>
 
                         <ExportDropDown v-if="exportBtnMode === 'dropdown'"></ExportDropDown>
                         <ExportAllBtn v-if="exportBtnMode === 'all'"></ExportAllBtn>
                         <DownloadTemplateBtn></DownloadTemplateBtn>
-                    </Flex>
+                    </div>
 
                     <ColumnSettingBtn></ColumnSettingBtn>
                 </Flex>
@@ -500,6 +500,7 @@ defineExpose<Readonly<TableInstance>>({
     DownloadTemplateBtn: unref(DownloadTemplateBtn),
     onResize: unref(onResize),
     resetPage: unref(resetPage),
+    loading,
 })
 </script>
 
