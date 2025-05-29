@@ -1,5 +1,18 @@
 # 更新日志
 
+## v1.0.99~104
+
+### 新特性
+
+-   Table 组件 expose resetPage 方法
+-   Table 组件 expose loading 状态
+
+### Bug Fixes
+
+-   修复类型文件导出问题
+-   修复 Table 组件详情弹窗中时间戳格式显示为空的问题
+-   修复 Table 组件 CiesBtn 为空时,占位丢失问题
+
 ## v1.0.98
 
 ### Bug Fixes
