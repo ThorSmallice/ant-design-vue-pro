@@ -306,7 +306,7 @@ export default (props: TableUseColumnsProps) => {
                 ...o
             } = col
             if (hidden) return
-
+            console.log(sorter)
             const resCol: TransedColumns = {
                 title: (
                     <span
@@ -325,7 +325,7 @@ export default (props: TableUseColumnsProps) => {
                 ellipsis: ellipsis ?? columnsEllipsis,
                 filterPlaceholder: filterPlaceholder || `请输入${title}`,
                 defaultSortOrder: 'ascend',
-                sorter: localSort(col),
+                sorter: sorter === true ? localSort(col) : sorter,
                 customFilterDropdown:
                     customFilterDropdown ?? !exculdesFilterColumnTypes?.includes(col?.type),
                 customRender: (...args) =>
