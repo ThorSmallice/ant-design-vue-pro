@@ -14,4 +14,7 @@ export default () => {
         total: ['data', 'data', 'total'],
         details: ['data', 'data'],
     }
+    TableConfig.queryFormItemsControlProps = {
+        autoComplete: 'off',
+    }
 }

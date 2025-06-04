@@ -236,6 +236,7 @@ const { QueryForm, QueryFormInstance, queryFormParams, queryFormState } = $$(
         queryFormSubmitBtnProps,
         queryFormResetBtnProps,
         queryFormControlFormItemProps,
+        queryFormItemsControlProps,
         ciesBtnsInQueryForm,
         ciesBtnsVNode,
         defaultValues: queryFormDefaultValues,
