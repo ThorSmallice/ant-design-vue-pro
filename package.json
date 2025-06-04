@@ -17,7 +17,8 @@
         "build": "tsc && vite build",
         "docs:dev": "cross-env NODE_ENV=development vitepress dev docs",
         "docs:build": "cross-env NODE_ENV=production vitepress build docs",
-        "push": "npm publish"
+        "push": "npm publish",
+        "push:scet": "npm publish --registry https://dev.scet.com.cn/verdaccio/"
     },
     "files": [
         "dist"

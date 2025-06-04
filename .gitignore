@@ -2,3 +2,4 @@ node_modules
 dist
 removeMap.js
 docs/.vitepress/cache
+.npmrc
