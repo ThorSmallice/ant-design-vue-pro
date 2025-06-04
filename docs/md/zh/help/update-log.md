@@ -1,5 +1,11 @@
 # 更新日志
 
+## v1.0.106
+
+### 新增
+
+-   新增 Table 组件 queryFormItemsControlProps 配置项，支持配置查询表单公共属性
+
 ## v1.0.105
 
 ### Bug Fixes

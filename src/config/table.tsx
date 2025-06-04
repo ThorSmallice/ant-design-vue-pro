@@ -84,6 +84,7 @@ export const TableConfig: TableProps = {
     queryFormControlFormItemProps: {
         class: 'w-auto',
     },
+    queryFormItemsControlProps: null,
     indexColumn: true,
     indexColumnWidth: 80,
     indexColumnProps: {},

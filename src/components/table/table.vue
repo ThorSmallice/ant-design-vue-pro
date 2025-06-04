@@ -168,6 +168,7 @@ const {
     queryFormSubmitBtnProps = config.table.queryFormSubmitBtnProps,
     queryFormResetBtnProps = config.table.queryFormResetBtnProps,
     queryFormControlFormItemProps = config.table.queryFormControlFormItemProps,
+    queryFormItemsControlProps = config.table.queryFormItemsControlProps,
     queryFormTimeFormat = config.table.queryFormTimeFormat,
 
     cuFormProps = config.table.cuFormProps,

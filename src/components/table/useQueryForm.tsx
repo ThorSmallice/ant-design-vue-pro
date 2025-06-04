@@ -79,7 +79,8 @@ export interface TableQueryFormProps {
     ciesBtnsVNode?: ciesBtnsVNode
     CreateBtn?: Ref<TableUseCUReturnOptions['CreateBtn']>
     ImportBtn?: TableUseCUReturnOptions
-    queryFormControlFormItemProps?: TableQueryFormItemProps
+    queryFormControlFormItemProps?: FormItemProps
+    queryFormItemsControlProps?: TableQueryFormItemProps['controlProps']
     defaultValues?: any
     [key: string]: any
 }
@@ -97,6 +98,7 @@ const useQueryForm = (props: TableQueryFormProps) => {
         queryFormSubmitBtnProps,
         queryFormResetBtnProps,
         queryFormControlFormItemProps,
+        queryFormItemsControlProps,
         ciesBtnsInQueryForm,
         ciesBtnsVNode,
         defaultValues,
@@ -223,6 +225,7 @@ const useQueryForm = (props: TableQueryFormProps) => {
                                             type={control}
                                             model={queryFormState.values}
                                             name={name as string | string[]}
+                                            {...queryFormItemsControlProps}
                                             {...controlProps}
                                         ></FormItemControl>
                                     )}
