@@ -306,7 +306,7 @@ export default (props: TableUseColumnsProps) => {
                 ...o
             } = col
             if (hidden) return
-            console.log(sorter)
+
             const resCol: TransedColumns = {
                 title: (
                     <span

@@ -1,4 +1,5 @@
 import {
+    FormInstance as AntdFormInstance,
     Button,
     Col,
     ColProps,
@@ -9,39 +10,19 @@ import {
     FormProps,
     Row,
     RowProps,
-    FormInstance as AntdFormInstance,
 } from 'ant-design-vue'
-import { FieldNamesType } from 'ant-design-vue/es/cascader'
-import { Callbacks, RuleError, RuleObject } from 'ant-design-vue/es/form/interface'
-import { Props, ValidateInfo, validateInfos, validateOptions } from 'ant-design-vue/es/form/useForm'
+import { Callbacks, RuleObject } from 'ant-design-vue/es/form/interface'
 import { cloneDeep, isFunction, omit } from 'es-toolkit'
 import { computed, h, Reactive, reactive, ref, Ref, toRaw, useSlots, VNode, watch } from 'vue'
-import { ControlMapProps, FormItemControl } from './control'
 import { ciesBtnsVNode, OwnBtnProps } from '.'
+import { ControlMapProps, FormItemControl } from './control'
 import { TableUseCUReturnOptions } from './useCU'
 interface DebounceSettings {
     leading?: boolean
     wait?: number
     trailing?: boolean
 }
-type namesType = string | string[]
-export interface FormInstance extends AntdFormInstance {
-    // modelRef: Props | Ref<Props>
-    // rulesRef: Props | Ref<Props>
-    // initialModel: Props
-    // validateInfos: validateInfos
-    // resetFields: (newValues?: Props) => void
-    // validate: <T = any>(names?: FieldNamesType, option?: validateOptions) => Promise<T>
-    /** This is an internal usage. Do not use in your prod */
-    // validateField: (
-    //     name: string,
-    //     value: any,
-    //     rules: Record<string, unknown>[],
-    //     option?: validateOptions
-    // ) => Promise<RuleError[]>
-    // mergeValidateInfo: (items: ValidateInfo | ValidateInfo[]) => ValidateInfo
-    // clearValidate: (names?: namesType) => void
-}
+export interface FormInstance extends AntdFormInstance {}
 export interface TableQueryFormInstance extends FormInstance {
     submit: (vals: any) => void
     reset: () => void
