@@ -354,19 +354,19 @@ export type TableSlots = {
 
     customCiesBtns?: (orgNode: ciesBtnsSlotOptions) => VNode | JSX.Element
 }
-// export const ATableSlotsWhiteList = [
-//     'emptyText',
-//     'expandIcon',
-//     'title',
-//     'footer',
-//     'summary',
-//     'expandedRowRender',
-//     'expandColumnTitle',
-//     'bodyCell',
-//     'headerCell',
-//     'customFilterIcon',
-//     'customFilterDropdown',
-// ]
+export const ATableSlotsWhiteList = [
+    'emptyText',
+    'expandIcon',
+    'title',
+    'footer',
+    'summary',
+    'expandedRowRender',
+    'expandColumnTitle',
+    'bodyCell',
+    'headerCell',
+    'customFilterIcon',
+    'customFilterDropdown',
+]
 
 export interface TableSetupCtx extends Omit<SetupContext, 'slots'> {
     slots: TableSlots
