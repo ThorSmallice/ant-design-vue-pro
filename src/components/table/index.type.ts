@@ -153,7 +153,6 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     scroll?: TableUseAutoSizeProps['scroll']
     autoSizeConfig?: TableUseAutoSizeProps['autoSizeConfig']
     minScollHeight?: TableUseAutoSizeProps['minScollHeight']
-
     autoRequest?: TableUseDataSourceProps['autoRequest']
     autoRequestDependencies?: TableUseDataSourceProps['autoRequestDependencies']
     /**

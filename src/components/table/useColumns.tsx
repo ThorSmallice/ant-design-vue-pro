@@ -105,6 +105,7 @@ export interface TableColumnProps<T extends keyof ControlMapProps = keyof Contro
     editable?: boolean
     editControl?: T
     editControlProps?: ControlMapProps[T] & { [key: string]: any }
+    children?: TableColumnProps<T>[]
 }
 
 export type TableColumnCustomRenderArgs = {
@@ -251,14 +252,18 @@ export default (props: TableUseColumnsProps) => {
     const slots = useSlots()
     const transformColumns = (
         columns: TableColumnProps[],
-        titleArr: string[]
+        titleArr?: string[],
+        options?: {
+            indexColumn?: boolean
+            controlColumn?: boolean
+        }
     ): TableColumnProps[] => {
         if (isEmpty(columns)) {
             return null
         }
         const tempColumns = cloneDeep(columns)
 
-        if (indexColumn) {
+        if (options?.indexColumn) {
             tempColumns?.unshift?.({
                 title: '序号',
                 type: 'index',
@@ -270,7 +275,7 @@ export default (props: TableUseColumnsProps) => {
             })
         }
 
-        if (controlColumn) {
+        if (options?.controlColumn) {
             tempColumns?.push?.({
                 title: '操作',
                 type: 'control',
@@ -303,6 +308,7 @@ export default (props: TableUseColumnsProps) => {
                 filterPlaceholder,
                 customFilterDropdown = false,
                 customRender,
+                children,
                 ...o
             } = col
             if (hidden) return
@@ -325,7 +331,8 @@ export default (props: TableUseColumnsProps) => {
                 ellipsis: ellipsis ?? columnsEllipsis,
                 filterPlaceholder: filterPlaceholder || `请输入${title}`,
                 defaultSortOrder: 'ascend',
-                sorter: sorter === true ? localSort(col) : sorter,
+                sorter: children ? false : sorter === true ? localSort(col) : sorter,
+
                 customFilterDropdown:
                     customFilterDropdown ?? !exculdesFilterColumnTypes?.includes(col?.type),
                 customRender: (...args) =>
@@ -344,7 +351,12 @@ export default (props: TableUseColumnsProps) => {
                         ellipsis: ellipsis ?? columnsEllipsis,
                         width: width,
                     }),
-
+                children:
+                    children &&
+                    transformColumns(children, [], {
+                        indexColumn: false,
+                        controlColumn: false,
+                    }),
                 show: true,
                 ...o,
             }
@@ -451,7 +463,10 @@ export default (props: TableUseColumnsProps) => {
     const updateColumns = async (columns: TableColumnProps[]) => {
         const title_arr = await updateColumnsTitleString(columns)
 
-        const arr = transformColumns(columns, title_arr)
+        const arr = transformColumns(columns, title_arr, {
+            indexColumn,
+            controlColumn,
+        })
         transedColumns.value = arr
     }
 
