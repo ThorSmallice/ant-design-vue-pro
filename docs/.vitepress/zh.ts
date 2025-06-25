@@ -35,7 +35,7 @@ export const zh = defineConfig({
 
         footer: {
             message: '基于 MIT 许可发布',
-            copyright: `版权所有 © 2019-${new Date().getFullYear()} DB-Thor`,
+            copyright: `版权所有 © 2019-${new Date().getFullYear()} DB-Thor  ICP备案号: <a style="text-decoration: none;" href="https://beian.miit.gov.cn/" target="_blank">粤ICP备2021112566号</a>`,
         },
 
         docFooter: {
