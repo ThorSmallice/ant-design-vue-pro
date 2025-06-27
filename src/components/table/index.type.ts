@@ -14,7 +14,7 @@ import { Reactive, Ref, SetupContext, VNode } from 'vue'
 import { JSX } from 'vue/jsx-runtime'
 import { TableUseAutoSizeProps } from './useAutoSize'
 import { TableColumnCustomRenderArgs, TableColumnProps, TableUseColumnsProps } from './useColumns'
-import { TableUseCUFormProps } from './useCU'
+import { TableUseCUFormProps, TableUseCUReturnOptions } from './useCU'
 import { TableUseDataSourceProps } from './useDataSource'
 import { TableUseDetailProps } from './useDetail'
 import { TableUseDownloadTemplateProps } from './useDownloadTemplate'
@@ -37,7 +37,9 @@ export interface TableInstance {
     queryFormModel: Reactive<{ values: any }>
     QueryFormInstance: Partial<TableQueryFormInstance>
     Pagination: () => JSX.Element | VNode
-    cuModalFormIsEdit: Ref<boolean>
+    cuModalFormIsEdit: Ref<TableUseCUReturnOptions['cuModalFormIsEdit']>
+    setCuFormModel: Ref<TableUseCUReturnOptions['setCuFormModel']>
+    getCuModalFormIsEdit: Ref<TableUseCUReturnOptions['getCuModalFormIsEdit']>
     cuFormModel: Reactive<{ values: any }>
     CreateBtn: (props?: OwnBtnProps) => JSX.Element | VNode
     ImportBtn: (props?: OwnBtnProps) => JSX.Element | VNode

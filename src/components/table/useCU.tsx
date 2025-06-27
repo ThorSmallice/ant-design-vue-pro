@@ -14,7 +14,7 @@ import {
     Skeleton,
 } from 'ant-design-vue'
 import { cloneDeep, isFunction, merge } from 'es-toolkit'
-import { computed, Reactive, reactive, Ref, ref, toRaw, VNode, watch } from 'vue'
+import { computed, Reactive, reactive, Ref, ref, toRaw, unref, VNode, watch } from 'vue'
 import { JSX } from 'vue/jsx-runtime'
 import { ControlMapProps, FormItemControl } from './control'
 import { OwnBtnProps, ownBtnProps, TableProps, TableTextConfig } from '.'
@@ -30,9 +30,11 @@ export interface TableUseCUReturnOptions {
     cuFormModel: Reactive<{ values: any }>
     cuModalLoading: Ref<boolean>
     submitBtnLoading: boolean
-    cuModalFormIsEdit: boolean
+    cuModalFormIsEdit: Ref<boolean>
     openCUModalForm: (isEdit: boolean) => void
+    getCuModalFormIsEdit: () => boolean
     CUModalFormInstance: TableCUFormInstance
+    setCuFormModel: (vals?: Record<string, any>) => void
 }
 
 export interface TableUseCUFormProps {
@@ -331,6 +333,9 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         )
     }
 
+    const setCuFormModel = (vals: any) => {
+        cuFormModel.values = cloneDeep(vals)
+    }
     const CUModalFormInstance = $(computed(() => formRef.value as TableCUFormInstance))
     return {
         CreateBtn,
@@ -338,7 +343,9 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         cuFormModel,
         cuModalLoading,
         submitBtnLoading: submitBtnLoading.value,
-        cuModalFormIsEdit: cuModalFormIsEdit.value,
+        cuModalFormIsEdit,
+        getCuModalFormIsEdit: () => cuModalFormIsEdit.value,
+        setCuFormModel,
         openCUModalForm,
         CUModalFormInstance,
     }

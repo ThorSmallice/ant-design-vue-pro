@@ -338,29 +338,37 @@ const { ImportBtn } = $$(
     })
 )
 
-const { CreateBtn, CUModalForm, openCUModalForm, cuFormModel, cuModalLoading, cuModalFormIsEdit } =
-    $$(
-        useCU({
-            apis,
-            createBtn,
-            columns,
-            columnsTimeFormat,
-            cuFormProps,
-            onCuFormCancel,
-            cuFormRules,
-            cuFormModalProps,
-            cuFormRowProps,
-            cuFormColProps,
-            tableRef,
-            onBeforeCuFormSubmit,
-            onCuFormSubmitSuccess,
-            onCuFormSubmitError,
-            updateSource,
-            tableTextConfig,
-            defaultValues: cuFormDefaultValues,
-            emits,
-        })
-    )
+const {
+    CreateBtn,
+    CUModalForm,
+    openCUModalForm,
+    cuFormModel,
+    cuModalLoading,
+    cuModalFormIsEdit,
+    getCuModalFormIsEdit,
+    setCuFormModel,
+} = $$(
+    useCU({
+        apis,
+        createBtn,
+        columns,
+        columnsTimeFormat,
+        cuFormProps,
+        onCuFormCancel,
+        cuFormRules,
+        cuFormModalProps,
+        cuFormRowProps,
+        cuFormColProps,
+        tableRef,
+        onBeforeCuFormSubmit,
+        onCuFormSubmitSuccess,
+        onCuFormSubmitError,
+        updateSource,
+        tableTextConfig,
+        defaultValues: cuFormDefaultValues,
+        emits,
+    })
+)
 const { openDetailModal, detailModalLoading, detailsDataSource, DetailModal } = $$(
     useDetail({
         columns,
@@ -477,7 +485,9 @@ defineExpose<Readonly<TableInstance>>({
     queryFormModel: readonly(unref(queryFormState)),
     QueryFormInstance: readonly(unref(QueryFormInstance)),
     Pagination: unref(Pagination),
-    cuModalFormIsEdit,
+    cuModalFormIsEdit: readonly(cuModalFormIsEdit),
+    getCuModalFormIsEdit,
+    setCuFormModel,
     cuFormModel: readonly(unref(cuFormModel)),
     CreateBtn: unref(CreateBtn),
     ImportBtn: unref(ImportBtn),

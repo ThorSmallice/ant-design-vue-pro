@@ -35,9 +35,10 @@ import {
 } from '@docs/apis/user'
 import { Button, Space } from 'ant-design-vue'
 import { ControlMapType, Table, TableProps } from 'antd-vue-dbthor'
-import { computed, ref } from 'vue'
+import { computed, ref, watch, watchEffect } from 'vue'
 
 const tableRef = ref<InstanceType<typeof Table>>() // 表格实例
+
 const apis = ref<TableProps['apis']>({
     list: getUsersPageApi,
     details: getUserDetailsApi,
