@@ -1,5 +1,11 @@
 # 更新日志
 
+## v1.0.111
+
+### 新增
+
+-   新增 Table 组件 columns 配置项 formItemProps.customControl /formItemProps.customRender 获取 cuform 的 edit 状态
+
 ## v1.0.110
 
 ### Bug Fixes

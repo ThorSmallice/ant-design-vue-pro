@@ -66,9 +66,14 @@ export interface TableUseCUFormItemProps<T extends keyof ControlMapProps = keyof
             title: string
             dataIndex: string | string[]
         },
-        model: Reactive<any>
+        model: Reactive<any>,
+        isEdit: Ref<boolean>
     ) => VNode | JSX.Element
-    customRender?: (model: Reactive<any>, form: TableCUFormInstance) => VNode | JSX.Element
+    customRender?: (
+        model: Reactive<any>,
+        form: TableCUFormInstance,
+        isEdit: Ref<boolean>
+    ) => VNode | JSX.Element
 }
 export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
     const {
@@ -288,7 +293,11 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                                             {...colProps}
                                         >
                                             {customRender && isFunction(customRender) ? (
-                                                customRender?.(cuFormModel, CUModalFormInstance)
+                                                customRender?.(
+                                                    cuFormModel,
+                                                    CUModalFormInstance,
+                                                    cuModalFormIsEdit
+                                                )
                                             ) : (
                                                 <Form.Item
                                                     label={label || title}
@@ -299,7 +308,8 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                                                     {isFunction(customControl) ? (
                                                         customControl?.(
                                                             { name, dataIndex, label, title },
-                                                            cuFormModel
+                                                            cuFormModel,
+                                                            cuModalFormIsEdit
                                                         )
                                                     ) : (
                                                         <FormItemControl
