@@ -298,7 +298,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                                                 customRender?.(
                                                     cuFormModel,
                                                     CUModalFormInstance,
-                                                    cuModalFormIsEdit
+                                                    cuModalFormIsEdit.value
                                                 )
                                             ) : (
                                                 <Form.Item

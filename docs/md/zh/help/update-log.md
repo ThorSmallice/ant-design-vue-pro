@@ -1,10 +1,12 @@
 # 更新日志
 
-## v1.0.111
+## v1.0.111~112
 
 ### 新增
 
--   新增 Table 组件 columns 配置项 formItemProps.customControl /formItemProps.customRender 获取 cuform 的 edit 状态
+-   允许 Table 组件 columns 配置项 formItemProps.customControl /formItemProps.customRender 获取 cuform 的 edit 状态
+-   Table 新增 getCuModalFormIsEdit 方法
+-   Table 新增 setCuFormModel 方法
 
 ## v1.0.110
 
