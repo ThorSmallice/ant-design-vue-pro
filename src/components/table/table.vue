@@ -83,7 +83,6 @@ import useQueryForm from './useQueryForm'
 defineOptions({
     name: 'DbTable',
 })
-const data_source = defineModel('value', { default: [] })
 
 const tableRef = ref()
 const tableWrapRef = ref()
@@ -224,6 +223,8 @@ const {
     ...o
 } = defineProps<TableProps>()
 
+const data_source = defineModel('value', { default: [] })
+
 const ciesBtnsVNode = ref({})
 
 const { QueryForm, QueryFormInstance, queryFormParams, queryFormState } = $$(
@@ -318,6 +319,15 @@ const { source, loading, total, updateSource }: any = $$(
 watch(
     () => source,
     () => {
+        if (dataSource) {
+            data_source.value = dataSource
+            return
+        }
+
+        if (!autoRequest) {
+            return
+        }
+
         data_source.value = source?.value
     },
     {
@@ -440,7 +450,7 @@ const { x, y, scrollToFirstRowOnChange, onResize } = $$(
         ],
         tableRealRegionClasses: ['.ant-table-tbody'],
         tableScrollWrapClass: '.ant-table-body',
-        source,
+        source: data_source,
     })
 )
 
@@ -479,7 +489,7 @@ watch(
 )
 
 defineExpose<Readonly<TableInstance>>({
-    source: readonly(source),
+    source: readonly(data_source),
     updateSource: unref(updateSource),
     QueryForm: unref(QueryForm),
     queryFormModel: readonly(unref(queryFormState)),

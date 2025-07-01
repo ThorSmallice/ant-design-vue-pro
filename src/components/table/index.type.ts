@@ -30,7 +30,7 @@ import {
 type TableFieldNames = string | string[] | 'self'
 
 export interface TableInstance {
-    source: any[]
+    source: Ref<any>
     updateSource: (extraParams?: any) => Promise<void>
     resetPage: (pagin?: PaginationDefault) => Promise<void>
     QueryForm: () => JSX.Element | VNode
