@@ -137,13 +137,13 @@ export type controlColumnSlotOptions = {
     controlColumnInfo
 
 export type ciesBtnsSlotOptions = {
-    CreateBtn: VNode | JSX.Element
-    ImportBtn: VNode | JSX.Element
-    ExportDropDown: VNode | JSX.Element
-    ExportCurrentPageBtn: VNode | JSX.Element
-    ExportAllBtn: VNode | JSX.Element
-    ColumnSettingBtn: VNode | JSX.Element
-    DownloadTemplateBtn: VNode | JSX.Element
+    CreateBtn: VNode | JSX.Element | ((props?: OwnBtnProps) => JSX.Element | VNode)
+    ImportBtn: VNode | JSX.Element | ((props?: OwnBtnProps) => JSX.Element | VNode)
+    ExportDropDown: VNode | JSX.Element | ((props?: OwnDropProps) => JSX.Element | VNode)
+    ExportCurrentPageBtn: VNode | JSX.Element | ((props?: OwnBtnProps) => JSX.Element | VNode)
+    ExportAllBtn: VNode | JSX.Element | ((props?: OwnBtnProps) => JSX.Element | VNode)
+    ColumnSettingBtn: VNode | JSX.Element | ((props?: OwnBtnProps) => JSX.Element | VNode)
+    DownloadTemplateBtn: VNode | JSX.Element | ((props?: OwnBtnProps) => JSX.Element | VNode)
 }
 export type queryFormSlotOptions = {
     SubmitBtn: VNode | JSX.Element

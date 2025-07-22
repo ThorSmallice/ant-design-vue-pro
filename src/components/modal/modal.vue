@@ -70,6 +70,7 @@ const {
     title,
     open,
     mask = true,
+    top = 100,
     full,
     draggable,
     centered,
@@ -106,7 +107,7 @@ const windowHeight = window.innerHeight
 
 const initialPosition = reactive({
     x: 0,
-    y: 100,
+    y: top,
 })
 
 const { style } = useDraggable(modalRef, {
@@ -123,7 +124,7 @@ watch(
             ? (windowHeight - modalRef.value?.offsetHeight) / 2
             : full
             ? 0
-            : 100
+            : top
     }
 )
 
