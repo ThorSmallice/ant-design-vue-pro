@@ -1,5 +1,13 @@
 # 更新日志
 
+## v1.0.113~114
+
+### Bug Fixes
+
+-   修改 table datasource 更新方式
+-   修改 customCiesBtnSlot 类型
+-   修复 table slot 转发的 key 值问题
+
 ## v1.0.111~112
 
 ### 新增

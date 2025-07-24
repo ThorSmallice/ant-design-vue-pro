@@ -50,7 +50,7 @@
             >
                 <slot name="default"></slot>
                 <template v-for="slot in aTableSlots" :key="slot" v-slot:[slot]="temp">
-                    <slot :name="slot" v-bind="temp"></slot>
+                    <slot :key="slot" :name="slot" v-bind="temp"></slot>
                 </template>
             </ATable>
         </div>
