@@ -635,16 +635,16 @@ const getCustomRender = (
         }
 
         if (type === 'number') {
-            const val = Number(text)
+            const val = text ? Number(text) : null
             return renderWithEllipsis(
                 { ellipsis, width, textAlign: align ?? columnsAlign },
                 isFunction(numberFormat)
                     ? numberFormat?.(numeral(val), text)
-                    : numeral?.(
+                    : isNumber(val)
+                    ? numeral?.(
                           isFunction(numberComputed) ? numberComputed?.(new Big(val), Big) : val
-                      )?.format?.((numberFormat as unknown as string) || '0[.]00') ||
-                          emptyText ||
-                          columnsEmptyText
+                      )?.format?.((numberFormat as unknown as string) || '0[.]00')
+                    : emptyText || columnsEmptyText
             )
         }
 
