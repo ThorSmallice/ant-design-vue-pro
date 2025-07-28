@@ -12,7 +12,6 @@ import {
     ref,
     toValue,
     unref,
-    useId,
     watch,
     WatchCallback,
     WatchHandle,
@@ -145,7 +144,7 @@ export default (props: TableUseDataSourceProps) => {
         )
     }
     const listener = ref<WatchHandle>(null)
-    const id = useId()
+
     watch(
         () => [autoRequest, dataSource],
         () => {
