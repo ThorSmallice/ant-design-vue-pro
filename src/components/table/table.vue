@@ -66,7 +66,7 @@
 <script setup lang="tsx">
 import config from '@config/index'
 import { Table as ATable, Flex, TableColumnProps } from 'ant-design-vue'
-import { computed, reactive, readonly, ref, toValue, unref, watch } from 'vue'
+import { computed, reactive, readonly, ref, toValue, unref, useId, watch } from 'vue'
 import { ATableSlotsWhiteList, TableInstance, TableProps, TableSlots } from './index.type'
 import useAutoSize from './useAutoSize'
 import useColumns from './useColumns'
@@ -169,6 +169,7 @@ const {
     queryFormResetBtn = config.table.queryFormResetBtn,
     queryFormSubmitBtnProps = config.table.queryFormSubmitBtnProps,
     queryFormResetBtnProps = config.table.queryFormResetBtnProps,
+    queryFormOperationBtnsLayout = config.table.queryFormOperationBtnsLayout,
     queryFormControlFormItemProps = config.table.queryFormControlFormItemProps,
     queryFormItemsControlProps = config.table.queryFormItemsControlProps,
     queryFormTimeFormat = config.table.queryFormTimeFormat,
@@ -239,6 +240,7 @@ const { QueryForm, QueryFormInstance, queryFormParams, queryFormState } = $$(
         queryFormResetBtn,
         queryFormSubmitBtnProps,
         queryFormResetBtnProps,
+        queryFormOperationBtnsLayout,
         queryFormControlFormItemProps,
         queryFormItemsControlProps,
         ciesBtnsInQueryForm,
@@ -316,14 +318,10 @@ const { source, loading, total, updateSource }: any = $$(
     })
 )
 
+const id = useId()
 watch(
     () => source,
     () => {
-        if (dataSource) {
-            data_source.value = dataSource
-            return
-        }
-
         if (!autoRequest) {
             return
         }

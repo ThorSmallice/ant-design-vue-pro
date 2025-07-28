@@ -231,6 +231,7 @@ export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 's
     }
     queryFormResetBtn?: TableQueryFormProps['queryFormResetBtn']
     queryFormResetBtnProps?: TableQueryFormProps['queryFormResetBtnProps'] & { [key: string]: any }
+    queryFormOperationBtnsLayout?: TableQueryFormProps['queryFormOperationBtnsLayout']
     queryFormControlFormItemProps?: TableQueryFormProps['queryFormControlFormItemProps'] & {
         [key: string]: any
     }

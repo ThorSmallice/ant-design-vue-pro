@@ -93,6 +93,7 @@ setAntdConfig()
 | queryFormSubmitBtnProps         | 筛选表单提交按钮 的 Props                                                                     | false/[OwnBtnProps](#ownbtnprops)                                                             | -                                                                                         |  -   |   \*   |
 | queryFormResetBtn               | 筛选表单重置按钮                                                                              | boolean / (form: [TableQueryFormInstance](#tablequeryforminstance)) => VNode                  | -                                                                                         |  -   |   \*   |
 | queryFormResetBtnProps          | 筛选表单重置按钮 的 Props                                                                     | false/[OwnBtnProps](#ownbtnprops)                                                             | -                                                                                         |  -   |   \*   |
+| queryFormOperationBtnsLayout    | 筛选表单操作按钮布局方式                                                                      | 'fixRight' / 'followLast' / 'followLastEnd' [说明](#queryFormOperationBtnsLayout)             | 'fixRight'                                                                                |  -   |   \*   |
 | queryFormControlFormItemProps   | 配置筛选表单放置操作按钮的 FormItem                                                           | [FormItemProps](https://www.antdv.com/components/form-cn#form-item)                           | -                                                                                         |  -   |   \*   |
 | queryFormItemsControlProps      | 统一配置筛选表单控件的 props                                                                  | object                                                                                        | -                                                                                         |  -   |   \*   |
 | queryFormSubmitWithReset        | 筛选表单点击重置触发提交                                                                      | boolean                                                                                       | false                                                                                     |  -   |   \*   |
@@ -228,6 +229,14 @@ setAntdConfig()
 | controlProps  | 控件 Props                                                                        | object                                                              | -                    |      |
 | colProps      | 所在列的配置                                                                      | [ColProps](https://www.antdv.com/components/grid-cn#col)            | -                    |      |
 | customControl | 自定义控件,返回一个控件,绑定 model 对应值即可                                     | (model: 表单域绑定的 model, name:string, realName: string) => VNode | -                    |      |
+
+### QueryFormOperationBtnsLayout
+
+| 参数          | 说明                                    | 类型 | 默认值 |
+| :------------ | :-------------------------------------- | :--- | :----- |
+| fixRight      | 固定在右侧。 表单项和操作按钮呈左右布局 | -    | √      |
+| followLast    | 跟随最后一个表单项                      | -    | -      |
+| followLastEnd | 跟随最后一个表单项并在剩余空间的末尾    | -    | -      |
 
 ### TableQueryFormInstance
 

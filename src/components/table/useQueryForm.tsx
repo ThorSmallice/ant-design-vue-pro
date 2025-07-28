@@ -44,7 +44,15 @@ export type UseFormOptions = {
     onValidate?: Callbacks['onValidate']
 }
 
+/**
+ * 操作按钮布局方式
+ * fixRight 固定在右侧
+ * followLast 跟随最后一个表单项
+ * followLastEnd 跟随最后一个表单项并在剩余空间的末尾
+ */
+export type TableQueryFormOperationBtnsLayout = 'fixRight' | 'followLast' | 'followLastEnd'
 export interface TableQueryFormProps {
+    queryFormOperationBtnsLayout?: TableQueryFormOperationBtnsLayout
     queryFormItems?: TableQueryFormItemProps[]
     queryFormProps?: FormProps
     queryFormRowProps?: RowProps
@@ -68,6 +76,7 @@ export interface TableQueryFormProps {
 
 const useQueryForm = (props: TableQueryFormProps) => {
     const {
+        queryFormOperationBtnsLayout,
         queryFormItems,
         queryFormProps,
         queryFormRowProps,
@@ -159,6 +168,60 @@ const useQueryForm = (props: TableQueryFormProps) => {
     const ColumnSettingBtn = $(computed(() => h(ciesBtnsVNode?.ColumnSettingBtn)))
     const DownloadTemplateBtn = $(computed(() => h(ciesBtnsVNode?.DownloadTemplateBtn)))
 
+    const OperationBtns = (props: any) => (
+        <>
+            {customQueryFormBtns && isFunction(customQueryFormBtns) ? (
+                customQueryFormBtns?.({
+                    SubmitBtn,
+                    ResetBtn,
+                    QueryFormInstance,
+                    CreateBtn,
+                    ImportBtn,
+                    ExportDropDown,
+                    ExportCurrentPageBtn,
+                    ExportAllBtn,
+                    ColumnSettingBtn,
+                    DownloadTemplateBtn,
+                })
+            ) : (
+                <Form.Item {...props} {...queryFormControlFormItemProps}>
+                    <Flex
+                        gap={8}
+                        wrap="wrap"
+                        justify={
+                            ['fixRight', 'followLastEnd'].includes(queryFormOperationBtnsLayout)
+                                ? 'flex-end'
+                                : 'flex-start'
+                        }
+                    >
+                        {SubmitBtn}
+                        {ResetBtn}
+                        {ciesBtnsInQueryForm ? (
+                            customCiesBtns && isFunction(customCiesBtns) ? (
+                                customCiesBtns?.({
+                                    CreateBtn,
+                                    ImportBtn,
+                                    ExportDropDown,
+                                    ExportCurrentPageBtn,
+                                    ExportAllBtn,
+                                    ColumnSettingBtn,
+                                    DownloadTemplateBtn,
+                                })
+                            ) : (
+                                <>
+                                    {CreateBtn}
+                                    {ImportBtn}
+                                    {ExportDropDown}
+                                    {DownloadTemplateBtn}
+                                    {ColumnSettingBtn}
+                                </>
+                            )
+                        ) : null}
+                    </Flex>
+                </Form.Item>
+            )}
+        </>
+    )
     const QueryForm = () => (
         <Form
             ref={(e) => {
@@ -214,49 +277,17 @@ const useQueryForm = (props: TableQueryFormProps) => {
                             </Col>
                         )
                     })}
+
+                    {['followLast', 'followLastEnd'].includes(queryFormOperationBtnsLayout) ? (
+                        <Col flex={1}>
+                            <OperationBtns />
+                        </Col>
+                    ) : null}
                 </Row>
-                {customQueryFormBtns && isFunction(customQueryFormBtns) ? (
-                    customQueryFormBtns?.({
-                        SubmitBtn,
-                        ResetBtn,
-                        QueryFormInstance,
-                        CreateBtn,
-                        ImportBtn,
-                        ExportDropDown,
-                        ExportCurrentPageBtn,
-                        ExportAllBtn,
-                        ColumnSettingBtn,
-                        DownloadTemplateBtn,
-                    })
-                ) : (
-                    <Form.Item class={['ml-2']} {...queryFormControlFormItemProps}>
-                        <Flex gap={8} wrap={'wrap'} justify="flex-end">
-                            {SubmitBtn}
-                            {ResetBtn}
-                            {ciesBtnsInQueryForm ? (
-                                customCiesBtns && isFunction(customCiesBtns) ? (
-                                    customCiesBtns?.({
-                                        CreateBtn,
-                                        ImportBtn,
-                                        ExportDropDown,
-                                        ExportCurrentPageBtn,
-                                        ExportAllBtn,
-                                        ColumnSettingBtn,
-                                        DownloadTemplateBtn,
-                                    })
-                                ) : (
-                                    <>
-                                        {CreateBtn}
-                                        {ImportBtn}
-                                        {ExportDropDown}
-                                        {DownloadTemplateBtn}
-                                        {ColumnSettingBtn}
-                                    </>
-                                )
-                            ) : null}
-                        </Flex>
-                    </Form.Item>
-                )}
+
+                {['fixRight'].includes(queryFormOperationBtnsLayout) ? (
+                    <OperationBtns class="ml-2  " />
+                ) : null}
             </Flex>
         </Form>
     )

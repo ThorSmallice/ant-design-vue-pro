@@ -1,5 +1,15 @@
 # 更新日志
 
+## v1.0.116
+
+### 新增
+
+-   新增 Table 组件 queryFormOperationBtnsLayout 配置项，提供三种表单操作按钮布局
+
+### Bug Fixes
+
+-   修复 table datasource 属性不更新问题
+
 ## v1.0.113~115
 
 ### Bug Fixes

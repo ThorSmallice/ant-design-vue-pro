@@ -81,8 +81,9 @@ export const TableConfig: TableProps = {
         children: '重置',
         icon: <UndoOutlined />,
     },
+    queryFormOperationBtnsLayout: 'fixRight',
     queryFormControlFormItemProps: {
-        class: 'w-auto',
+        class: '',
     },
     queryFormItemsControlProps: null,
     indexColumn: true,

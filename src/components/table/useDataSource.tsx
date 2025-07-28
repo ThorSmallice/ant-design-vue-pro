@@ -12,6 +12,7 @@ import {
     ref,
     toValue,
     unref,
+    useId,
     watch,
     WatchCallback,
     WatchHandle,
@@ -144,8 +145,9 @@ export default (props: TableUseDataSourceProps) => {
         )
     }
     const listener = ref<WatchHandle>(null)
+    const id = useId()
     watch(
-        () => [autoRequest, props?.dataSource],
+        () => [autoRequest, dataSource],
         () => {
             if (listener.value) {
                 listener.value.stop()
@@ -163,7 +165,6 @@ export default (props: TableUseDataSourceProps) => {
     )
 
     const source = computed(() => {
-        // if (dataSource) return unref(dataSource)
         return unref(own_source)
     })
 
