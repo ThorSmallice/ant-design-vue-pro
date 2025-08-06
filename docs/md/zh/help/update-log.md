@@ -1,5 +1,11 @@
 # 更新日志
 
+## v1.0.117
+
+## Bug Fixes
+
+-   修复 table datasource 赋值后，total 不更新问题
+
 ## v1.0.116
 
 ### 新增

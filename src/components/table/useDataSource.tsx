@@ -153,7 +153,9 @@ export default (props: TableUseDataSourceProps) => {
                 listener.value = null
             }
             if (autoRequest === false || dataSource) {
-                return (own_source.value = dataSource)
+                own_source.value = dataSource
+                total.value = dataSource?.length
+                return
             }
 
             listener.value = createListener()
