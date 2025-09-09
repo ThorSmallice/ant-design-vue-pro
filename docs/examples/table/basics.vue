@@ -59,6 +59,9 @@ const sexOptions = [
         value: 0,
     },
 ]
+const autoRequest = ref({
+    immediate: false,
+})
 
 const columns = computed((): TableProps['columns'] => {
     return [

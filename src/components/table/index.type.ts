@@ -35,6 +35,7 @@ export interface TableInstance {
     resetPage: (pagin?: PaginationDefault) => Promise<void>
     QueryForm: () => JSX.Element | VNode
     queryFormModel: Reactive<{ values: any }>
+    setQueryFormModel: Ref<(model: Record<string, any> | ((vals: any) => void)) => void>
     QueryFormInstance: Partial<TableQueryFormInstance>
     Pagination: () => JSX.Element | VNode
     cuModalFormIsEdit: Ref<TableUseCUReturnOptions['cuModalFormIsEdit']>

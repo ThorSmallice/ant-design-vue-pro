@@ -1,5 +1,15 @@
 # 更新日志
 
+## v1.0.118
+
+### 新增
+
+- Table setQueryFormModel方法
+
+### Bug Fixes
+
+- Table 监听params的错误
+
 ## v1.0.117
 
 ## Bug Fixes

@@ -123,7 +123,8 @@ export default (props: TableUseDataSourceProps) => {
             params: { ...(params?.value || {}) },
             apis: { ...(api?.value || {}) },
         })
-        return autoRequestDependencies?.(options) || { ...(params?.value || {}) }
+
+        return autoRequestDependencies?.(options) || params || {}
     })
 
     const createListener = () => {

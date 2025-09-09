@@ -291,11 +291,21 @@ const useQueryForm = (props: TableQueryFormProps) => {
             </Flex>
         </Form>
     )
+    const setQueryFormModel = (model: Record<string, any> | ((vals: any) => void)) => {
+        if (isFunction(model)) {
+            return model(queryFormState.values)
+        }
+        return (queryFormState.values = {
+            ...queryFormState.values,
+            ...(model || {}),
+        })
+    }
     return {
         QueryForm,
         QueryFormInstance,
         queryFormParams,
         queryFormState,
+        setQueryFormModel,
     }
 }
 

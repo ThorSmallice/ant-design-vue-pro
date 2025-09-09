@@ -228,7 +228,7 @@ const data_source = defineModel('value', { default: [] })
 
 const ciesBtnsVNode = ref({})
 
-const { QueryForm, QueryFormInstance, queryFormParams, queryFormState } = $$(
+const { QueryForm, QueryFormInstance, queryFormParams, queryFormState, setQueryFormModel } = $$(
     useQueryForm({
         queryFormItems,
         queryFormProps,
@@ -492,6 +492,7 @@ defineExpose<Readonly<TableInstance>>({
     QueryForm: unref(QueryForm),
     queryFormModel: readonly(unref(queryFormState)),
     QueryFormInstance: readonly(unref(QueryFormInstance)),
+    setQueryFormModel,
     Pagination: unref(Pagination),
     cuModalFormIsEdit: readonly(cuModalFormIsEdit),
     getCuModalFormIsEdit,
