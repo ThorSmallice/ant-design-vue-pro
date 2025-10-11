@@ -322,9 +322,9 @@ const id = useId()
 watch(
     () => source,
     () => {
-        if (!autoRequest) {
-            return
-        }
+        // if (!autoRequest  ) {
+        //     return
+        // }
 
         data_source.value = source?.value
     },

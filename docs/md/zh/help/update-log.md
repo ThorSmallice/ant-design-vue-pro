@@ -1,14 +1,20 @@
 # 更新日志
 
+## v1.0.119 ~ v1.0.120
+
+### Bug Fixes
+
+-   更改 Table 组件 dataSouce 赋值逻辑,解决 autoRequest===false 情况下,调用 updataSource 不生效问题
+
 ## v1.0.118
 
 ### 新增
 
-- Table setQueryFormModel方法
+-   Table setQueryFormModel 方法
 
 ### Bug Fixes
 
-- Table 监听params的错误
+-   Table 监听 params 的错误
 
 ## v1.0.117
 
