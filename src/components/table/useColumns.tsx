@@ -396,7 +396,13 @@ export default (props: TableUseColumnsProps) => {
         try {
             const data = (await onBeforeRowDelete?.(record)) || { id: record?.id }
             const res = await apis?.delete?.(data, record)
-            updateSource?.()
+            try {
+                const { list }: any = await updateSource?.()
+
+                if (!list?.length && pagination?.page > 1) {
+                    pagination.page = pagination.page - 1
+                }
+            } catch (error) {}
 
             if (onRowDeleteSuccess?.(res) === false) {
                 return

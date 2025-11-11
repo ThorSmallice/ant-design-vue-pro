@@ -84,9 +84,10 @@ export default (props: TableUseDataSourceProps) => {
 
         controller = new AbortController()
 
-        api?.list?.(params, {
-            signal: controller?.signal,
-        })
+        return api
+            ?.list?.(params, {
+                signal: controller?.signal,
+            })
             ?.then(async (res: AxiosResponse) => {
                 const res_trans = await new Promise(async (resolve, reject) => {
                     try {
@@ -103,19 +104,30 @@ export default (props: TableUseDataSourceProps) => {
                     fieldsNames?.total === 'self'
                         ? res_trans
                         : get(res_trans, fieldsNames.list) || []
+
+                return Promise.resolve({
+                    total: total.value,
+                    list: own_source.value,
+                })
             })
             ?.catch?.((err) => {
                 own_source.value = []
                 total.value = 0
                 onSourceError?.(err)
+
+                return Promise.reject({
+                    err,
+                    total: 0,
+                    list: [],
+                })
             })
             ?.finally?.(() => {
                 loading.value = false
             })
     }
 
-    const updateSource = (extraParams?: any) => {
-        return api?.list && getSource(Object.assign({}, toValue(params), extraParams || {}))
+    const updateSource = async (extraParams?: any) => {
+        return api?.list && (await getSource(Object.assign({}, toValue(params), extraParams || {})))
     }
 
     const requestDependencies = computed(() => {
