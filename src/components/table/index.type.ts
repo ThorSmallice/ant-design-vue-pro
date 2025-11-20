@@ -39,7 +39,9 @@ export interface TableInstance {
     QueryFormInstance: Partial<TableQueryFormInstance>
     Pagination: () => JSX.Element | VNode
     cuModalFormIsEdit: Ref<TableUseCUReturnOptions['cuModalFormIsEdit']>
-    setCuFormModel: Ref<TableUseCUReturnOptions['setCuFormModel']>
+    setCuFormModel: TableUseCUReturnOptions['setCuFormModel']
+    resetCuFormModel: TableUseCUReturnOptions['resetCuFormModel']
+    CUModalFormInstance: TableUseCUReturnOptions['CUModalFormInstance']
     getCuModalFormIsEdit: Ref<TableUseCUReturnOptions['getCuModalFormIsEdit']>
     cuFormModel: Reactive<{ values: any }>
     CreateBtn: (props?: OwnBtnProps) => JSX.Element | VNode

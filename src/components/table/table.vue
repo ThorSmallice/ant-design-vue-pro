@@ -355,6 +355,8 @@ const {
     cuModalFormIsEdit,
     getCuModalFormIsEdit,
     setCuFormModel,
+    resetCuFormModel,
+    CUModalFormInstance,
 } = $$(
     useCU({
         apis,
@@ -374,6 +376,7 @@ const {
         updateSource,
         tableTextConfig,
         defaultValues: cuFormDefaultValues,
+
         emits,
     })
 )
@@ -496,7 +499,9 @@ defineExpose<Readonly<TableInstance>>({
     Pagination: unref(Pagination),
     cuModalFormIsEdit: readonly(cuModalFormIsEdit),
     getCuModalFormIsEdit,
-    setCuFormModel,
+    setCuFormModel: unref(setCuFormModel),
+    resetCuFormModel: unref(resetCuFormModel),
+    CUModalFormInstance: unref(CUModalFormInstance),
     cuFormModel: readonly(unref(cuFormModel)),
     CreateBtn: unref(CreateBtn),
     ImportBtn: unref(ImportBtn),

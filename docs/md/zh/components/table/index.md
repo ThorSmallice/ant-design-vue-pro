@@ -450,10 +450,14 @@ interface TableInstance {
     updateSource: () => Promise<void> // 更新数据列表的方法
     QueryForm: () => JSX.Element | VNode // 查询表单组件
     queryFormModel: Reactive<{ values: any }> // 查询表单绑定的数据
+    setQueryFormModel: (model: Record<string, any> | ((vals: any) => void)) => void // 设置查询表单绑定的数据
     QueryFormInstance: Partial<TableQueryFormInstance> // 查询表单实例
     Pagination: () => JSX.Element | VNode // 内置分页器组件
     cuModalFormIsEdit: Ref<boolean> // 新增/编辑表单 当前是否为编辑模式 ,false为新增模式
     cuFormModel: Reactive<{ values: any }> // 新增/编辑表单绑定的数据
+    setCuFormModel: (vals?: Record<string, any>) => void // 设置新增/编辑表单绑定的数据
+    resetCuFormModel: () => void // 重置新增/编辑表单绑定的数据
+    CUModalFormInstance: TableCUFormInstance // 新增/编辑表单实例对象
     CreateBtn: (props?: OwnBtnProps) => JSX.Element | VNode // 新增按钮
     ImportBtn: (props?: OwnBtnProps) => JSX.Element | VNode // 导入按钮
     ExportDropDown: (props?: OwnDropProps) => JSX.Element | VNode // 导出数据下拉菜单
@@ -462,6 +466,7 @@ interface TableInstance {
     ColumnSettingBtn: (props?: OwnBtnProps) => JSX.Element | VNode // 列头控件按钮
     DownloadTemplateBtn: (props?: OwnBtnProps) => JSX.Element | VNode // 下载模板按钮
     onResize: (entries?: any) => void // 重新计算scroll.y值
+    loading: Ref<boolean>
 }
 ```
 

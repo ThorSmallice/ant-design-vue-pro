@@ -1,5 +1,16 @@
 # 更新日志
 
+## v1.0.122
+
+### 新增
+
+-   TableInstance 新增 resetCuFormModel 方法
+-   TableInstance 新增 CUModalFormInstance 方法
+
+### 变更
+
+-   TableInstance setCuFormModel 方法从直接替换输入对象改为逐项变更
+
 ## v1.0.121
 
 ### 新增

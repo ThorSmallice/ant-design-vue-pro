@@ -22,6 +22,7 @@ import { FormInstance } from './useQueryForm'
 import dayjs, { Dayjs } from 'dayjs'
 import Modal from '../modal'
 import { ModalProps } from '../modal'
+import { isObject } from 'es-toolkit/compat'
 export interface TableCUFormInstance extends FormInstance {}
 
 export interface TableUseCUReturnOptions {
@@ -35,6 +36,7 @@ export interface TableUseCUReturnOptions {
     getCuModalFormIsEdit: () => boolean
     CUModalFormInstance: TableCUFormInstance
     setCuFormModel: (vals?: Record<string, any>) => void
+    resetCuFormModel: () => void
 }
 
 export interface TableUseCUFormProps {
@@ -334,7 +336,16 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
     }
 
     const setCuFormModel = (vals: any) => {
-        cuFormModel.values = cloneDeep(vals)
+        if (!isObject(vals)) {
+            return console.error('setCuFormModel vals must be object!')
+        }
+        for (const key in vals) {
+            cuFormModel.values[key] = vals[key]
+        }
+    }
+
+    const resetCuFormModel = () => {
+        cuFormModel.values = cloneDeep(initValues)
     }
     const CUModalFormInstance = $(computed(() => formRef.value as TableCUFormInstance))
     return {
@@ -346,6 +357,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         cuModalFormIsEdit,
         getCuModalFormIsEdit: () => cuModalFormIsEdit.value,
         setCuFormModel,
+        resetCuFormModel,
         openCUModalForm,
         CUModalFormInstance,
     }
