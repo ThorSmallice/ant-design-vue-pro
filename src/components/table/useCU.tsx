@@ -163,8 +163,6 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                 }
             }
 
-            submitBtnLoading.value = true
-
             let data: any = null
 
             const cbres = isFunction(onBeforeCuFormSubmit)
@@ -175,7 +173,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                 return
             }
             data = cbres || vals
-
+            submitBtnLoading.value = true
             await apis?.[cuModalFormIsEdit.value ? 'update' : 'create']?.(data)
                 .then((res) => {
                     if (
@@ -251,7 +249,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                 onCancel={cancelCUModalForm}
                 onOk={submitCUModalForm}
                 confirmLoading={submitBtnLoading.value}
-                getContainer={() => tableRef}
+                getContainer={() => tableRef?.value}
                 maskClosable={false}
                 destroyOnClose
                 {...cuFormModalProps}
