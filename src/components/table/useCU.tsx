@@ -249,7 +249,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                 onCancel={cancelCUModalForm}
                 onOk={submitCUModalForm}
                 confirmLoading={submitBtnLoading.value}
-                getContainer={() => tableRef?.value}
+                getContainer={() => tableRef}
                 maskClosable={false}
                 destroyOnClose
                 {...cuFormModalProps}
