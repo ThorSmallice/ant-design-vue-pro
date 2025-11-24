@@ -25,7 +25,7 @@ export interface TableUseDetailProps {
 }
 export interface TableDescItemsProps extends DescriptionsItemProp {
     hidden?: boolean
-    render?: (_: any, record: any, column: TableColumnProps, index: number) => VNode | JSX.Element
+    render?: TableColumnProps['customRender']
 }
 
 export interface TableUseDetailReturnOptions {
@@ -65,14 +65,14 @@ export default (props: TableUseDetailProps): TableUseDetailReturnOptions => {
                     descItemProps,
                     customRender,
                 } = col
-                const { label, hidden, ...o } = descItemProps || {}
+                const { label, hidden, render, ...o } = descItemProps || {}
                 return {
                     ...detailDescItemProps,
                     label: title || label,
                     key: JSON.stringify(dataIndex),
                     chidlren: renderChildren({
                         type,
-
+                        render,
                         dataSource: detailsDataSource?.values,
                         dataIndex,
                         column: col,
@@ -130,7 +130,7 @@ export default (props: TableUseDetailProps): TableUseDetailReturnOptions => {
 
 const renderChildren = ({
     type,
-
+    render,
     dataSource,
     dataIndex,
     column,
@@ -143,6 +143,17 @@ const renderChildren = ({
     numberComputed,
     emptyText,
 }) => {
+    if (render && isFunction(render)) {
+        return render?.({
+            text: get(dataSource, dataIndex),
+            value: null,
+            record: dataSource,
+            index,
+            renderIndex: null,
+            column,
+        })
+    }
+
     if (isFunction(customRender)) {
         return customRender?.({
             text: get(dataSource, dataIndex),
