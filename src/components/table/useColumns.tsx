@@ -484,7 +484,7 @@ export default (props: TableUseColumnsProps) => {
         ) as OwnPopoverProps
 
         const content = (
-            <Flex vertical>
+            <div class="grid max-h-[80vh] overflow-y-auto">
                 {transedColumns.value?.map?.((col: TableColumnProps & { show }, i) => {
                     const { dataIndex, title, key } = col
                     return (
@@ -494,7 +494,7 @@ export default (props: TableUseColumnsProps) => {
                         </Space>
                     )
                 })}
-            </Flex>
+            </div>
         )
 
         return (
