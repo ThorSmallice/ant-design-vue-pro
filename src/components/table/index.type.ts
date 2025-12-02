@@ -154,6 +154,7 @@ export type queryFormSlotOptions = {
     QueryFormInstance: TableQueryFormInstance
 } & ciesBtnsSlotOptions
 export interface TableProps extends Omit<ATableProps, 'columns' | 'loading' | 'scroll'> {
+    isTree?: boolean // 是否是树状表格
     full?: boolean // 高度100%
     scroll?: TableUseAutoSizeProps['scroll']
     autoSizeConfig?: TableUseAutoSizeProps['autoSizeConfig']

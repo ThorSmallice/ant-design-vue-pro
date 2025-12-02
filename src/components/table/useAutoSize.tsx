@@ -1,6 +1,6 @@
 import { ColumnProps } from 'ant-design-vue/es/table'
 import { debounce } from 'es-toolkit'
-import { isNumber, isString, merge } from 'es-toolkit/compat'
+import { has, isNumber, isString, merge } from 'es-toolkit/compat'
 import { computed, nextTick, onBeforeMount, onMounted, Ref, ref, watch } from 'vue'
 
 export interface TableUseAutoSizeProps {
@@ -19,6 +19,7 @@ export interface TableUseAutoSizeProps {
             edges?: Array<'leading' | 'trailing'>
         }
     }>
+    isTree?: boolean
     subtractEleClasses?: string[]
     tableRealRegionClasses?: string[]
     tableScrollWrapClass?: string
@@ -34,6 +35,7 @@ const useAutoSize = (props: TableUseAutoSizeProps) => {
         tableRealRegionClasses,
         minScollHeight = 50,
         tableScrollWrapClass,
+        isTree,
         resColumns,
     } = $(props)
     const y = ref<string | number>(null)
@@ -91,6 +93,8 @@ const useAutoSize = (props: TableUseAutoSizeProps) => {
                 parseFloat(wrapStyles?.paddingTop) -
                 parseFloat(wrapStyles?.paddingBottom)
 
+            console.log('wrapEffectiveHeight', wrapEffectiveHeight)
+
             const eles_height = subtractEleClasses?.map?.((className) =>
                 computedHeight(wrapContainer?.querySelector(`${className}`))
             ) || [0]
@@ -112,8 +116,14 @@ const useAutoSize = (props: TableUseAutoSizeProps) => {
                 console.warn('与更新前高度一致,已阻止高度重置!')
                 return
             }
+
             tbodyRegionHeight.value = tableRealHeight
-            y.value = tableRealHeight >= maxHeight ? maxHeight : null
+
+            if (isTree) {
+                y.value = tableRealHeight
+            } else {
+                y.value = tableRealHeight >= maxHeight ? maxHeight : null
+            }
         },
         resizeConfig?.value?.wait,
         resizeConfig?.value?.options

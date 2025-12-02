@@ -104,6 +104,7 @@ const onResizeColumn = (w: number, col: TableColumnProps) => {
 }
 
 const {
+    isTree = config.table.isTree,
     full = config.table.full,
     scroll = config.table.scroll,
     autoSizeConfig = config.table.autoSizeConfig,
@@ -443,6 +444,7 @@ const { x, y, scrollToFirstRowOnChange, onResize } = $$(
         autoSizeConfig,
         minScollHeight,
         wrapContainer: tableWrapRef,
+        isTree,
         subtractEleClasses: [
             '.ant-table-title',
             '.ant-table-thead',

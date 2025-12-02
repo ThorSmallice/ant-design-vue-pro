@@ -1,5 +1,18 @@
 # 更新日志
 
+## v1.0.123-130
+
+### 新增
+
+-   table descItemsProps 新增 render 配置
+-   table descItemsProps 新增 sort 配置
+-   增加 isTree 配置项,解决树状表格 autoSize 对于 Y 值的计算问题
+
+### Bug Fixes
+
+-   更改 cuform 提交按钮的 loading 开启时机
+-   修复 ciesBtn 传参污染问题
+
 ## v1.0.122
 
 ### 新增
