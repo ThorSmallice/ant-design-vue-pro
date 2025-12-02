@@ -85,6 +85,7 @@ const useAutoSize = (props: TableUseAutoSizeProps) => {
             await nextTick()
             if (!wrapContainer) return
             const wrapStyles = getComputedStyle(wrapContainer)
+
             const wrapEffectiveHeight =
                 wrapContainer?.clientHeight -
                 parseFloat(wrapStyles?.paddingTop) -
@@ -112,7 +113,7 @@ const useAutoSize = (props: TableUseAutoSizeProps) => {
                 return
             }
             tbodyRegionHeight.value = tableRealHeight
-            y.value = tableRealHeight > maxHeight ? maxHeight : null
+            y.value = tableRealHeight >= maxHeight ? maxHeight : null
         },
         resizeConfig?.value?.wait,
         resizeConfig?.value?.options

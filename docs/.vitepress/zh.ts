@@ -120,7 +120,18 @@ function sidebarComponents(): DefaultTheme.SidebarItem[] {
                 },
             ],
         },
-    ]
+        process.env.NODE_ENV == 'development'
+            ? {
+                  text: '测试用例',
+                  items: [
+                      {
+                          text: 'Test',
+                          link: 'test',
+                      },
+                  ],
+              }
+            : null,
+    ]?.filter?.((item) => Boolean(item))
 }
 
 function sidebarHelp(): DefaultTheme.SidebarItem[] {
