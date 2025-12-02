@@ -92,6 +92,7 @@ const useQueryForm = (props: TableQueryFormProps) => {
         ciesBtnsInQueryForm,
         ciesBtnsVNode,
         defaultValues,
+        exportBtnMode,
         emits,
     } = $(props)
 
@@ -211,7 +212,8 @@ const useQueryForm = (props: TableQueryFormProps) => {
                                 <>
                                     {CreateBtn}
                                     {ImportBtn}
-                                    {ExportDropDown}
+                                    {exportBtnMode === 'dropdown' && ExportDropDown}
+                                    {exportBtnMode === 'all' && ExportAllBtn}
                                     {DownloadTemplateBtn}
                                     {ColumnSettingBtn}
                                 </>

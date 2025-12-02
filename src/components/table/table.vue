@@ -246,6 +246,7 @@ const { QueryForm, QueryFormInstance, queryFormParams, queryFormState, setQueryF
         ciesBtnsInQueryForm,
         ciesBtnsVNode,
         defaultValues: queryFormDefaultValues,
+        exportBtnMode,
         emits,
     })
 )
