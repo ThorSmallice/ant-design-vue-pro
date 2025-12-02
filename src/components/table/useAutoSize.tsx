@@ -120,7 +120,7 @@ const useAutoSize = (props: TableUseAutoSizeProps) => {
             tbodyRegionHeight.value = tableRealHeight
 
             if (isTree) {
-                y.value = tableRealHeight
+                y.value = maxHeight
             } else {
                 y.value = tableRealHeight >= maxHeight ? maxHeight : null
             }
