@@ -54,7 +54,7 @@ export default (props: TableUseDetailProps): TableUseDetailReturnOptions => {
 
     const descItems = computed(() => {
         return columns
-            ?.sort?.((a, b) => (a?.descItemProps?.sort || 0) - (b?.descItemProps?.sort || 0))
+            ?.sort?.((a, b) => a?.descItemProps?.sort - b?.descItemProps?.sort)
             ?.map?.((col, index) => {
                 const {
                     type,

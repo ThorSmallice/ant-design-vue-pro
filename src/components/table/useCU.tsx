@@ -261,11 +261,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                     <Form ref={formRef} model={cuFormModel.values} {...cuFormProps}>
                         <Row gutter={[24, 10]} {...cuFormRowProps}>
                             {columns
-                                ?.sort?.(
-                                    (a, b) =>
-                                        (a?.formItemProps?.sort || 0) -
-                                        (b?.formItemProps?.sort || 0)
-                                )
+                                ?.sort?.((a, b) => a?.formItemProps?.sort - b?.formItemProps?.sort)
                                 ?.map?.(({ title, dataIndex, type, formItemProps }, i: number) => {
                                     const {
                                         name,
