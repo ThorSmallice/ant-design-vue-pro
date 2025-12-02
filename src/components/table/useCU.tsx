@@ -227,7 +227,10 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
     }
     const CreateBtn = (props?: OwnBtnProps) => {
         if (!createBtn || !apis?.create) return null
-        const { children, ...btnProps } = merge(createBtn || {}, props || {}) as OwnBtnProps
+        const { children, ...btnProps } = merge(
+            { ...(createBtn || {}) },
+            props || {}
+        ) as OwnBtnProps
 
         return (
             <Button class="flex items-center" onClick={() => openCUModalForm(false)} {...btnProps}>
@@ -258,7 +261,11 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                     <Form ref={formRef} model={cuFormModel.values} {...cuFormProps}>
                         <Row gutter={[24, 10]} {...cuFormRowProps}>
                             {columns
-                                ?.sort?.((a, b) => a?.formItemProps?.sort - b?.formItemProps?.sort)
+                                ?.sort?.(
+                                    (a, b) =>
+                                        (a?.formItemProps?.sort || 0) -
+                                        (b?.formItemProps?.sort || 0)
+                                )
                                 ?.map?.(({ title, dataIndex, type, formItemProps }, i: number) => {
                                     const {
                                         name,

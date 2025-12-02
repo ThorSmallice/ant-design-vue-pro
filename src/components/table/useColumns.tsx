@@ -479,7 +479,7 @@ export default (props: TableUseColumnsProps) => {
     const ColumnSettingBtn = (props: OwnPopoverProps) => {
         if (columnSettingBtn === false) return null
         const { children, buttonProps, ...popverProps } = merge(
-            columnSettingBtn || {},
+            { ...(columnSettingBtn || {}) },
             props || {}
         ) as OwnPopoverProps
 
@@ -659,7 +659,7 @@ const getCustomRender = (
                 if (!(controlColumnBtns && isObject((controlColumnBtns as any)?.detail)))
                     return null
                 const { children, ...btnProps } = merge(
-                    controlColumnBtns?.detail || {},
+                    { ...(controlColumnBtns?.detail || {}) },
                     props || {}
                 ) as OwnBtnProps
 
@@ -673,7 +673,7 @@ const getCustomRender = (
             const EditBtn = (props?: OwnBtnProps) => {
                 if (!(controlColumnBtns && isObject((controlColumnBtns as any)?.edit))) return null
                 const { children, ...btnProps } = merge(
-                    controlColumnBtns?.edit || {},
+                    { ...(controlColumnBtns?.edit || {}) },
                     props || {}
                 ) as OwnBtnProps
 
@@ -687,7 +687,7 @@ const getCustomRender = (
                 if (!(controlColumnBtns && isObject((controlColumnBtns as any)?.delete)))
                     return null
                 const { children, ...btnProps } = merge(
-                    controlColumnBtns?.delete || {},
+                    { ...(controlColumnBtns?.delete || {}) },
                     props || {}
                 ) as OwnBtnProps
 

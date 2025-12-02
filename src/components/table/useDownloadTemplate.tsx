@@ -103,7 +103,7 @@ export default (props: TableUseDownloadTemplateProps) => {
         if (!downloadTemplateBtn || !apis?.template) return null
 
         const { children, ...btnProps } = merge(
-            downloadTemplateBtn || {},
+            { ...(downloadTemplateBtn || {}) },
             props || {}
         ) as OwnBtnProps
 

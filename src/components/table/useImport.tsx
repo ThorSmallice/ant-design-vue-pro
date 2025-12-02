@@ -64,7 +64,10 @@ export default (props: TableUseImportProps) => {
     }
     const ImportBtn = (props?: OwnBtnProps) => {
         if (!importBtn || !apis?.import) return null
-        const { children, ...btnProps } = merge(importBtn || {}, props || {}) as OwnBtnProps
+        const { children, ...btnProps } = merge(
+            { ...(importBtn || {}) },
+            props || {}
+        ) as OwnBtnProps
 
         return (
             <Upload

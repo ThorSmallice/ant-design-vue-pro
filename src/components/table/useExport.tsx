@@ -144,7 +144,7 @@ export default (props: TableUseExportProps) => {
     const ExportCurrentPageBtn = (props?: OwnBtnProps) => {
         if (!exportCurrentPageBtn || !apis?.export) return null
         const { children, ...btnProps } = merge(
-            exportCurrentPageBtn || {},
+            { ...(exportCurrentPageBtn || {}) },
             props || {}
         ) as OwnBtnProps
 
@@ -162,7 +162,10 @@ export default (props: TableUseExportProps) => {
     const ExportAllBtn = (props?: OwnBtnProps) => {
         if (!exportAllBtn || !apis?.export) return null
 
-        const { children, ...btnProps } = merge(exportAllBtn || {}, props || {}) as OwnBtnProps
+        const { children, ...btnProps } = merge(
+            { ...(exportAllBtn || {}) },
+            props || {}
+        ) as OwnBtnProps
 
         return (
             <Button
@@ -182,7 +185,7 @@ export default (props: TableUseExportProps) => {
     const ExportDropDown = (props?: OwnDropProps) => {
         if (!exportDropdown || !apis?.export) return null
         const { children, buttonProps, ...dropProps } = merge(
-            exportDropdown || {},
+            { ...(exportDropdown || {}) },
             props || {}
         ) as OwnDropProps
 

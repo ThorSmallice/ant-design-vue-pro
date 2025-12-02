@@ -25,6 +25,7 @@ export interface TableUseDetailProps {
 }
 export interface TableDescItemsProps extends DescriptionsItemProp {
     hidden?: boolean
+    sort?: number
     render?: TableColumnProps['customRender']
 }
 
@@ -53,6 +54,7 @@ export default (props: TableUseDetailProps): TableUseDetailReturnOptions => {
 
     const descItems = computed(() => {
         return columns
+            ?.sort?.((a, b) => (a?.descItemProps?.sort || 0) - (b?.descItemProps?.sort || 0))
             ?.map?.((col, index) => {
                 const {
                     type,
