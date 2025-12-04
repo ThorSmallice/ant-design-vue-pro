@@ -93,7 +93,7 @@ const useAutoSize = (props: TableUseAutoSizeProps) => {
                 parseFloat(wrapStyles?.paddingTop) -
                 parseFloat(wrapStyles?.paddingBottom)
 
-            console.log('wrapEffectiveHeight', wrapEffectiveHeight)
+            // console.log('wrapEffectiveHeight', wrapEffectiveHeight)
 
             const eles_height = subtractEleClasses?.map?.((className) =>
                 computedHeight(wrapContainer?.querySelector(`${className}`))

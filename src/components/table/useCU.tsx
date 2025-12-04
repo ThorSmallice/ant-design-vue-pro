@@ -308,6 +308,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                                                     label={label || title}
                                                     name={path}
                                                     rules={rules}
+                                                    hidden={hidden}
                                                     {...oths}
                                                 >
                                                     {isFunction(customControl) ? (

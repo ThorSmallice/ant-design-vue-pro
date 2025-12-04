@@ -5,7 +5,6 @@
                 isTree
                 full
                 :params="params"
-                :show-expand-column="true"
                 ref="tableRef"
                 columns-align="center"
                 :index-column-width="60"
@@ -14,13 +13,7 @@
                 template-file-name="用户列表模板.xlsx"
                 export-file-name="用户列表数据.xlsx"
                 :apis="apis"
-                :own-pagin="false"
-                @before-request-source="beforeRequest"
-                @source-success="handleSourceSuccess"
             >
-                <template #customCiesBtns>
-                    <Button @click="changeA">a++</Button>
-                </template>
             </Table>
         </div>
     </div>
@@ -2125,7 +2118,7 @@ const handleSourceSuccess = async (res) => {
     }
 }
 const apis = ref<TableProps['apis']>({
-    list: getListApis,
+    list: getUsersPageApi,
     details: getUserDetailsApi,
     create: createUserApi,
     update: updateUserApi,
@@ -2154,6 +2147,12 @@ const columns = computed((): TableProps['columns'] => {
             hidden: true,
             formItemProps: {
                 hidden: true,
+                rules: [
+                    {
+                        required: true,
+                        message: '请输入id',
+                    },
+                ],
             },
             descItemProps: {
                 hidden: true,
