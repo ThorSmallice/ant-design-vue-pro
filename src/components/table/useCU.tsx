@@ -134,87 +134,96 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
     }
 
     const submitCUModalForm = async () => {
-        try {
-            const vals = await formRef.value.validate?.()
+        formRef.value
+            .validate?.()
+            .then((val) => {
+                console.log('🚀 ~ submitCUModalForm ~ val:', val)
+            })
+            .catch((err) => {
+                console.log('🚀 ~ submitCUModalForm ~ err:', err)
+            })
+        // try {
+        //     const vals = await formRef.value.validate?.()
+        //     console.log('🚀 ~ submitCUModalForm ~ vals:', vals)
 
-            for (let k in vals) {
-                const valueIsDayjs =
-                    dayjs.isDayjs(vals[k]) || vals[k]?.every?.((t: any) => dayjs.isDayjs(t))
+        //     for (let k in vals) {
+        //         const valueIsDayjs =
+        //             dayjs.isDayjs(vals[k]) || vals[k]?.every?.((t: any) => dayjs.isDayjs(t))
 
-                if (valueIsDayjs) {
-                    const { timeFormat } = columns?.find?.(({ formItemProps, dataIndex }) => {
-                        return (formItemProps?.name || dataIndex) === k
-                    })
+        //         if (valueIsDayjs) {
+        //             const { timeFormat } = columns?.find?.(({ formItemProps, dataIndex }) => {
+        //                 return (formItemProps?.name || dataIndex) === k
+        //             })
 
-                    if (Array.isArray(vals[k])) {
-                        const ks = k?.split?.('-')
+        //             if (Array.isArray(vals[k])) {
+        //                 const ks = k?.split?.('-')
 
-                        if (ks?.length === 2) {
-                            vals[k]?.forEach?.(
-                                (t: Dayjs, i: number) =>
-                                    (vals[ks[i]] = t?.format?.(timeFormat || columnsTimeFormat))
-                            )
-                        }
-                        delete vals[k]
-                        break
-                    } else {
-                        vals[k] = vals[k].format(timeFormat)
-                    }
-                }
-            }
+        //                 if (ks?.length === 2) {
+        //                     vals[k]?.forEach?.(
+        //                         (t: Dayjs, i: number) =>
+        //                             (vals[ks[i]] = t?.format?.(timeFormat || columnsTimeFormat))
+        //                     )
+        //                 }
+        //                 delete vals[k]
+        //                 break
+        //             } else {
+        //                 vals[k] = vals[k].format(timeFormat)
+        //             }
+        //         }
+        //     }
 
-            let data: any = null
+        //     let data: any = null
 
-            const cbres = isFunction(onBeforeCuFormSubmit)
-                ? await onBeforeCuFormSubmit?.(vals, JSON.parse(JSON.stringify(cuFormModel.values)))
-                : null
+        //     const cbres = isFunction(onBeforeCuFormSubmit)
+        //         ? await onBeforeCuFormSubmit?.(vals, JSON.parse(JSON.stringify(cuFormModel.values)))
+        //         : null
 
-            if (cbres === false) {
-                return
-            }
-            data = cbres || vals
-            submitBtnLoading.value = true
-            await apis?.[cuModalFormIsEdit.value ? 'update' : 'create']?.(data)
-                .then((res) => {
-                    if (
-                        onCuFormSubmitSuccess?.(res, cuModalFormIsEdit.value, {
-                            cancelCUModalForm,
-                        }) === false
-                    ) {
-                        return
-                    }
-                    cancelCUModalForm()
-                    updateSource?.()
-                    message.success(
-                        `${
-                            cuModalFormIsEdit.value
-                                ? tableTextConfig?.message?.updateSuccess
-                                : tableTextConfig?.message?.createSuccess
-                        }`
-                    )
-                })
-                .catch((error) => {
-                    if (
-                        onCuFormSubmitError?.(error, cuModalFormIsEdit.value, {
-                            cancelCUModalForm,
-                        }) === false
-                    ) {
-                        return
-                    }
-                    message.error(
-                        `${
-                            cuModalFormIsEdit.value
-                                ? tableTextConfig?.message?.updateError
-                                : tableTextConfig?.message?.createError
-                        }`
-                    )
-                })
-                .finally(() => {
-                    submitBtnLoading.value = false
-                })
-        } catch (error) {
-            throw error
-        }
+        //     if (cbres === false) {
+        //         return
+        //     }
+        //     data = cbres || vals
+        //     submitBtnLoading.value = true
+        //     await apis?.[cuModalFormIsEdit.value ? 'update' : 'create']?.(data)
+        //         .then((res) => {
+        //             if (
+        //                 onCuFormSubmitSuccess?.(res, cuModalFormIsEdit.value, {
+        //                     cancelCUModalForm,
+        //                 }) === false
+        //             ) {
+        //                 return
+        //             }
+        //             cancelCUModalForm()
+        //             updateSource?.()
+        //             message.success(
+        //                 `${
+        //                     cuModalFormIsEdit.value
+        //                         ? tableTextConfig?.message?.updateSuccess
+        //                         : tableTextConfig?.message?.createSuccess
+        //                 }`
+        //             )
+        //         })
+        //         .catch((error) => {
+        //             if (
+        //                 onCuFormSubmitError?.(error, cuModalFormIsEdit.value, {
+        //                     cancelCUModalForm,
+        //                 }) === false
+        //             ) {
+        //                 return
+        //             }
+        //             message.error(
+        //                 `${
+        //                     cuModalFormIsEdit.value
+        //                         ? tableTextConfig?.message?.updateError
+        //                         : tableTextConfig?.message?.createError
+        //                 }`
+        //             )
+        //         })
+        //         .finally(() => {
+        //             submitBtnLoading.value = false
+        //         })
+        // } catch (error) {
+        //     throw error
+        // }
     }
 
     const cancelCUModalForm = () => {
@@ -262,6 +271,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                         <Row gutter={[24, 10]} {...cuFormRowProps}>
                             {columns
                                 ?.sort?.((a, b) => a?.formItemProps?.sort - b?.formItemProps?.sort)
+                                ?.filter?.((item) => !item?.formItemProps?.hidden)
                                 ?.map?.(({ title, dataIndex, type, formItemProps }, i: number) => {
                                     const {
                                         name,
