@@ -136,7 +136,6 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
     const submitCUModalForm = async () => {
         try {
             const vals = await formRef.value.validate?.()
-            console.log('🚀 ~ submitCUModalForm ~ vals:', vals)
 
             for (let k in vals) {
                 const valueIsDayjs =
@@ -263,7 +262,6 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                         <Row gutter={[24, 10]} {...cuFormRowProps}>
                             {columns
                                 ?.sort?.((a, b) => a?.formItemProps?.sort - b?.formItemProps?.sort)
-                                ?.filter?.((item) => !item?.formItemProps?.hidden)
                                 ?.map?.(({ title, dataIndex, type, formItemProps }, i: number) => {
                                     const {
                                         name,
