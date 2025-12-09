@@ -12,6 +12,7 @@ import { computed, Reactive, reactive, Ref, ref, VNode } from 'vue'
 import { JSX } from 'vue/jsx-runtime'
 import { TableTextConfig } from '.'
 import { TableColumnProps } from './useColumns'
+import { cloneDeep } from 'es-toolkit'
 
 export interface TableUseDetailProps {
     columns?: TableColumnProps[]
@@ -53,7 +54,7 @@ export default (props: TableUseDetailProps): TableUseDetailReturnOptions => {
     })
 
     const descItems = computed(() => {
-        return columns
+        return cloneDeep(columns)
             ?.sort?.((a, b) => a?.descItemProps?.sort - b?.descItemProps?.sort)
             ?.map?.((col, index) => {
                 const {

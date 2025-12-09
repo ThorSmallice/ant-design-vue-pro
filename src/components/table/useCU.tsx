@@ -260,7 +260,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                 <Skeleton active loading={cuModalLoading?.value}>
                     <Form ref={formRef} model={cuFormModel.values} {...cuFormProps}>
                         <Row gutter={[24, 10]} {...cuFormRowProps}>
-                            {columns
+                            {cloneDeep(columns)
                                 ?.sort?.((a, b) => a?.formItemProps?.sort - b?.formItemProps?.sort)
                                 ?.map?.(({ title, dataIndex, type, formItemProps }, i: number) => {
                                     const {
