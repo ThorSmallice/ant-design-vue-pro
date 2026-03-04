@@ -127,7 +127,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
         emits('cuFormEditStatusChange', cuModalFormIsEdit.value)
     })
     const formRef = ref<FormInstance>()
-
+    const CUModalFormInstance = reactive<any>({})
     const openCUModalForm = async (isEdit: boolean = false, record?: any) => {
         cuModalOpen.value = true
         cuModalFormIsEdit.value = isEdit
@@ -258,7 +258,10 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
                 {...cuFormModalProps}
             >
                 <Skeleton active loading={cuModalLoading?.value}>
-                    <Form ref={formRef} model={cuFormModel.values} {...cuFormProps}>
+                    <Form ref={(e) => { 
+                        formRef.value = e as any
+                        Object.assign(CUModalFormInstance, e)
+                    }} model={cuFormModel.values} {...cuFormProps}>
                         <Row gutter={[24, 10]} {...cuFormRowProps}>
                             {cloneDeep(columns)
                                 ?.sort?.((a, b) => a?.formItemProps?.sort - b?.formItemProps?.sort)
@@ -349,7 +352,7 @@ export default (props: TableUseCUFormProps): TableUseCUReturnOptions => {
     const resetCuFormModel = () => {
         cuFormModel.values = cloneDeep(initValues)
     }
-    const CUModalFormInstance = $(computed(() => formRef.value as TableCUFormInstance))
+    // const CUModalFormInstance = $(computed(() => formRef.value as TableCUFormInstance))
     return {
         CreateBtn,
         CUModalForm,
