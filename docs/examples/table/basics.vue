@@ -116,21 +116,6 @@ const columns = computed((): TableProps['columns'] => {
 			dataIndex: 'occupation',
 			width: 100,
 		},
-		{
-			title: '11',
-			dataIndex: '11',
-			formItemProps: {
-				customControl: () => {
-					return (
-						<Button
-							onClick={() => {
-								console.log(tableRef)
-							}}
-						></Button>
-					)
-				},
-			},
-		},
 	]
 })
 

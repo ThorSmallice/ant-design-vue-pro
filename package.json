@@ -7,7 +7,7 @@
 	"description": "",
 	"repository": {
 		"type": "git",
-		"url": "https://gitee.com/db-thor/antd-vue-dbthor.git"
+		"url": "https://github.com/ThorSmallice/ant-design-vue-pro"
 	},
 	"main": "index.js",
 	"scripts": {
