@@ -51,85 +51,86 @@ setAntdConfig()
 
 ### Table
 
-| 参数                            | 说明                                                                                          | 类型                                                                                          | 默认值                                                                                    | 版本 | global |
-| :------------------------------ | :-------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------- | :--: | :----: |
-| ...                             | 继承 antd-vue [TableProps](https://www.antdv.com/components/table-cn#api)                     | -                                                                                             | -                                                                                         |  -   |   -    |
-| isTree                          | 是否是树状表格(会影响 autoSize 对于 Y 值的计算)                                               | boolean                                                                                       | false                                                                                     |  -   |   \*   |
-| full                            | 表格是否撑满容器                                                                              | boolean                                                                                       | false                                                                                     |  -   |   \*   |
-| scroll                          | 表格是否可滚动，也可以指定滚动区域的宽、高 [配置项](#scroll)                                  | object                                                                                        | -                                                                                         |  -   |   \*   |
-| autoSizeConfig                  | 表格自动计算高度函数防抖配置 [配置项](#autosizeconfig)                                        | object                                                                                        | -                                                                                         |  -   |   \*   |
-| minScollHeight                  | 指定自动计算表格 scroll.y 值的最小高度, scroll.y 指定为 number 时该值不生效                   | number                                                                                        | 50                                                                                        |  -   |   \*   |
-| autoRequest                     | 指定表格自动请求列表数据配置 [配置项](#autorequest)                                           | false / object                                                                                | -                                                                                         |  -   |   \*   |
-| autoRequestDependencies         | 自定义表格自动请求列表数的依赖项                                                              | ({params,apis}) => WatchSource                                                                | -                                                                                         |  -   |   \*   |
-| apis                            | 提供给表格内置请求的 api [配置项](#apis)                                                      | object                                                                                        | -                                                                                         |  -   |   -    |
-| fieldsNames                     | 配置表格调用 api 后从返回结果中拿取数据的字段 [配置项](#fieldsnames)                          | object                                                                                        | -                                                                                         |  -   |   \*   |
-| tableTextConfig                 | 配置表格内置提示的文本 [配置项](#tabletextconfig)                                             | object                                                                                        | -                                                                                         |  -   |   \*   |
-| params                          | 请求时额外添加的参数                                                                          | object                                                                                        | -                                                                                         |  -   |   -    |
-| columns                         | 表格列配置                                                                                    | [TableColumnProps](#tablecolumnprops)[]                                                       | -                                                                                         |  -   |   -    |
-| columnsTitleNoWrap              | 统一列头不换行                                                                                | boolean                                                                                       | true                                                                                      |  -   |   \*   |
-| columnsAlign                    | 统一列对齐方式                                                                                | 'left' / 'center' / 'right'                                                                   | 'left'                                                                                    |  -   |   \*   |
-| columnsSorter                   | 统一列排序配置, 除['index','control']列,其他列均内置了排序逻辑                                | [ColumnProps](https://www.antdv.com/components/table-cn#column)['sorter']                     | true                                                                                      |  -   |   \*   |
-| columnsEllipsis                 | 统一列的 ellipsis 属性                                                                        | boolean                                                                                       | true                                                                                      |  -   |   \*   |
-| columnsTimeFormat               | 当 column.type == 'date'时,处理时间显示的[格式](https://day.js.org/docs/zh-CN/display/format) | string                                                                                        | 'YYYY-MM-DD HH:mm:ss'                                                                     |  -   |   \*   |
-| columnsEmptyText                | 统一列取值为空时显示的内容                                                                    | VNode / string                                                                                | '-'                                                                                       |  -   |   \*   |
-| indexColumn                     | 开启序号列                                                                                    | boolean                                                                                       | true                                                                                      |  -   |   \*   |
-| indexColumnWidth                | 序号列宽度                                                                                    | number                                                                                        | 80                                                                                        |  -   |   \*   |
-| indexColumnProps                | 序号列 Props                                                                                  | [TableColumnProps](#tablecolumnprops)                                                         | -                                                                                         |  -   |   \*   |
-| controlColumn                   | 开启操作列                                                                                    | boolean                                                                                       | true                                                                                      |  -   |   \*   |
-| controlColumnWidth              | 操作列宽度                                                                                    | number                                                                                        | 220                                                                                       |  -   |   \*   |
-| controlColumnWidthProps         | 操作列 Props                                                                                  | [TableColumnProps](#tablecolumnprops)                                                         | -                                                                                         |  -   |   \*   |
-| controlColumnBtns               | 操作列按钮配置项                                                                              | [controlColumnBtns](#controlcolumnbtns)                                                       | -                                                                                         |  -   |   \*   |
-| columnSettingBtn                | 列配置按钮                                                                                    | false / [OwnPopoverProps](#ownpopoverprops)                                                   | true                                                                                      |  -   |   \*   |
-| showOwnPager                    | 显示内置分页器                                                                                | boolean                                                                                       | true                                                                                      |  -   |   \*   |
-| ownPagin                        | 开启内置分页,值为 false 时请求数据参数将不加入分页参数                                        | boolean                                                                                       | true                                                                                      |  -   |   \*   |
-| ownPaginProps                   | 内置分页器 Props                                                                              | [paginationProps](https://www.antdv.com/components/pagination-cn#api)                         | [object](#ownpaginprops)                                                                  |  -   |   \*   |
-| queryForm                       | 显示筛选表单                                                                                  | boolean                                                                                       | true                                                                                      |  -   |   \*   |
-| queryFormDefaultValues          | 筛选表单默认值                                                                                | object                                                                                        | -                                                                                         |  -   |   -    |
-| queryFormProps                  | 筛选表单的 Props                                                                              | [FormProps](https://www.antdv.com/components/form-cn#api)                                     | -                                                                                         |  -   |   \*   |
-| queryFormItems                  | 筛选表单项配置                                                                                | [TableQueryFormItemProps](#tablequeryformitemprops)[]                                         | -                                                                                         |  -   |   -    |
-| queryFormRowProps               | 筛选表单行配置                                                                                | [RowProps](https://www.antdv.com/components/grid-cn#row)                                      | -                                                                                         |  -   |   \*   |
-| queryFormColProps               | 筛选表单列配置                                                                                | [ColProps](https://www.antdv.com/components/grid-cn#col)                                      | -                                                                                         |  -   |   \*   |
-| queryFormFlexProps              | 筛选表单外层 flex 容器配置                                                                    | [FlexProps](https://www.antdv.com/components/flex-cn#api)                                     | -                                                                                         |  -   |   \*   |
-| queryFormSubmitBtn              | 筛选表单提交按钮                                                                              | boolean / (form: [TableQueryFormInstance](#tablequeryforminstance)) => VNode                  | -                                                                                         |  -   |   \*   |
-| queryFormSubmitBtnProps         | 筛选表单提交按钮 的 Props                                                                     | false/[OwnBtnProps](#ownbtnprops)                                                             | -                                                                                         |  -   |   \*   |
-| queryFormResetBtn               | 筛选表单重置按钮                                                                              | boolean / (form: [TableQueryFormInstance](#tablequeryforminstance)) => VNode                  | -                                                                                         |  -   |   \*   |
-| queryFormResetBtnProps          | 筛选表单重置按钮 的 Props                                                                     | false/[OwnBtnProps](#ownbtnprops)                                                             | -                                                                                         |  -   |   \*   |
-| queryFormOperationBtnsLayout    | 筛选表单操作按钮布局方式                                                                      | 'fixRight' / 'followLast' / 'followLastEnd' [说明](#queryformoperationbtnslayout)             | 'fixRight'                                                                                |  -   |   \*   |
-| queryFormControlFormItemProps   | 配置筛选表单放置操作按钮的 FormItem                                                           | [FormItemProps](https://www.antdv.com/components/form-cn#form-item)                           | -                                                                                         |  -   |   \*   |
-| queryFormItemsControlProps      | 统一配置筛选表单控件的 props                                                                  | object                                                                                        | -                                                                                         |  -   |   \*   |
-| queryFormSubmitWithReset        | 筛选表单点击重置触发提交                                                                      | boolean                                                                                       | false                                                                                     |  -   |   \*   |
-| queryFormTimeFormat             | 筛选表单 时间参数提交时的[格式](https://day.js.org/docs/zh-CN/display/format)                 | string                                                                                        | 'YYYY-MM-DD HH:mm:ss'                                                                     |  -   |   \*   |
-| cuFormProps                     | 新增/编辑表单配置项                                                                           | [FormProps](https://www.antdv.com/components/form-cn#api)                                     | -                                                                                         |  -   |   \*   |
-| cuFormRules                     | 新增/编辑表单 校验规则                                                                        | [RuleObject](https://www.antdv.com/components/form-cn#%E6%A0%A1%E9%AA%8C%E8%A7%84%E5%88%99)[] | -                                                                                         |  -   |   -    |
-| cuFormDefaultValues             | 新增/编辑表单 默认值                                                                          | object                                                                                        | -                                                                                         |  -   |   -    |
-| cuFormModalProps                | 新增/编辑表单 Modal 配置项                                                                    | [ModalProps](https://www.antdv.com/components/modal-cn#api)                                   | \{ <br/>&nbsp;&nbsp;&nbsp;width:'65%',<br/>&nbsp;&nbsp;&nbsp;destroyOnClose:true <br/> \} |  -   |   \*   |
-| cuFormRowProps                  | 新增/编辑表单 Row 配置                                                                        | [RowProps](https://www.antdv.com/components/grid-cn#row)                                      | -                                                                                         |  -   |   \*   |
-| cuFormColProps                  | 新增/编辑表单 Col 配置                                                                        | [ColProps](https://www.antdv.com/components/grid-cn#col)                                      | -                                                                                         |  -   |   \*   |
-| cuFormBackFillByGetDetail       | 编辑表单回填内容通过 apis.details 获取，否则使用表中当前行数据                                | boolean                                                                                       | true                                                                                      |  -   |   \*   |
-| detailModalProps                | 详情 Modal 配置项                                                                             | [ModalProps](https://www.antdv.com/components/modal-cn#api)                                   | -                                                                                         |  -   |   \*   |
-| detailDescProps                 | 详情描述列表配置项                                                                            | [DescriptionsProps](https://www.antdv.com/components/descriptions-cn#descriptions-props)      | -                                                                                         |  -   |   \*   |
-| detailDescItemProps             | 详情描述列表 Item 配置项                                                                      | [TableDescItemsProps](#tabledescitemsprops)                                                   | -                                                                                         |  -   |   \*   |
-| detailDescItemEmptyText         | 详情描述项值为空值显示的内容                                                                  | VNode /string                                                                                 | '-'                                                                                       |  -   |   \*   |
-| detailDescItemTimeFormat        | 详情描述项值为日期类型时显示的[格式](https://day.js.org/docs/zh-CN/display/format)            | string                                                                                        | 'YYYY-MM-DD HH:mm:ss'                                                                     |  -   |   \*   |
-| detailBackFillByGetDetail       | 详情内容通过 apis.details 获取，否则使用表中当前行数据                                        | boolean                                                                                       | true                                                                                      |  -   |   \*   |
-| ciesBtns                        | 显示内置表格操作按钮组                                                                        | boolean                                                                                       | true                                                                                      |  -   |   \*   |
-| ciesBtnsInQueryForm             | 内置表格操作按钮组显示在筛选表单中                                                            | boolean                                                                                       | false                                                                                     |  -   |   \*   |
-| createBtn                       | 新增按钮                                                                                      | false/[OwnBtnProps](#ownbtnprops)                                                             | -                                                                                         |  -   |   \*   |
-| importBtn                       | 导入按钮                                                                                      | false/[OwnBtnProps](#ownbtnprops)                                                             | -                                                                                         |  -   |   \*   |
-| importUploadProps               | 导入上传按钮的 props                                                                          | [UploadProps](https://www.antdv.com/components/upload-cn#api)                                 | -                                                                                         |  -   |   \*   |
-| importFileParamsFormatter       | 导入文件参数处理函数                                                                          | (options: UploadRequestOption) =>Promise\<any\>                                               | -                                                                                         |  -   |   \*   |
-| exportDropdown                  | 下拉导出按钮                                                                                  | false/[OwnDropProps](#owndropprops)                                                           | -                                                                                         |  -   |   \*   |
-| exportAllBtn                    | 导出全部按钮                                                                                  | false/[OwnBtnProps](#ownbtnprops)                                                             | -                                                                                         |  -   |   \*   |
-| exportBtnMode                   | 导出按钮模式 'dropdown'显示为下拉按钮，'all'时只显示导出全部按钮                              | 'dropdown' / 'all'                                                                            | 'dropdown'                                                                                |  -   |   \*   |
-| exportCurrentPageBtn            | 导出当前页                                                                                    | false/[OwnBtnProps](#ownbtnprops)                                                             | -                                                                                         |  -   |   \*   |
-| exportFileByParams              | 导出数据通过筛选表单参数                                                                      | boolean                                                                                       | false                                                                                     |  -   |   \*   |
-| exportFileParamsFormatter       | 导出数据时的参数处理函数                                                                      | (vals?: any, type?: "currentPage" / "allPage") => Promise\<any\>                              | 'page'                                                                                    |  -   |   \*   |
-| exportFileName                  | 导出数据的文件名称                                                                            | string                                                                                        | dayjs().valueOf()                                                                         |  -   |   -    |
-| downloadTemplateBtn             | 下载模板按钮                                                                                  | false/[OwnBtnProps](#ownbtnprops)                                                             | -                                                                                         |  -   |   \*   |
-| templateFileName                | 模板文件名                                                                                    | string                                                                                        | dayjs().valueOf()                                                                         |  -   |   -    |
-| downloadTempalteParamsFormatter | 下载模板的参数处理函数                                                                        | ( params:object)=>Promise\<object\>                                                           | -                                                                                         |  -   |   \*   |
-| requestParamsFormatter          | 列表数据请求参数最终处理函数                                                                  | ( params:object)=>Promise\<object\>                                                           | -                                                                                         |  -   |   \*   |
-| value(v-model)                  | 表格双向绑定的数据,内部请求的时也能通过该属性在外部获取操作,用于可编辑表格                    | Ref<DataItem[]>                                                                               | -                                                                                         |  -   |   -    |
+| 参数                            | 说明                                                                                          | 类型                                                                                          | 默认值                                                                                    |  版本   | global |
+| :------------------------------ | :-------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------- | :-----: | :----: |
+| ...                             | 继承 antd-vue [TableProps](https://www.antdv.com/components/table-cn#api)                     | -                                                                                             | -                                                                                         |    -    |   -    |
+| isTree                          | 是否是树状表格(会影响 autoSize 对于 Y 值的计算)                                               | boolean                                                                                       | false                                                                                     |    -    |   \*   |
+| full                            | 表格是否撑满容器                                                                              | boolean                                                                                       | false                                                                                     |    -    |   \*   |
+| scroll                          | 表格是否可滚动，也可以指定滚动区域的宽、高 [配置项](#scroll)                                  | object                                                                                        | -                                                                                         |    -    |   \*   |
+| autoSizeConfig                  | 表格自动计算高度函数防抖配置 [配置项](#autosizeconfig)                                        | object                                                                                        | -                                                                                         |    -    |   \*   |
+| minScollHeight                  | 指定自动计算表格 scroll.y 值的最小高度, scroll.y 指定为 number 时该值不生效                   | number                                                                                        | 50                                                                                        |    -    |   \*   |
+| autoRequest                     | 指定表格自动请求列表数据配置 [配置项](#autorequest)                                           | false / object                                                                                | -                                                                                         |    -    |   \*   |
+| autoRequestDependencies         | 自定义表格自动请求列表数的依赖项                                                              | ({params,apis}) => WatchSource                                                                | -                                                                                         |    -    |   \*   |
+| apis                            | 提供给表格内置请求的 api [配置项](#apis)                                                      | object                                                                                        | -                                                                                         |    -    |   -    |
+| fieldsNames                     | 配置表格调用 api 后从返回结果中拿取数据的字段 [配置项](#fieldsnames)                          | object                                                                                        | -                                                                                         |    -    |   \*   |
+| tableTextConfig                 | 配置表格内置提示的文本 [配置项](#tabletextconfig)                                             | object                                                                                        | -                                                                                         |    -    |   \*   |
+| params                          | 请求时额外添加的参数                                                                          | object                                                                                        | -                                                                                         |    -    |   -    |
+| columns                         | 表格列配置                                                                                    | [TableColumnProps](#tablecolumnprops)[]                                                       | -                                                                                         |    -    |   -    |
+| columnsTitleNoWrap              | 统一列头不换行                                                                                | boolean                                                                                       | true                                                                                      |    -    |   \*   |
+| columnsAlign                    | 统一列对齐方式                                                                                | 'left' / 'center' / 'right'                                                                   | 'left'                                                                                    |    -    |   \*   |
+| columnsSorter                   | 统一列排序配置, 除['index','control']列,其他列均内置了排序逻辑                                | [ColumnProps](https://www.antdv.com/components/table-cn#column)['sorter']                     | true                                                                                      |    -    |   \*   |
+| columnsEllipsis                 | 统一列的 ellipsis 属性                                                                        | boolean                                                                                       | true                                                                                      |    -    |   \*   |
+| columnsResizable                | 统一列的 resizable 属性                                                                       | boolean                                                                                       | false                                                                                     | 1.0.141 |   \*   |
+| columnsTimeFormat               | 当 column.type == 'date'时,处理时间显示的[格式](https://day.js.org/docs/zh-CN/display/format) | string                                                                                        | 'YYYY-MM-DD HH:mm:ss'                                                                     |    -    |   \*   |
+| columnsEmptyText                | 统一列取值为空时显示的内容                                                                    | VNode / string                                                                                | '-'                                                                                       |    -    |   \*   |
+| indexColumn                     | 开启序号列                                                                                    | boolean                                                                                       | true                                                                                      |    -    |   \*   |
+| indexColumnWidth                | 序号列宽度                                                                                    | number                                                                                        | 80                                                                                        |    -    |   \*   |
+| indexColumnProps                | 序号列 Props                                                                                  | [TableColumnProps](#tablecolumnprops)                                                         | -                                                                                         |    -    |   \*   |
+| controlColumn                   | 开启操作列                                                                                    | boolean                                                                                       | true                                                                                      |    -    |   \*   |
+| controlColumnWidth              | 操作列宽度                                                                                    | number                                                                                        | 220                                                                                       |    -    |   \*   |
+| controlColumnWidthProps         | 操作列 Props                                                                                  | [TableColumnProps](#tablecolumnprops)                                                         | -                                                                                         |    -    |   \*   |
+| controlColumnBtns               | 操作列按钮配置项                                                                              | [controlColumnBtns](#controlcolumnbtns)                                                       | -                                                                                         |    -    |   \*   |
+| columnSettingBtn                | 列配置按钮                                                                                    | false / [OwnPopoverProps](#ownpopoverprops)                                                   | true                                                                                      |    -    |   \*   |
+| showOwnPager                    | 显示内置分页器                                                                                | boolean                                                                                       | true                                                                                      |    -    |   \*   |
+| ownPagin                        | 开启内置分页,值为 false 时请求数据参数将不加入分页参数                                        | boolean                                                                                       | true                                                                                      |    -    |   \*   |
+| ownPaginProps                   | 内置分页器 Props                                                                              | [paginationProps](https://www.antdv.com/components/pagination-cn#api)                         | [object](#ownpaginprops)                                                                  |    -    |   \*   |
+| queryForm                       | 显示筛选表单                                                                                  | boolean                                                                                       | true                                                                                      |    -    |   \*   |
+| queryFormDefaultValues          | 筛选表单默认值                                                                                | object                                                                                        | -                                                                                         |    -    |   -    |
+| queryFormProps                  | 筛选表单的 Props                                                                              | [FormProps](https://www.antdv.com/components/form-cn#api)                                     | -                                                                                         |    -    |   \*   |
+| queryFormItems                  | 筛选表单项配置                                                                                | [TableQueryFormItemProps](#tablequeryformitemprops)[]                                         | -                                                                                         |    -    |   -    |
+| queryFormRowProps               | 筛选表单行配置                                                                                | [RowProps](https://www.antdv.com/components/grid-cn#row)                                      | -                                                                                         |    -    |   \*   |
+| queryFormColProps               | 筛选表单列配置                                                                                | [ColProps](https://www.antdv.com/components/grid-cn#col)                                      | -                                                                                         |    -    |   \*   |
+| queryFormFlexProps              | 筛选表单外层 flex 容器配置                                                                    | [FlexProps](https://www.antdv.com/components/flex-cn#api)                                     | -                                                                                         |    -    |   \*   |
+| queryFormSubmitBtn              | 筛选表单提交按钮                                                                              | boolean / (form: [TableQueryFormInstance](#tablequeryforminstance)) => VNode                  | -                                                                                         |    -    |   \*   |
+| queryFormSubmitBtnProps         | 筛选表单提交按钮 的 Props                                                                     | false/[OwnBtnProps](#ownbtnprops)                                                             | -                                                                                         |    -    |   \*   |
+| queryFormResetBtn               | 筛选表单重置按钮                                                                              | boolean / (form: [TableQueryFormInstance](#tablequeryforminstance)) => VNode                  | -                                                                                         |    -    |   \*   |
+| queryFormResetBtnProps          | 筛选表单重置按钮 的 Props                                                                     | false/[OwnBtnProps](#ownbtnprops)                                                             | -                                                                                         |    -    |   \*   |
+| queryFormOperationBtnsLayout    | 筛选表单操作按钮布局方式                                                                      | 'fixRight' / 'followLast' / 'followLastEnd' [说明](#queryformoperationbtnslayout)             | 'fixRight'                                                                                |    -    |   \*   |
+| queryFormControlFormItemProps   | 配置筛选表单放置操作按钮的 FormItem                                                           | [FormItemProps](https://www.antdv.com/components/form-cn#form-item)                           | -                                                                                         |    -    |   \*   |
+| queryFormItemsControlProps      | 统一配置筛选表单控件的 props                                                                  | object                                                                                        | -                                                                                         |    -    |   \*   |
+| queryFormSubmitWithReset        | 筛选表单点击重置触发提交                                                                      | boolean                                                                                       | false                                                                                     |    -    |   \*   |
+| queryFormTimeFormat             | 筛选表单 时间参数提交时的[格式](https://day.js.org/docs/zh-CN/display/format)                 | string                                                                                        | 'YYYY-MM-DD HH:mm:ss'                                                                     |    -    |   \*   |
+| cuFormProps                     | 新增/编辑表单配置项                                                                           | [FormProps](https://www.antdv.com/components/form-cn#api)                                     | -                                                                                         |    -    |   \*   |
+| cuFormRules                     | 新增/编辑表单 校验规则                                                                        | [RuleObject](https://www.antdv.com/components/form-cn#%E6%A0%A1%E9%AA%8C%E8%A7%84%E5%88%99)[] | -                                                                                         |    -    |   -    |
+| cuFormDefaultValues             | 新增/编辑表单 默认值                                                                          | object                                                                                        | -                                                                                         |    -    |   -    |
+| cuFormModalProps                | 新增/编辑表单 Modal 配置项                                                                    | [ModalProps](https://www.antdv.com/components/modal-cn#api)                                   | \{ <br/>&nbsp;&nbsp;&nbsp;width:'65%',<br/>&nbsp;&nbsp;&nbsp;destroyOnClose:true <br/> \} |    -    |   \*   |
+| cuFormRowProps                  | 新增/编辑表单 Row 配置                                                                        | [RowProps](https://www.antdv.com/components/grid-cn#row)                                      | -                                                                                         |    -    |   \*   |
+| cuFormColProps                  | 新增/编辑表单 Col 配置                                                                        | [ColProps](https://www.antdv.com/components/grid-cn#col)                                      | -                                                                                         |    -    |   \*   |
+| cuFormBackFillByGetDetail       | 编辑表单回填内容通过 apis.details 获取，否则使用表中当前行数据                                | boolean                                                                                       | true                                                                                      |    -    |   \*   |
+| detailModalProps                | 详情 Modal 配置项                                                                             | [ModalProps](https://www.antdv.com/components/modal-cn#api)                                   | -                                                                                         |    -    |   \*   |
+| detailDescProps                 | 详情描述列表配置项                                                                            | [DescriptionsProps](https://www.antdv.com/components/descriptions-cn#descriptions-props)      | -                                                                                         |    -    |   \*   |
+| detailDescItemProps             | 详情描述列表 Item 配置项                                                                      | [TableDescItemsProps](#tabledescitemsprops)                                                   | -                                                                                         |    -    |   \*   |
+| detailDescItemEmptyText         | 详情描述项值为空值显示的内容                                                                  | VNode /string                                                                                 | '-'                                                                                       |    -    |   \*   |
+| detailDescItemTimeFormat        | 详情描述项值为日期类型时显示的[格式](https://day.js.org/docs/zh-CN/display/format)            | string                                                                                        | 'YYYY-MM-DD HH:mm:ss'                                                                     |    -    |   \*   |
+| detailBackFillByGetDetail       | 详情内容通过 apis.details 获取，否则使用表中当前行数据                                        | boolean                                                                                       | true                                                                                      |    -    |   \*   |
+| ciesBtns                        | 显示内置表格操作按钮组                                                                        | boolean                                                                                       | true                                                                                      |    -    |   \*   |
+| ciesBtnsInQueryForm             | 内置表格操作按钮组显示在筛选表单中                                                            | boolean                                                                                       | false                                                                                     |    -    |   \*   |
+| createBtn                       | 新增按钮                                                                                      | false/[OwnBtnProps](#ownbtnprops)                                                             | -                                                                                         |    -    |   \*   |
+| importBtn                       | 导入按钮                                                                                      | false/[OwnBtnProps](#ownbtnprops)                                                             | -                                                                                         |    -    |   \*   |
+| importUploadProps               | 导入上传按钮的 props                                                                          | [UploadProps](https://www.antdv.com/components/upload-cn#api)                                 | -                                                                                         |    -    |   \*   |
+| importFileParamsFormatter       | 导入文件参数处理函数                                                                          | (options: UploadRequestOption) =>Promise\<any\>                                               | -                                                                                         |    -    |   \*   |
+| exportDropdown                  | 下拉导出按钮                                                                                  | false/[OwnDropProps](#owndropprops)                                                           | -                                                                                         |    -    |   \*   |
+| exportAllBtn                    | 导出全部按钮                                                                                  | false/[OwnBtnProps](#ownbtnprops)                                                             | -                                                                                         |    -    |   \*   |
+| exportBtnMode                   | 导出按钮模式 'dropdown'显示为下拉按钮，'all'时只显示导出全部按钮                              | 'dropdown' / 'all'                                                                            | 'dropdown'                                                                                |    -    |   \*   |
+| exportCurrentPageBtn            | 导出当前页                                                                                    | false/[OwnBtnProps](#ownbtnprops)                                                             | -                                                                                         |    -    |   \*   |
+| exportFileByParams              | 导出数据通过筛选表单参数                                                                      | boolean                                                                                       | false                                                                                     |    -    |   \*   |
+| exportFileParamsFormatter       | 导出数据时的参数处理函数                                                                      | (vals?: any, type?: "currentPage" / "allPage") => Promise\<any\>                              | 'page'                                                                                    |    -    |   \*   |
+| exportFileName                  | 导出数据的文件名称                                                                            | string                                                                                        | dayjs().valueOf()                                                                         |    -    |   -    |
+| downloadTemplateBtn             | 下载模板按钮                                                                                  | false/[OwnBtnProps](#ownbtnprops)                                                             | -                                                                                         |    -    |   \*   |
+| templateFileName                | 模板文件名                                                                                    | string                                                                                        | dayjs().valueOf()                                                                         |    -    |   -    |
+| downloadTempalteParamsFormatter | 下载模板的参数处理函数                                                                        | ( params:object)=>Promise\<object\>                                                           | -                                                                                         |    -    |   \*   |
+| requestParamsFormatter          | 列表数据请求参数最终处理函数                                                                  | ( params:object)=>Promise\<object\>                                                           | -                                                                                         |    -    |   \*   |
+| value(v-model)                  | 表格双向绑定的数据,内部请求的时也能通过该属性在外部获取操作,用于可编辑表格                    | Ref<DataItem[]>                                                                               | -                                                                                         |    -    |   -    |
 
 ### TableColumnProps
 
@@ -174,8 +175,8 @@ setAntdConfig()
 
 ::: tip 注意
 
--   autoRequest 配置项同步 vue watch 的 Options,详见[Vue-Watch](https://cn.vuejs.org/api/reactivity-core.html#watch);
--   autoRequest 为 false 时将不创建 watch, 意味着将不自动发起请求
+- autoRequest 配置项同步 vue watch 的 Options,详见[Vue-Watch](https://cn.vuejs.org/api/reactivity-core.html#watch);
+- autoRequest 为 false 时将不创建 watch, 意味着将不自动发起请求
 
 :::
 
@@ -401,13 +402,13 @@ setAntdConfig()
 
 ```ts
 interface customCiesBtnsOpt {
-    CreateBtn: VNode // 新增按钮
-    ImportBtn: VNode // 导入按钮
-    ExportDropDown: VNode // 下拉导出按钮 （包含导出当前页/全部页 按钮）
-    ExportCurrentPageBtn: VNode // 导出当前页按钮
-    ExportAllBtn: VNode // 导出全部按钮
-    ColumnSettingBtn: VNode // 列配置按钮
-    DownloadTemplateBtn: VNode // 下载模板按钮
+	CreateBtn: VNode // 新增按钮
+	ImportBtn: VNode // 导入按钮
+	ExportDropDown: VNode // 下拉导出按钮 （包含导出当前页/全部页 按钮）
+	ExportCurrentPageBtn: VNode // 导出当前页按钮
+	ExportAllBtn: VNode // 导出全部按钮
+	ColumnSettingBtn: VNode // 列配置按钮
+	DownloadTemplateBtn: VNode // 下载模板按钮
 }
 ```
 
@@ -415,14 +416,14 @@ interface customCiesBtnsOpt {
 
 ```ts
 interface customControlColumnBtnsOpt {
-    DetailBtn: VNode // 详情按钮
-    EditBtn: VNode // 编辑按钮
-    DeleteBtn: VNode // 删除按钮
-    deleteRow: (params: any) => Promise<void> //  删除当前行，自定义删除按钮时 @click绑定这个方法,需传入params供apis.delete请求使用
-    editRow: (params: any) => Promise<void> //  编辑当前行，自定义编辑按钮时 @click绑定这个方法,需传入params供apis.update请求使用
-    openRowDetails: (params: any) => Promise<void> //  打开当前行的详情modal，自定义编辑按钮时 @click绑定这个方法,需传入params供apis.details请求使用
-    rowInfo: obj // 当前行/列的信息
-    metaColumnInfo: TableColumnProps // 当前行列的源配置信息
+	DetailBtn: VNode // 详情按钮
+	EditBtn: VNode // 编辑按钮
+	DeleteBtn: VNode // 删除按钮
+	deleteRow: (params: any) => Promise<void> //  删除当前行，自定义删除按钮时 @click绑定这个方法,需传入params供apis.delete请求使用
+	editRow: (params: any) => Promise<void> //  编辑当前行，自定义编辑按钮时 @click绑定这个方法,需传入params供apis.update请求使用
+	openRowDetails: (params: any) => Promise<void> //  打开当前行的详情modal，自定义编辑按钮时 @click绑定这个方法,需传入params供apis.details请求使用
+	rowInfo: obj // 当前行/列的信息
+	metaColumnInfo: TableColumnProps // 当前行列的源配置信息
 }
 ```
 
@@ -430,16 +431,16 @@ interface customControlColumnBtnsOpt {
 
 ```ts
 interface customQueryFormBtnsOpt {
-    CreateBtn: VNode // 新增按钮
-    ImportBtn: VNode // 导入按钮
-    ExportDropDown: VNode // 下拉导出按钮 （包含导出当前页/全部页 按钮）
-    ExportCurrentPageBtn: VNode // 导出当前页按钮
-    ExportAllBtn: VNode // 导出全部按钮
-    ColumnSettingBtn: VNode // 列配置按钮
-    DownloadTemplateBtn: VNode // 下载模板按钮
-    SubmitBtn: VNode // 提交按钮
-    ResetBtn: VNode // 重置按钮
-    QueryFormInstance: VNode // 筛选表单的实例对象
+	CreateBtn: VNode // 新增按钮
+	ImportBtn: VNode // 导入按钮
+	ExportDropDown: VNode // 下拉导出按钮 （包含导出当前页/全部页 按钮）
+	ExportCurrentPageBtn: VNode // 导出当前页按钮
+	ExportAllBtn: VNode // 导出全部按钮
+	ColumnSettingBtn: VNode // 列配置按钮
+	DownloadTemplateBtn: VNode // 下载模板按钮
+	SubmitBtn: VNode // 提交按钮
+	ResetBtn: VNode // 重置按钮
+	QueryFormInstance: VNode // 筛选表单的实例对象
 }
 ```
 
@@ -447,27 +448,27 @@ interface customQueryFormBtnsOpt {
 
 ```ts
 interface TableInstance {
-    source: any[] // 通过api或者dataSource属性传入的数据列表
-    updateSource: () => Promise<void> // 更新数据列表的方法
-    QueryForm: () => JSX.Element | VNode // 查询表单组件
-    queryFormModel: Reactive<{ values: any }> // 查询表单绑定的数据
-    setQueryFormModel: (model: Record<string, any> | ((vals: any) => void)) => void // 设置查询表单绑定的数据
-    QueryFormInstance: Partial<TableQueryFormInstance> // 查询表单实例
-    Pagination: () => JSX.Element | VNode // 内置分页器组件
-    cuModalFormIsEdit: Ref<boolean> // 新增/编辑表单 当前是否为编辑模式 ,false为新增模式
-    cuFormModel: Reactive<{ values: any }> // 新增/编辑表单绑定的数据
-    setCuFormModel: (vals?: Record<string, any>) => void // 设置新增/编辑表单绑定的数据
-    resetCuFormModel: () => void // 重置新增/编辑表单绑定的数据
-    CUModalFormInstance: TableCUFormInstance // 新增/编辑表单实例对象
-    CreateBtn: (props?: OwnBtnProps) => JSX.Element | VNode // 新增按钮
-    ImportBtn: (props?: OwnBtnProps) => JSX.Element | VNode // 导入按钮
-    ExportDropDown: (props?: OwnDropProps) => JSX.Element | VNode // 导出数据下拉菜单
-    ExportCurrentPageBtn: (props?: OwnBtnProps) => JSX.Element | VNode // 导出当前页数据按钮
-    ExportAllBtn: (props?: OwnBtnProps) => JSX.Element | VNode // 导出全部数据按钮
-    ColumnSettingBtn: (props?: OwnBtnProps) => JSX.Element | VNode // 列头控件按钮
-    DownloadTemplateBtn: (props?: OwnBtnProps) => JSX.Element | VNode // 下载模板按钮
-    onResize: (entries?: any) => void // 重新计算scroll.y值
-    loading: Ref<boolean>
+	source: any[] // 通过api或者dataSource属性传入的数据列表
+	updateSource: () => Promise<void> // 更新数据列表的方法
+	QueryForm: () => JSX.Element | VNode // 查询表单组件
+	queryFormModel: Reactive<{ values: any }> // 查询表单绑定的数据
+	setQueryFormModel: (model: Record<string, any> | ((vals: any) => void)) => void // 设置查询表单绑定的数据
+	QueryFormInstance: Partial<TableQueryFormInstance> // 查询表单实例
+	Pagination: () => JSX.Element | VNode // 内置分页器组件
+	cuModalFormIsEdit: Ref<boolean> // 新增/编辑表单 当前是否为编辑模式 ,false为新增模式
+	cuFormModel: Reactive<{ values: any }> // 新增/编辑表单绑定的数据
+	setCuFormModel: (vals?: Record<string, any>) => void // 设置新增/编辑表单绑定的数据
+	resetCuFormModel: () => void // 重置新增/编辑表单绑定的数据
+	CUModalFormInstance: TableCUFormInstance // 新增/编辑表单实例对象
+	CreateBtn: (props?: OwnBtnProps) => JSX.Element | VNode // 新增按钮
+	ImportBtn: (props?: OwnBtnProps) => JSX.Element | VNode // 导入按钮
+	ExportDropDown: (props?: OwnDropProps) => JSX.Element | VNode // 导出数据下拉菜单
+	ExportCurrentPageBtn: (props?: OwnBtnProps) => JSX.Element | VNode // 导出当前页数据按钮
+	ExportAllBtn: (props?: OwnBtnProps) => JSX.Element | VNode // 导出全部数据按钮
+	ColumnSettingBtn: (props?: OwnBtnProps) => JSX.Element | VNode // 列头控件按钮
+	DownloadTemplateBtn: (props?: OwnBtnProps) => JSX.Element | VNode // 下载模板按钮
+	onResize: (entries?: any) => void // 重新计算scroll.y值
+	loading: Ref<boolean>
 }
 ```
 

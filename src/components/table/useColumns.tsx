@@ -141,6 +141,7 @@ export interface TableUseColumnsProps {
 	columnsTimeFormat?: string
 	columnsEmptyText?: VNode | string
 	columnsEllipsis?: boolean
+	columnsResizable?: boolean
 	columnsSorter?: ATableColumnProps['sorter']
 	columnsTitleNoWrap?: boolean
 	controlColumnBtns?: {
@@ -222,6 +223,7 @@ export default (props: TableUseColumnsProps) => {
 		openCUModalForm,
 		columnsTitleNoWrap,
 		columnsEllipsis,
+		columnsResizable,
 		columnsSorter,
 		cuFormModel,
 		emits,
@@ -305,6 +307,7 @@ export default (props: TableUseColumnsProps) => {
 				width,
 				hidden,
 				fixed,
+				resizable = columnsResizable,
 				sorter = columnsSorter,
 				filterPlaceholder,
 				customFilterDropdown = false,
@@ -333,7 +336,7 @@ export default (props: TableUseColumnsProps) => {
 				filterPlaceholder: filterPlaceholder || `请输入${title}`,
 				defaultSortOrder: 'ascend',
 				sorter: children ? false : sorter === true ? localSort(col) : sorter,
-
+				resizable,
 				customFilterDropdown:
 					customFilterDropdown ?? !exculdesFilterColumnTypes?.includes(col?.type),
 				customRender: (...args) =>

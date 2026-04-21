@@ -134,20 +134,21 @@ watch(
 		if (open && modalRef.value) {
 			observerTargt = modalRef.value
 
-			resizeObserver.observe(observerTargt, {
-				box: 'border-box',
-			})
+			observerTargt &&
+				resizeObserver?.observe(observerTargt, {
+					box: 'border-box',
+				})
 		} else {
-			resizeObserver.unobserve(observerTargt)
-			resizeObserver.disconnect()
+			observerTargt && resizeObserver?.unobserve(observerTargt)
+			observerTargt && resizeObserver?.disconnect()
 			observerTargt = undefined
 		}
 	},
 )
 onUnmounted(() => {
 	if (!observerTargt) return
-	resizeObserver.unobserve(observerTargt)
-	resizeObserver.disconnect()
+	observerTargt && resizeObserver?.unobserve(observerTargt)
+	observerTargt && resizeObserver?.disconnect()
 	resizeObserver = undefined
 })
 

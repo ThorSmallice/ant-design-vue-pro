@@ -1,5 +1,11 @@
 # 更新日志
 
+## v1.0.141
+
+### 新增
+
+- 新增 columnsResizable 配置项,统一列的 resizable 属性
+
 ## v1.0.140
 
 ### Bug Fixes
