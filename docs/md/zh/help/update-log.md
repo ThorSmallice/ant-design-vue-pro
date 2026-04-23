@@ -1,5 +1,11 @@
 # 更新日志
 
+## v1.0.142
+
+### Bug Fixes
+
+- 修复table params变更时pageSize被重置
+
 ## v1.0.141
 
 ### 新增
