@@ -46,7 +46,7 @@ import {
 	TableTextConfig,
 } from './index.type'
 import { TableUseCUFormItemProps, TableUseCUReturnOptions } from './useCU'
-import { TableDescItemsProps } from './useDetail'
+import { TableDescItemsProps, TableDescItemsRawProps } from './useDetail'
 
 const isDayjs = dayjs.isDayjs
 dayjs.extend(customParseFormat)
@@ -121,7 +121,7 @@ export type TableColumnCustomRenderArgs = {
 export type TableColumnRowMethods = {
 	editRow: (record: any) => Promise<void>
 	deleteRow: (record: any) => Promise<void>
-	openRowDetails: (record: any) => Promise<void>
+	openRowDetails: (record: any, opt?: any) => Promise<void>
 }
 
 export interface TableUseColumnsProps {
@@ -378,18 +378,26 @@ export default (props: TableUseColumnsProps) => {
 		return [...fixedLeftColumns, ...centerColumns, ...fixedRightColumns]
 	}
 
-	const openRowDetails = async (record: any) => {
+	const openRowDetails = async (record: any, opt?: any) => {
 		_detailModalLoading.value = true
 		openDetailModal()
 
 		try {
 			const detail = detailBackFillByGetDetail ? await getDetails?.(record) : record
 
-			const res = formatterObjValueWithDate(
-				detail,
-				columns,
-				({ descItemProps }) => descItemProps?.hidden,
-			)
+			const res = formatterObjValueWithDate(detail, columns, ({ descItemProps }) => {
+				const descP = (
+					isFunction(descItemProps)
+						? descItemProps?.({
+								value: null,
+								index: opt?.index || null,
+								record,
+								column: opt?.column,
+							})
+						: descItemProps
+				) as TableDescItemsRawProps
+				return descP?.hidden
+			})
 
 			detailsDataSource.values = res
 		} catch (error) {}
@@ -670,7 +678,7 @@ const getCustomRender = (
 				) as OwnBtnProps
 
 				return (
-					<Button class="p-0" onClick={() => openRowDetails(record)} {...btnProps}>
+					<Button class="p-0" onClick={() => openRowDetails(record, opt)} {...btnProps}>
 						{children}
 					</Button>
 				)
