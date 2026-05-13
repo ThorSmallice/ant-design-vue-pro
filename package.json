@@ -18,7 +18,8 @@
 		"docs:dev": "cross-env NODE_ENV=development vitepress dev docs",
 		"docs:build": "cross-env NODE_ENV=production vitepress build docs",
 		"push": "npm publish",
-		"push:scet": "npm publish --registry https://dev.scet.com.cn/verdaccio/"
+		"push:scet": "npm publish --registry https://dev.scet.com.cn/verdaccio/",
+		"docker:build": "powershell -ExecutionPolicy Bypass -File script/build.ps1"
 	},
 	"files": [
 		"dist"
