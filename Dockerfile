@@ -10,9 +10,9 @@ ENV CI=true
 RUN pnpm install || pnpm approve-builds --all && pnpm install
 
 COPY . .
-
-RUN pnpm exec tsc && pnpm exec vite build
-RUN pnpm exec vitepress build docs
+  
+RUN npx pnpm build
+RUN npx pnpm docs:build 
 
 FROM nginx:alpine
 

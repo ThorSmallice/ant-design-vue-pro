@@ -6,9 +6,9 @@
 
 配置表格的取值主要有两种方式:
 
--   fieldsNames
--   Event (优先级 > fieldsNames )
--   fieldsNames.list 和 fieldsNames.total 两个字段比较特殊,在使用@source-success 回填字段时需结合 fieldsNames,使它们能对应上
+- fieldsNames
+- Event (优先级 > fieldsNames )
+- fieldsNames.list 和 fieldsNames.total 两个字段比较特殊,在使用@source-success 回填字段时需结合 fieldsNames,使它们能对应上
 
 :::
 
@@ -22,6 +22,7 @@
         <FieldsNamesEvent></FieldsNamesEvent>
     </TabPane> 
 </Tabs>
+
 </ClientOnly>
 
 ::: details Code

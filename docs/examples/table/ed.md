@@ -10,6 +10,7 @@
         <EdBuffer></EdBuffer>
     </TabPane> 
 </Tabs>
+
 </ClientOnly>
 
 ::: details Code
