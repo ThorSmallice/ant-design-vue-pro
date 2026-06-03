@@ -22,6 +22,7 @@ import { TableUseExportProps } from './useExport'
 import { TableUseImportProps } from './useImport'
 import { PaginationDefault, TableUseParmasProps } from './useParams'
 import {
+	SetQueryFormModel,
 	TableQueryFormInstance,
 	TableQueryFormItemProps,
 	TableQueryFormProps,
@@ -35,7 +36,7 @@ export interface TableInstance {
 	resetPage: (pagin?: PaginationDefault) => Promise<void>
 	QueryForm: () => JSX.Element | VNode
 	queryFormModel: Reactive<{ values: any }>
-	setQueryFormModel: Ref<(model: Record<string, any> | ((vals: any) => void)) => void>
+	setQueryFormModel: SetQueryFormModel
 	QueryFormInstance: Partial<TableQueryFormInstance>
 	Pagination: () => JSX.Element | VNode
 	cuModalFormIsEdit: Ref<TableUseCUReturnOptions['cuModalFormIsEdit']>
