@@ -1,5 +1,11 @@
 # 更新日志
 
+## v1.0.145
+
+### 新增
+
+- 新增 Table 组件 setQueryFormModel 方法的 updateParams 参数,用于控制是否更新 params
+
 ## v1.0.144
 
 ### Bug Fixes

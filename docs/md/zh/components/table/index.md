@@ -452,7 +452,7 @@ interface TableInstance {
 	updateSource: () => Promise<void> // 更新数据列表的方法
 	QueryForm: () => JSX.Element | VNode // 查询表单组件
 	queryFormModel: Reactive<{ values: any }> // 查询表单绑定的数据
-	setQueryFormModel: (model: Record<string, any> | ((vals: any) => void)) => void // 设置查询表单绑定的数据
+	setQueryFormModel: (model: Record<string, any> | ((vals: any) => void), updateParams?: boolean) => void // 设置查询表单绑定的数据
 	QueryFormInstance: Partial<TableQueryFormInstance> // 查询表单实例
 	Pagination: () => JSX.Element | VNode // 内置分页器组件
 	cuModalFormIsEdit: Ref<boolean> // 新增/编辑表单 当前是否为编辑模式 ,false为新增模式

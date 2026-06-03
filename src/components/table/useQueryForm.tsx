@@ -45,7 +45,10 @@ export type UseFormOptions = {
 	onValidate?: Callbacks['onValidate']
 }
 
-export type SetQueryFormModel = (model: Record<string, any> | ((vals: any) => void)) => void
+export type SetQueryFormModel = (
+	model: Record<string, any> | ((vals: any) => void),
+	updateParams?: boolean,
+) => void
 /**
  * 操作按钮布局方式
  * fixRight 固定在右侧
@@ -297,14 +300,20 @@ const useQueryForm = (props: TableQueryFormProps) => {
 	)
 	const setQueryFormModel: SetQueryFormModel = (
 		model: Record<string, any> | ((vals: any) => void),
+		updateParams: Boolean = false,
 	) => {
 		if (isFunction(model)) {
 			return model(queryFormState.values)
 		}
-		return (queryFormState.values = {
+		const state = (queryFormState.values = {
 			...queryFormState.values,
 			...(model || {}),
 		})
+
+		if (updateParams) {
+			onQueryFormFinish(state)
+		}
+		return
 	}
 	return {
 		QueryForm,
