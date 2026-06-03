@@ -502,7 +502,7 @@ defineExpose<Readonly<TableInstance>>({
 	QueryForm: unref(QueryForm),
 	queryFormModel: readonly(unref(queryFormState)),
 	QueryFormInstance: readonly(unref(QueryFormInstance)),
-	setQueryFormModel,
+	setQueryFormModel: unref(setQueryFormModel),
 	Pagination: unref(Pagination),
 	cuModalFormIsEdit: readonly(cuModalFormIsEdit),
 	getCuModalFormIsEdit,
