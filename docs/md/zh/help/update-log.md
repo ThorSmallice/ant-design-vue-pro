@@ -1,5 +1,11 @@
 # 更新日志
 
+## v1.0.144
+
+### Bug Fixes
+
+- 修复 Table 组件 setQueryFormModel 类型问题
+
 ## v1.0.142
 
 ### Bug Fixes
